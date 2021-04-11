@@ -1,5 +1,9 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+// import {
+//   GET_ERRORS
+// } from "../../actions/type";
 class Register extends Component {
   constructor() {
     super();
@@ -16,14 +20,23 @@ onChange = e => {
   };
 onSubmit = e => {
     e.preventDefault();
-const newUser = {
-      name: this.state.name,
-      email: this.state.email,
-      password: this.state.password,
-      password2: this.state.password2
-    };
-console.log(newUser);
-  };
+    const newUser = {
+          name: this.state.name,
+          email: this.state.email,
+          password: this.state.password,
+          password2: this.state.password2
+        };
+    console.log(newUser);
+    
+    axios.post('http://localhost:4201/api/users/register', newUser)
+    .then((res) => {
+        console.log(res.data)
+    }).catch((error) => {
+        console.log(error.email)
+    });
+
+
+};
 render() {
     const { errors } = this.state;
 return (
