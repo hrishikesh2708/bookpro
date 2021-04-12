@@ -11,6 +11,12 @@ class Landing extends Component {
         <div >
           <Link to="/login"> Log In </Link>
         </div>
+        <div >
+          <Link to="/bookspage"> Books </Link>
+        </div>
+        <div >
+          <Link to="/search"> Serach </Link>
+        </div>
       </div>
     );
   }

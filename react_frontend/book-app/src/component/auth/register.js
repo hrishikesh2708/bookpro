@@ -1,9 +1,7 @@
+
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-// import {
-//   GET_ERRORS
-// } from "../../actions/type";
 class Register extends Component {
   constructor() {
     super();
@@ -32,7 +30,11 @@ onSubmit = e => {
     .then((res) => {
         console.log(res.data)
     }).catch((error) => {
-        console.log(error.email)
+      if(error.response.status === 404)
+        alert(error.response.data.email);
+      else{
+        alert("form data not valid")
+      }
     });
 
 

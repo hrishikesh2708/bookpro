@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import axios from 'axios'
 import ReactPaginate from 'react-paginate';
-
 export default class Bookspage extends Component {
   constructor(props) {
       super(props);
@@ -45,14 +44,14 @@ export default class Bookspage extends Component {
       });
 
   };
-
+ 
   componentDidMount() {
       this.receivedData()
   }
   render() {
       return (
           <div>
-              {this.state.postData}
+               {this.state.postData}
               <ReactPaginate
                   previousLabel={"prev"}
                   nextLabel={"next"}

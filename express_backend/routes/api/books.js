@@ -11,5 +11,14 @@ router.get('/book', async (req, res) => {
       }
 
 })
+router.get('/book/:bookname', async (req, res) => {
+  try {
+      const x = await book.findOne({title : req.params.bookname});
+      res.json(x)
+    } catch (err) {
+      res.status(500).json({ message: err.message })
+    }
+
+})
 
 module.exports = router;

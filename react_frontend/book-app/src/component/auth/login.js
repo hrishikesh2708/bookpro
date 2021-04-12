@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 class Login extends Component {
   constructor() {
     super();
@@ -8,17 +9,31 @@ class Login extends Component {
       password: "",
       errors: {}
     };
+    
   }
 onChange = e => {
     this.setState({ [e.target.id]: e.target.value });
   };
 onSubmit = e => {
     e.preventDefault();
-const userData = {
-      email: this.state.email,
-      password: this.state.password
-    };
-console.log(userData);
+    const userData = {
+          email: this.state.email,
+          password: this.state.password
+        };
+    console.log(userData);
+    axios
+    .post("http://localhost:4201/api/users/login", userData)
+    .then(res => {
+
+      const { token } = res.data;
+      localStorage.setItem("jwtToken", token);
+      console.log("user logged in")
+    })
+    .catch(err =>{
+      alert("Email and password did not match!")
+
+    });
+    
   };
 render() {
     const { errors } = this.state;
