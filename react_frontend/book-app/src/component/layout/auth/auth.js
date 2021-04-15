@@ -1,8 +1,8 @@
-
+import { withRouter } from "react-router-dom";
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-class Register extends Component {
+class Auth extends Component {
   constructor() {
     super();
     this.state = {
@@ -29,6 +29,7 @@ onSubmit = e => {
     axios.post('http://localhost:4201/api/users/register', newUser)
     .then((res) => {
         console.log(res.data)
+        this.props.history.push("/login");
     }).catch((error) => {
       if(error.response.status === 404)
         alert(error.response.data.email);
@@ -113,4 +114,4 @@ return (
     );
   }
 }
-export default Register;
+export default withRouter(Auth);

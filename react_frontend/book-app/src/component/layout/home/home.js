@@ -1,19 +1,21 @@
 import React, {Component} from 'react'
 import axios from 'axios'
 import ReactPaginate from 'react-paginate';
-export default class Bookspage extends Component {
+
+export  class Home extends Component {
   constructor(props) {
       super(props);
       this.state = {
           offset: 0,
           data: [],
           perPage: 10,
-          currentPage: 0
+          currentPage: 0,
       };
       this.handlePageClick = this
           .handlePageClick
           .bind(this);
   }
+
   receivedData() {
       axios
           .get(`http://localhost:4201/api/books/book`)

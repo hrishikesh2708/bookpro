@@ -1,26 +1,28 @@
-import './App.css';
-import React, { Component } from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
-import Register from "./component/auth/register";
-import Login from "./component/auth/login";
+import React from 'react'
+import {Container} from '@material-ui/core';
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Navbar from "./component/layout/navbar";
-import Landing from "./component/layout/landing";
-import Bookspage from "./component/layout/bookspage";
+import {Home} from "./component/layout/home/home";
+import Auth from "./component/layout/auth/auth";
 import Search from './component/layout/search';
-class App extends Component {
-  render() {
-    return (
-        <Router>
-          <div className="App">
-            <Navbar />
-            <Route exact path="/" component={Landing} />
-            <Route exact path="/register" component={Register} />
-            <Route exact path="/login" component={Login} />
-            <Route excat path="/bookspage" component={Bookspage}/>
-            <Route excat path="/search" component={Search}/>
-          </div>
-        </Router>
-    );
-  }
+import Add from './component/layout/add-book';
+import Modify from './component/layout/modify-book';
+import Login from './component/layout/auth/login'
+export const App = () => {
+  
+  return (
+    <BrowserRouter>
+      <Container maxWidth = "lg">
+        <Navbar/>
+          <Switch>
+            <Route path='/' exact component={Home}/>
+            <Route path='/auth' excat component={Auth}/>
+          </Switch>
+           <Route excat path="/search" component={Search}/>
+            <Route excat path="/add" component={Add}/>
+            <Route excat path="/modify" component={Modify}/>
+            <Route excat path="/login" component={Login}/>
+      </Container>
+    </BrowserRouter>
+  )
 }
-export default App;

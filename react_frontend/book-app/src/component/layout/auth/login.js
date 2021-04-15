@@ -1,13 +1,16 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { withRouter } from "react-router-dom";
 class Login extends Component {
   constructor() {
     super();
     this.state = {
       email: "",
       password: "",
-      errors: {}
+      errors: {},
+      // history : useHistory(),
+      // status :'',
     };
     
   }
@@ -15,7 +18,7 @@ onChange = e => {
     this.setState({ [e.target.id]: e.target.value });
   };
 onSubmit = e => {
-    e.preventDefault();
+  e.preventDefault()
     const userData = {
           email: this.state.email,
           password: this.state.password
@@ -24,13 +27,14 @@ onSubmit = e => {
     axios
     .post("http://localhost:4201/api/users/login", userData)
     .then(res => {
-
       const { token } = res.data;
+      localStorage.clear();
       localStorage.setItem("jwtToken", token);
       console.log("user logged in")
+      this.props.history.push("/");
     })
     .catch(err =>{
-      alert("Email and password did not match!")
+      alert("Email and password did not match!",err)
 
     });
     
@@ -45,7 +49,7 @@ return (
       <b>Login</b> below
     </h4>
     <p>
-      Don't have an account? <Link to="/register">Register</Link>
+      Don't have an account? <Link to="/auth">Register</Link>
     </p>
   </div>
   <form noValidate onSubmit={this.onSubmit}>
@@ -88,4 +92,4 @@ return (
     );
   }
 }
-export default Login;
+export default withRouter(Login);

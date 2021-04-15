@@ -15,7 +15,6 @@ app.use(passport.initialize());
 require("./config/passport")(passport);
 app.use("/api/users", users);
 app.use("/api/books", books);
-app.get('/', (req, res) => res.send('hrishikesh')); 
 mongoose.connect(db,{ useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
   app.listen(port, () => console.log(`server started on port: ${port}`));
