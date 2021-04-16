@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { DebounceInput } from "react-debounce-input";
 class Modify extends Component {
   constructor() {
     super();
@@ -84,12 +85,10 @@ class Modify extends Component {
           });
           console.log(res.data);
           if (res.data.length > 0) {
-            this.setState({ 
-              data: res.data
-            })
-
-          }
-          else{
+            this.setState({
+              data: res.data,
+            });
+          } else {
             this.setState({
               bookPresent: "Book not found",
             });
@@ -97,9 +96,9 @@ class Modify extends Component {
         });
     }
     if (name.length === 0) {
-      this.setState({ 
-        data: []
-      })
+      this.setState({
+        data: [],
+      });
     }
   };
   handleClick = (e) => {
@@ -141,7 +140,9 @@ class Modify extends Component {
               <h1>Enter name of book you want to update</h1>
             </div>
             <div>
-              <input
+              <DebounceInput
+                minLength={1}
+                debounceTimeout={500}
                 type="text"
                 placeholder="Search for books"
                 name={this.state.bookname}
@@ -154,7 +155,7 @@ class Modify extends Component {
                 <>
                   <ul>
                     {this.state.data.map((item) => (
-                      <li>
+                      <li key={item._id}>
                         <p>{item.title}</p>
                         <p>{item.authors}</p>
                         <button onClick={this.handleClick.bind(this, item)}>
