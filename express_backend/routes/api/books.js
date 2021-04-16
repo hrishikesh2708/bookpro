@@ -16,7 +16,7 @@ router.get('/book', async (req, res) => {
 router.post('/book-add', async (req, res) => {
   const {errors ,isValid} = validateBook(req.body);
   if(!isValid){
-    return res.status(400).json(errors);
+    return res.status(422).json(errors);
   }
   else{
     const reg = new RegExp('^'+req.body.title, 'i');
@@ -38,10 +38,7 @@ router.post('/book-add', async (req, res) => {
   }
 })
 router.put('/book-modify', async (req, res) => {
-  const reg = new RegExp('^'+req.body.title+'$', 'i');
-    console.log(req.body.title)
-    const x = await book.findOne({title : reg })
-    console.log(x)
+    const x = await book.findOne({_id : req.body._id })
     if(x == null){
       return res.status(400).json({message:"book is not present!"})
   }
