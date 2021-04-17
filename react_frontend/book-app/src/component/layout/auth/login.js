@@ -26,6 +26,7 @@ class Login extends Component {
         localStorage.setItem("jwtToken", token);
         console.log("user logged in");
         this.props.history.push("/", { current: true });
+        window.location.reload()
       });
   };
   onChange = (e) => {
@@ -46,6 +47,7 @@ class Login extends Component {
         localStorage.setItem("jwtToken", token);
         console.log("user logged in");
         this.props.history.push("/", { current: true });
+        window.location.reload()
       })
       .catch((err) => {
         alert("Email and password did not match!", err);

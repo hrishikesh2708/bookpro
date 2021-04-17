@@ -128,7 +128,25 @@ router.post("/googleLogin", (req, res) => {
               newAccount.password = hash;
               newAccount
                 .save()
-                .then((u) => {res.json(u)})
+                .then((u) => {
+                  const details = {
+                    id : u.id,
+                    name : u.name 
+                  }
+                  console.log("login details" ,details)
+                  jwt.sign(
+                    details,
+                    keys.secretOrKey,
+                    {
+                      expiresIn: 31556926,
+                    },
+                    (err, token) => {
+                      res.json({
+                        success: true,
+                        token: "Bearer " + token,
+                      });
+                    }
+                  );})
                 .catch((e) => {res.json(e)});
             });
           });

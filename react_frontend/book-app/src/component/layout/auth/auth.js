@@ -24,8 +24,9 @@ class Auth extends Component {
         const { token } = res.data;
         localStorage.clear();
         localStorage.setItem("jwtToken", token);
-        console.log("user logged in")
+        console.log("user logged in",res.data)
         this.props.history.push("/",{current : true});
+        window.location.reload()
       })
   }
   onChange = (e) => {
@@ -53,7 +54,8 @@ class Auth extends Component {
         localStorage.clear();
         localStorage.setItem("jwtToken", token);
         console.log("user logged in")
-        this.props.history.push("/",{current : true});
+        this.props.history.push("/",{current : true})
+        window.location.reload()
       });
       })
       .catch((error) => {

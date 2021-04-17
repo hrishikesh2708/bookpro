@@ -6,6 +6,7 @@ class Navbar extends Component {
   handleClick = () => {
     localStorage.clear();
     this.props.history.push("/");
+    window.location.reload();
   };
   render() {
 
