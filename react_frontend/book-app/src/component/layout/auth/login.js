@@ -31,7 +31,7 @@ onSubmit = e => {
       localStorage.clear();
       localStorage.setItem("jwtToken", token);
       console.log("user logged in")
-      this.props.history.push("/");
+      this.props.history.push("/",{current : true});
     })
     .catch(err =>{
       alert("Email and password did not match!",err)

@@ -23,8 +23,8 @@ export  class Home extends Component {
 
               const data = res.data;
               const slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
-              const postData = slice.map(pd => <React.Fragment>
-                  <p>{pd.title}</p><p>{pd.authors}</p><br/>
+              const postData = slice.map(pd => <React.Fragment key = {pd._id}>
+                  <li key = {pd._id}><p><em>{pd.title}</em></p><p><em>{pd.authors}</em></p></li>
               </React.Fragment>)
 
               this.setState({
