@@ -17,9 +17,9 @@ router.post("/book-add", async (req, res) => {
   if (!isValid) {
     return res.status(422).json(errors);
   } else {
-    const reg = new RegExp("(?:^|W)" + req.body.title + "(?:$|W)", "i");
+    const reg = new RegExp("^" + req.body.title + "$", "i");
     console.log(req.body.title);
-    const x = await book.findOne({ title: reg });
+    const x = await book.findOne({ title: req.body.title });
     console.log(x);
     if (x == null) {
       const newbook = new book({

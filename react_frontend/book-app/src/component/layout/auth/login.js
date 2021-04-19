@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import GoogleLogin from "react-google-login";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+// import GoogleLogin from "react-google-login";
 import { withRouter } from "react-router-dom";
 class Login extends Component {
   constructor() {
@@ -14,21 +16,26 @@ class Login extends Component {
       // status :'',
     };
   }
-  google = (e) => {
-    console.log(e.tokenId);
-    const token = e.tokenId;
-    axios
-      .post("http://localhost:4201/api/users/googleLogin", { id: token })
-      .then((res) => {
-        console.log("Google login access", res);
-        const { token } = res.data;
-        localStorage.clear();
-        localStorage.setItem("jwtToken", token);
-        console.log("user logged in");
-        this.props.history.push("/", { current: true });
-        window.location.reload()
-      });
-  };
+  // google = (e) => {
+  //   if(e.tokenId == null){
+  //     alert("no account selected")
+  //   }
+  //   else{
+  //     console.log(e.tokenId);
+  //   const token = e.tokenId;
+  //   axios
+  //     .post("http://localhost:4201/api/users/googleLogin", { id: token })
+  //     .then((res) => {
+  //       console.log("Google login access", res);
+  //       const { token } = res.data;
+  //       localStorage.clear();
+  //       localStorage.setItem("jwtToken", token);
+  //       console.log("user logged in");
+  //       this.props.history.push("/", { current: true });
+  //       window.location.reload()
+  //     });      
+  //   }
+  // };
   onChange = (e) => {
     this.setState({ [e.target.id]: e.target.value });
   };
@@ -45,12 +52,13 @@ class Login extends Component {
         const { token } = res.data;
         localStorage.clear();
         localStorage.setItem("jwtToken", token);
-        console.log("user logged in");
+        toast("Login successfull");
+        console.log("Login successfull");
         this.props.history.push("/", { current: true });
         window.location.reload()
       })
       .catch((err) => {
-        alert("Email and password did not match!", err);
+        toast.error("Email and password did not match!", { autoClose: 2000,hideProgressBar: true,});
       });
   };
   render() {
@@ -98,16 +106,17 @@ class Login extends Component {
             >
               Login
             </button>
-            <GoogleLogin
+            {/* <GoogleLogin
               clientId="602089965179-79c3o58rlsbla0m2en0qmpgos87k28hf.apps.googleusercontent.com"
               buttonText="login with Google"
               onSuccess={this.google}
               onFailure={this.google}
               cookiePolicy={"single_host_origin"}
-            />
+            /> */}
           </div>
         </form>
         <Link to="/">Back to home</Link>
+        <ToastContainer/>
       </div>
     );
   }

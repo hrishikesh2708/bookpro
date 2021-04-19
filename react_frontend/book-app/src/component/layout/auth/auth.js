@@ -3,6 +3,8 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import GoogleLogin from 'react-google-login';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 class Auth extends Component {
   constructor() {
     super();
@@ -15,7 +17,8 @@ class Auth extends Component {
     };
   }
   google = (e) => {
-    console.log(e.tokenId)
+    if(e.tokenId === null){
+      console.log(e.tokenId)
     const token = e.tokenId;
     axios
       .post("http://localhost:4201/api/users/googleLogin", {id : token})
@@ -28,6 +31,10 @@ class Auth extends Component {
         this.props.history.push("/",{current : true});
         window.location.reload()
       })
+    }
+    else{
+      alert("no account selected!!")
+    }
   }
   onChange = (e) => {
     this.setState({ [e.target.id]: e.target.value });
@@ -54,14 +61,17 @@ class Auth extends Component {
         localStorage.clear();
         localStorage.setItem("jwtToken", token);
         console.log("user logged in")
+        toast.success("Login Successfull",{autoClose: 2000,hideProgressBar: true,})
         this.props.history.push("/",{current : true})
         window.location.reload()
       });
       })
       .catch((error) => {
-        if (error.response.status === 404) alert(error.response.data.email);
+        if (error.response.status === 404){
+          toast.error(error.response.data.email,{autoClose: 2000,hideProgressBar: true,});
+        } 
         else {
-          alert("form data not valid");
+          toast.error("Input data not valid",{ autoClose: 2000,hideProgressBar: true,});
         }
       });
 
@@ -139,6 +149,7 @@ class Auth extends Component {
           </div>
         </form>
         <Link to="/">Back to home</Link>
+        <ToastContainer/>
       </div>
     );
   }

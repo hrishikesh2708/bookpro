@@ -9,6 +9,7 @@ import Add from './component/layout/add-book';
 import Modify from './component/layout/modify-book';
 import Login from './component/layout/auth/login'
 import jwt_decode from "jwt-decode";
+import Ser from "./component/layout/ser"
 
 export default class App extends Component {
   constructor() {
@@ -44,6 +45,7 @@ export default class App extends Component {
             <Route path='/auth' excat component={Auth}/>
           </Switch>
           <Route excat path="/search" component={Search}/>
+          <Route excat path="/ser" component={Ser}/>
             <Route excat path="/add" component={Add}/>
             <Route excat path="/modify" component={Modify}/>
             <Route excat path="/login" component={Login}/>

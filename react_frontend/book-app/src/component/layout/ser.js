@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { DebounceInput } from "react-debounce-input";
-import Loader from "react-loader-spinner";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 export default class Search extends Component {
   constructor() {
     super();
@@ -12,33 +9,43 @@ export default class Search extends Component {
       bookname: "",
       data: [],
       show: true,
-      loadingStatus : true
     };
     this.handleChange = this.handleChange.bind(this);
+  }
+  componentDidMount() {
+    axios
+        .get(`http://localhost:4201/api/books/book/`)
+        .then(res =>{ 
+              this.setState({
+              bookStatus: true,
+            }); 
+            localStorage.setItem("books",res.data)         
+        })
   }
   handleChange = (e) => {
     const name = e.target.value;
     console.log("handle change called", name);
-    this.setState({ bookname: name,
-    loadingStatus : false });
-    if (name.length > 1) {
-      axios
-        .get(`http://localhost:4201/api/books/book-search/` + name)
-        .then((res) => {
-          console.log(res.data.length);
-          if (res.data.length === 0) {
-            this.setState({
-              bookStatus: false,
-            });
-            toast.error("No book found!")
-          } else {
-            this.setState({
-              bookStatus: true,
-            });
-          }
-          this.setState({ data: res.data, 
-          loadingStatus : true});
-        });
+    this.setState({ bookname: name });
+    if (name.length > 2) {
+        const b = JSON.stringify(localStorage.getItem("books"))
+        console.log(b)
+        const postdata = b.filter(d => d.title === name)
+        console.log(postdata)
+    //   axios
+    //     .get(`http://localhost:4201/api/books/book-search/` + name)
+    //     .then((res) => {
+    //       console.log(res.data.length);
+    //       if (res.data.length === 0) {
+    //         this.setState({
+    //           bookStatus: false,
+    //         });
+    //       } else {
+    //         this.setState({
+    //           bookStatus: true,
+    //         });
+    //       }
+    //       this.setState({ data: res.data });
+    //     });
     }
     if (name.length === 0) {
       this.setState({
@@ -49,7 +56,7 @@ export default class Search extends Component {
   render() {
     return (
       <div>
-                <DebounceInput
+        <DebounceInput
           minLength={1}
           debounceTimeout={500}
           type="text"
@@ -58,9 +65,6 @@ export default class Search extends Component {
           value={this.state.bookname}
           onChange={this.handleChange}
         />
-        {this.state.loadingStatus ? (
-          <>
-
         {this.state.bookStatus === true ? (
           <>
             <ul>
@@ -73,24 +77,11 @@ export default class Search extends Component {
             </ul>
           </>
         ) : (
-          <>
           <p>
             <b>
               <em>No book found</em>
             </b>
           </p>
-            <ToastContainer />
-          </>
-        )}
-        </>
-        ):(
-          <Loader
-                    type="ThreeDots"
-                    color="#00BFFF"
-                    height={40}
-                    width={40}
-                    timeout={3000} //3 secs
-                />
         )}
       </div>
     );

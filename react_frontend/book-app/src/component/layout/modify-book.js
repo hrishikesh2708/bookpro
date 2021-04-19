@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { DebounceInput } from "react-debounce-input";
 class Modify extends Component {
   constructor() {
@@ -64,6 +66,10 @@ class Modify extends Component {
       .then((res) => {
         console.log(res);
         console.log("book details updated");
+        toast.success("book details updated!!", {
+          autoClose: 2000,
+          hideProgressBar: true,
+        });
         this.setState({
           UpdateStatus: true,
         });
@@ -88,9 +94,17 @@ class Modify extends Component {
             this.setState({
               data: res.data,
             });
+            toast("book present!!", {
+              autoClose: 2000,
+              hideProgressBar: true,
+            });
           } else {
             this.setState({
               bookPresent: "Book not found",
+            });
+            toast.warn("book not present!!", {
+              autoClose: 2000,
+              hideProgressBar: true,
             });
           }
         });
@@ -182,6 +196,7 @@ class Modify extends Component {
             </div>
           </>
         )}
+        <ToastContainer />
       </div>
     );
   }

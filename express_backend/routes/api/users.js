@@ -57,32 +57,55 @@ router.post("/login", (req, res) => {
       return res.status(404).json({ emailnotfound: "Email not found" });
     }
 
-    bcrypt.compare(password, user.password).then((isMatch) => {
-      if (isMatch) {
-        const payload = {
-          id: user.id,
-          name: user.name,
-        };
-
-        jwt.sign(
-          payload,
-          keys.secretOrKey,
-          {
-            expiresIn: 31556926,
-          },
-          (err, token) => {
-            res.json({
-              success: true,
-              token: "Bearer " + token,
-            });
-          }
-        );
-      } else {
-        return res
-          .status(400)
-          .json({ passwordincorrect: "Password incorrect" });
-      }
-    });
+    if(user.password === ""){
+      const payload = {
+        id: user.id,
+        name: user.name,
+      };
+      jwt.sign(
+        payload,
+        keys.secretOrKey,
+        {
+          expiresIn: 31556926,
+        },
+        (err, token) => {
+          res.json({
+            success: true,
+            token: "Bearer " + token,
+          });
+        }
+      );
+    } 
+    else if(user.password !== ""){
+      bcrypt.compare(password, user.password).then((isMatch) => {
+        if (isMatch) {
+          const payload = {
+            id: user.id,
+            name: user.name,
+          };
+  
+          jwt.sign(
+            payload,
+            keys.secretOrKey,
+            {
+              expiresIn: 31556926,
+            },
+            (err, token) => {
+              res.json({
+                success: true,
+                token: "Bearer " + token,
+              });
+            }
+          );
+        }
+        else {
+          return res
+            .status(400)
+            .json({ passwordincorrect: "Password incorrect" });
+        }
+      });
+    }
+    
   });
 });
 
@@ -120,12 +143,12 @@ router.post("/googleLogin", (req, res) => {
           const newAccount = new User({
             name: name,
             email: email,
-            password: email + keys.secretOrKey + name,
+            password:'',
           });
-          bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(newAccount.password, salt, (error, hash) => {
-              if (error) throw error;
-              newAccount.password = hash;
+          // bcrypt.genSalt(10, (err, salt) => {
+          //   bcrypt.hash(newAccount.password, salt, (error, hash) => {
+          //     if (error) throw error;
+          //     newAccount.password = hash;
               newAccount
                 .save()
                 .then((u) => {
@@ -148,8 +171,8 @@ router.post("/googleLogin", (req, res) => {
                     }
                   );})
                 .catch((e) => {res.json(e)});
-            });
-          });
+            // });
+          // });
         }
       });
     }

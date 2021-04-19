@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import axios from 'axios'
 import ReactPaginate from 'react-paginate';
+import Loader from "react-loader-spinner";
 
 export  class Home extends Component {
   constructor(props) {
@@ -10,6 +11,7 @@ export  class Home extends Component {
           data: [],
           perPage: 10,
           currentPage: 0,
+          loadingStatus : false
       };
       this.handlePageClick = this
           .handlePageClick
@@ -29,7 +31,7 @@ export  class Home extends Component {
 
               this.setState({
                   pageCount: Math.ceil(data.length / this.state.perPage),
-                 
+                  loadingStatus : true,
                   postData
               })
           });
@@ -39,6 +41,7 @@ export  class Home extends Component {
       const offset = selectedPage * this.state.perPage;
 
       this.setState({
+          loadingStatus : false,
           currentPage: selectedPage,
           offset: offset
       }, () => {
@@ -53,7 +56,9 @@ export  class Home extends Component {
   render() {
       return (
           <div>
-               {this.state.postData}
+            {this.state.loadingStatus ? (
+                <>
+                {this.state.postData}
               <ReactPaginate
                   previousLabel={"prev"}
                   nextLabel={"next"}
@@ -66,6 +71,16 @@ export  class Home extends Component {
                   containerClassName={"pagination"}
                   subContainerClassName={"pages pagination"}
                   activeClassName={"active"}/>
+                  </>
+            ) : (
+                <Loader
+                    type="ThreeDots"
+                    color="#00BFFF"
+                    height={40}
+                    width={40}
+                    timeout={3000} //3 secs
+                />
+            )}
           </div>
 
       )

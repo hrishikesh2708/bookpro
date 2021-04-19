@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 class Add extends Component {
   constructor() {
     super();
@@ -11,6 +13,7 @@ class Add extends Component {
       errors: {},
     };
   }
+
   refresh = (e) => {
     this.setState({
       bookAdded: false,
@@ -41,14 +44,24 @@ class Add extends Component {
         this.setState({
           bookAdded: true,
         });
+        toast.success("Book added successfully!!", {
+          autoClose: 2000,
+          hideProgressBar: true,
+        });
       })
       .catch((res) => {
         console.log(res);
         console.log(res.response.status);
         if (res.response.status === 400) {
-          alert("Book already exist!!");
+          toast.error("Book already exist!!", {
+            autoClose: 2000,
+            hideProgressBar: true,
+          });
         } else if (res.response.status === 422) {
-          alert("input can not be empty!!");
+          toast.error("input can not be empty!!", {
+            autoClose: 2000,
+            hideProgressBar: true,
+          });
         }
       });
   };
@@ -103,6 +116,7 @@ class Add extends Component {
             </form>
           </>
         )}
+        <ToastContainer />
       </div>
     );
   }
