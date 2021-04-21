@@ -2,7 +2,6 @@ import { withRouter } from "react-router-dom";
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import GoogleLogin from 'react-google-login';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 class Auth extends Component {
@@ -15,26 +14,6 @@ class Auth extends Component {
       password2: "",
       errors: {},
     };
-  }
-  google = (e) => {
-    if(e.tokenId !== null){
-      console.log(e.tokenId)
-    const token = e.tokenId;
-    axios
-      .post(`${process.env.REACT_APP_LOCALHOST}/api/users/googleLogin`, {id : token})
-      .then(res => {
-        console.log("Google login access", res)
-        const { token } = res.data;
-        localStorage.clear();
-        localStorage.setItem("jwtToken", token);
-        console.log("user logged in",res.data)
-        this.props.history.push("/",{current : true});
-        window.location.reload()
-      })
-    }
-    else{
-      alert("no account selected!!")
-    }
   }
   onChange = (e) => {
     this.setState({ [e.target.id]: e.target.value });
@@ -81,9 +60,9 @@ class Auth extends Component {
     return (
       <div>
         <div>
-          <h4>Register below</h4>
+          <h4>Sign up below</h4>
           <p>
-            Already have an account? <Link to="/login">Log in</Link>
+            Already have an account? <Link to="/login">Sign in</Link>
           </p>
         </div>
         <form noValidate onSubmit={this.onSubmit}>
@@ -139,13 +118,6 @@ class Auth extends Component {
             >
               Sign up
             </button>
-            <GoogleLogin
-              clientId = {process.env.REACT_APP_GOOGLE_CLIENT_ID}
-              buttonText = "sign up with Google"
-              onSuccess = {this.google}
-              onFailure = {this.google}
-              cookiePolicy = {'single_host_origin'}
-            />
           </div>
         </form>
         <Link to="/">Back to home</Link>

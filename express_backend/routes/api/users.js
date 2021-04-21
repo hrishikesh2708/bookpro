@@ -54,29 +54,13 @@ router.post("/login", (req, res) => {
 
   User.findOne({ email }).then((user) => {
     if (!user) {
-      return res.status(404).json({ emailnotfound: "Email not found" });
+      return res.status(404).json({ message: "Email not found" });
     }
 
     if(user.password === ""){
-      const payload = {
-        id: user.id,
-        name: user.name,
-      };
-      jwt.sign(
-        payload,
-        keys.secretOrKey,
-        {
-          expiresIn: 31556926,
-        },
-        (err, token) => {
-          res.json({
-            success: true,
-            token: "Bearer " + token,
-          });
-        }
-      );
+    return res.status(405).json({message:"Please continue with google SignIn"})
     } 
-    else if(user.password !== ""){
+    if(user.password !== ""){
       bcrypt.compare(password, user.password).then((isMatch) => {
         if (isMatch) {
           const payload = {
@@ -101,7 +85,7 @@ router.post("/login", (req, res) => {
         else {
           return res
             .status(400)
-            .json({ passwordincorrect: "Password incorrect" });
+            .json({ message: "Password incorrect" });
         }
       });
     }
@@ -111,7 +95,6 @@ router.post("/login", (req, res) => {
 
 router.post("/googleLogin", (req, res) => {
   const token = req.body.id;
-  // console.log(token)
   Client.verifyIdToken({
     idToken: token,
     audience: keys.googleClientid,
@@ -121,34 +104,37 @@ router.post("/googleLogin", (req, res) => {
     if (email_verified === true) {
       User.findOne({ email }).then((user) => {
         if (user) {
-          const loginDetails = {
-            id : user.id,
-            name : user.name 
-          }
-          console.log("login details" ,loginDetails)
-          jwt.sign(
-            loginDetails,
-            keys.secretOrKey,
-            {
-              expiresIn: 31556926,
-            },
-            (err, token) => {
-              res.json({
-                success: true,
-                token: "Bearer " + token,
-              });
+          if(user.password === ""){
+            const loginDetails = {
+              id : user.id,
+              name : user.name 
             }
-          );
+            console.log("login details exist" ,loginDetails)
+            jwt.sign(
+              loginDetails,
+              keys.secretOrKey,
+              {
+                expiresIn: 31556926,
+              },
+              (err, token) => {
+                res.json({
+                  success: true,
+                  token: "Bearer " + token,
+                });
+              }
+            );
+          }
+          else if (user.password !== ""){
+            console.log("Email already exist please login manually!!")
+            return res.status(404).json({message:"Email already exist please login manually!!"})
+          }
+
         } else {
           const newAccount = new User({
             name: name,
             email: email,
             password:'',
           });
-          // bcrypt.genSalt(10, (err, salt) => {
-          //   bcrypt.hash(newAccount.password, salt, (error, hash) => {
-          //     if (error) throw error;
-          //     newAccount.password = hash;
               newAccount
                 .save()
                 .then((u) => {
@@ -171,8 +157,6 @@ router.post("/googleLogin", (req, res) => {
                     }
                   );})
                 .catch((e) => {res.json(e)});
-            // });
-          // });
         }
       });
     }

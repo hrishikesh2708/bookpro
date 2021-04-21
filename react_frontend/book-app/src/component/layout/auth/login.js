@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import GoogleLogin from 'react-google-login';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { withRouter } from "react-router-dom";
@@ -12,6 +13,29 @@ class Login extends Component {
       password: "",
       errors: {},
     };
+  }
+  google = (e) => {
+    if(e.tokenId !== null){
+      console.log(e.tokenId)
+    const token = e.tokenId;
+    axios
+      .post(`${process.env.REACT_APP_LOCALHOST}/api/users/googleLogin`, {id : token})
+      .then(res => {
+        console.log("Google login access", res)
+        const { token } = res.data;
+        localStorage.clear();
+        localStorage.setItem("jwtToken", token);
+        console.log("user logged in",res.data)
+        this.props.history.push("/",{current : true});
+        window.location.reload()
+      })
+      .catch(err => {
+        toast.error(err.response.data.message,{ autoClose: 3000,hideProgressBar: true,})
+      })
+    }
+    else{
+      alert("no account selected!!")
+    }
   }
   onChange = (e) => {
     this.setState({ [e.target.id]: e.target.value });
@@ -35,7 +59,8 @@ class Login extends Component {
         window.location.reload()
       })
       .catch((err) => {
-        toast.error("Email and password did not match!", { autoClose: 2000,hideProgressBar: true,});
+        console.log(err.response.data.message)
+        toast.error(err.response.data.message, { autoClose: 2000,hideProgressBar: true,});
       });
   };
   render() {
@@ -44,10 +69,10 @@ class Login extends Component {
       <div>
         <div style={{ paddingLeft: "11.250px" }}>
           <h4>
-            <b>Login</b> below
+            <b>Sign In</b> below
           </h4>
           <p>
-            Don't have an account? <Link to="/auth">Register</Link>
+            Don't have an account? <Link to="/auth">Create new</Link>
           </p>
         </div>
         <form noValidate onSubmit={this.onSubmit}>
@@ -81,8 +106,15 @@ class Login extends Component {
               }}
               type="submit"
             >
-              Login
+              Sign in
             </button>
+            <GoogleLogin
+              clientId = {process.env.REACT_APP_GOOGLE_CLIENT_ID}
+              buttonText = "Continue with Google"
+              onSuccess = {this.google}
+              onFailure = {this.google}
+              cookiePolicy = {'single_host_origin'}
+            />
           </div>
         </form>
         <Link to="/">Back to home</Link>
