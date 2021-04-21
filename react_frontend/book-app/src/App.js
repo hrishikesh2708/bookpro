@@ -10,7 +10,6 @@ import Modify from './component/layout/modify-book';
 import Login from './component/layout/auth/login'
 import jwt_decode from "jwt-decode";
 import Ser from "./component/layout/ser"
-
 export default class App extends Component {
   constructor() {
     super();
@@ -21,7 +20,6 @@ export default class App extends Component {
     };
   }
   componentDidMount() {
-    console.log("hi");
     const token = localStorage.getItem("jwtToken");
     if (token != null) {
       var decode = jwt_decode(token);

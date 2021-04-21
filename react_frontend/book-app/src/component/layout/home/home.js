@@ -2,7 +2,6 @@ import React, {Component} from 'react'
 import axios from 'axios'
 import ReactPaginate from 'react-paginate';
 import Loader from "react-loader-spinner";
-
 export  class Home extends Component {
   constructor(props) {
       super(props);
@@ -20,7 +19,7 @@ export  class Home extends Component {
 
   receivedData() {
       axios
-          .get(`http://localhost:4201/api/books/book`)
+          .get(`${process.env.REACT_APP_LOCALHOST}/api/books/book`)
           .then(res => {
 
               const data = res.data;

@@ -23,7 +23,7 @@ export default class Search extends Component {
     loadingStatus : false });
     if (name.length > 1) {
       axios
-        .get(`http://localhost:4201/api/books/book-search/` + name)
+        .get(`${process.env.REACT_APP_LOCALHOST}/api/books/book-search/` + name)
         .then((res) => {
           console.log(res.data.length);
           if (res.data.length === 0) {

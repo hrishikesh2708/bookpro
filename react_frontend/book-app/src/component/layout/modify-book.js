@@ -62,7 +62,7 @@ class Modify extends Component {
       authors: this.state.newAuthor,
     };
     axios
-      .put(`http://localhost:4201/api/books/book-modify`, bookdetails)
+      .put(`${process.env.REACT_APP_LOCALHOST}/api/books/book-modify`, bookdetails)
       .then((res) => {
         console.log(res);
         console.log("book details updated");
@@ -84,7 +84,7 @@ class Modify extends Component {
     this.setState({ bookname: name });
     if (name.length > 1) {
       axios
-        .get(`http://localhost:4201/api/books/book-search/` + name)
+        .get(`${process.env.REACT_APP_LOCALHOST}/api/books/book-search/` + name)
         .then((res) => {
           this.setState({
             bookPresent: "",

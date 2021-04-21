@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-// import GoogleLogin from "react-google-login";
 import { withRouter } from "react-router-dom";
 class Login extends Component {
   constructor() {
@@ -12,30 +11,8 @@ class Login extends Component {
       email: "",
       password: "",
       errors: {},
-      // history : useHistory(),
-      // status :'',
     };
   }
-  // google = (e) => {
-  //   if(e.tokenId == null){
-  //     alert("no account selected")
-  //   }
-  //   else{
-  //     console.log(e.tokenId);
-  //   const token = e.tokenId;
-  //   axios
-  //     .post("http://localhost:4201/api/users/googleLogin", { id: token })
-  //     .then((res) => {
-  //       console.log("Google login access", res);
-  //       const { token } = res.data;
-  //       localStorage.clear();
-  //       localStorage.setItem("jwtToken", token);
-  //       console.log("user logged in");
-  //       this.props.history.push("/", { current: true });
-  //       window.location.reload()
-  //     });      
-  //   }
-  // };
   onChange = (e) => {
     this.setState({ [e.target.id]: e.target.value });
   };
@@ -47,7 +24,7 @@ class Login extends Component {
     };
     console.log(userData);
     axios
-      .post("http://localhost:4201/api/users/login", userData)
+      .post(`${process.env.REACT_APP_LOCALHOST}/api/users/login`, userData)
       .then((res) => {
         const { token } = res.data;
         localStorage.clear();
@@ -106,13 +83,6 @@ class Login extends Component {
             >
               Login
             </button>
-            {/* <GoogleLogin
-              clientId="602089965179-79c3o58rlsbla0m2en0qmpgos87k28hf.apps.googleusercontent.com"
-              buttonText="login with Google"
-              onSuccess={this.google}
-              onFailure={this.google}
-              cookiePolicy={"single_host_origin"}
-            /> */}
           </div>
         </form>
         <Link to="/">Back to home</Link>

@@ -17,11 +17,11 @@ class Auth extends Component {
     };
   }
   google = (e) => {
-    if(e.tokenId === null){
+    if(e.tokenId !== null){
       console.log(e.tokenId)
     const token = e.tokenId;
     axios
-      .post("http://localhost:4201/api/users/googleLogin", {id : token})
+      .post(`${process.env.REACT_APP_LOCALHOST}/api/users/googleLogin`, {id : token})
       .then(res => {
         console.log("Google login access", res)
         const { token } = res.data;
@@ -50,11 +50,11 @@ class Auth extends Component {
     console.log(newUser);
 
     axios
-      .post("http://localhost:4201/api/users/register", newUser)
+      .post(`${process.env.REACT_APP_LOCALHOST}/api/users/register`, newUser)
       .then((res) => {
         console.log("register",res.data);
         axios
-        .post("http://localhost:4201/api/users/login", newUser) 
+        .post(`${process.env.REACT_APP_LOCALHOST}/api/users/login`, newUser) 
         .then((res) => {
         console.log("login",res.data);
         const { token } = res.data;
@@ -140,7 +140,7 @@ class Auth extends Component {
               Sign up
             </button>
             <GoogleLogin
-              clientId = "602089965179-79c3o58rlsbla0m2en0qmpgos87k28hf.apps.googleusercontent.com"
+              clientId = {process.env.REACT_APP_GOOGLE_CLIENT_ID}
               buttonText = "sign up with Google"
               onSuccess = {this.google}
               onFailure = {this.google}
