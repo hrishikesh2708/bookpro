@@ -4,13 +4,13 @@ const isEmpty = require("is-empty");
   let errors = {};
 
   data.title = !isEmpty(data.title) ? data.title : "";
-  data.authors = !isEmpty(data.authors) ? data.authors : "";
+  data.author = !isEmpty(data.author) ? data.author : "";
 
   if (Validator.isEmpty(data.title)) {
     errors.title = "Name field is required";
   }
 
-  if (Validator.isEmpty(data.authors)) {
+  if (Validator.isEmpty(data.author)) {
     errors.authors = "Author field is required";
   } 
 return {

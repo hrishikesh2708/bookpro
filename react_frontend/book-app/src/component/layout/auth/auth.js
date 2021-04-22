@@ -41,8 +41,10 @@ class Auth extends Component {
         localStorage.setItem("jwtToken", token);
         console.log("user logged in")
         toast.success("Login Successfull",{autoClose: 2000,hideProgressBar: true,})
-        this.props.history.push("/",{current : true})
-        window.location.reload()
+        setTimeout(() => {
+          this.props.history.push("/")
+          window.location.reload()
+        }, 1000);
       });
       })
       .catch((error) => {

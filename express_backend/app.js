@@ -17,8 +17,8 @@ const port = process.env.PORT || 4201;
 app.use(passport.initialize());
 require("./config/passport")(passport);
 app.use("/api/users", users);
-app.use("/api/books", books);
-app.use("/", newbook);
+// app.use("/api/books", books);
+app.use("/api", newbook);
 mongoose.connect(db,{ useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
   app.listen(port, () => console.log(`server started on port: ${port}`));

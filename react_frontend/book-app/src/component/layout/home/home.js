@@ -19,13 +19,18 @@ export  class Home extends Component {
 
   receivedData() {
       axios
-          .get(`${process.env.REACT_APP_LOCALHOST}/api/books/book`)
+        .get(`${process.env.REACT_APP_LOCALHOST}/api/boook`)
+        .then(res => {
+            console.log(res.data.message)
+        })
+      axios
+          .get(`${process.env.REACT_APP_LOCALHOST}/api/getbook`)
           .then(res => {
-
+                // console.log(res.data)
               const data = res.data;
               const slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
               const postData = slice.map(pd => <React.Fragment key = {pd._id}>
-                  <li key = {pd._id}><p><em>{pd.title}</em></p><p><em>{pd.authors}</em></p></li>
+                  <li key = {pd._id}><p><em>{pd.title}</em></p><p><em>{pd.author}</em></p></li>
               </React.Fragment>)
 
               this.setState({

@@ -23,7 +23,7 @@ export default class Search extends Component {
     loadingStatus : false });
     if (name.length > 1) {
       axios
-        .get(`${process.env.REACT_APP_LOCALHOST}/api/books/book-search/` + name)
+        .get(`${process.env.REACT_APP_LOCALHOST}/api/search/` + name)
         .then((res) => {
           console.log(res.data.length);
           if (res.data.length === 0) {
@@ -43,6 +43,7 @@ export default class Search extends Component {
     if (name.length === 0) {
       this.setState({
         data: [],
+        loadingStatus : true
       });
     }
   };
@@ -67,7 +68,7 @@ export default class Search extends Component {
               {this.state.data.map((item) => (
                 <li key={item._id}>
                   <p>{item.title}</p>
-                  <p>{item.authors}</p>
+                  <p>{item.author}</p>
                 </li>
               ))}
             </ul>

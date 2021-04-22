@@ -29,13 +29,12 @@ class Add extends Component {
   onSubmit = (e) => {
     e.preventDefault();
     const bookData = {
-      id: this.state.id,
-      authors: this.state.author,
+      author: this.state.author,
       title: this.state.title,
     };
     console.log(bookData);
     axios
-      .post(`${process.envREACT_APP_LOCALHOST}/api/books/book-add`, bookData)
+      .post(`${process.env.REACT_APP_LOCALHOST}/api/book-addition`, bookData)
       // .then(res =>{
       //   console.log("book added")
       //   return res.json(res)})

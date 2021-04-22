@@ -104,30 +104,28 @@ router.post("/googleLogin", (req, res) => {
     if (email_verified === true) {
       User.findOne({ email }).then((user) => {
         if (user) {
-          if(user.password === ""){
-            const loginDetails = {
-              id : user.id,
-              name : user.name 
+          const loginDetails = {
+            id : user.id,
+            name : user.name 
+          }
+          console.log("login details exist" ,loginDetails)
+          jwt.sign(
+            loginDetails,
+            keys.secretOrKey,
+            {
+              expiresIn: 31556926,
+            },
+            (err, token) => {
+              res.json({
+                success: true,
+                token: "Bearer " + token,
+              });
             }
-            console.log("login details exist" ,loginDetails)
-            jwt.sign(
-              loginDetails,
-              keys.secretOrKey,
-              {
-                expiresIn: 31556926,
-              },
-              (err, token) => {
-                res.json({
-                  success: true,
-                  token: "Bearer " + token,
-                });
-              }
-            );
-          }
-          else if (user.password !== ""){
-            console.log("Email already exist please login manually!!")
-            return res.status(404).json({message:"Email already exist please login manually!!"})
-          }
+          );
+          // else if (user.password !== ""){
+          //   console.log("Email already exist please login manually!!")
+          //   return res.status(404).json({message:"Email already exist please login manually!!"})
+          // }
 
         } else {
           const newAccount = new User({

@@ -6,7 +6,7 @@ const Books = new Schema({
         type: String,
         required: true
     },
-    authors: {
+    author: {
         type: String,
         require: true
     },
@@ -16,4 +16,4 @@ const Books = new Schema({
     }
 })
 
-module.exports = book = mongoose.model("Books(from google books api)",Books)
+module.exports = book = mongoose.model("Books(2.0)",Books)

@@ -15,26 +15,28 @@ class Login extends Component {
     };
   }
   google = (e) => {
-    if(e.tokenId !== null){
       console.log(e.tokenId)
-    const token = e.tokenId;
-    axios
-      .post(`${process.env.REACT_APP_LOCALHOST}/api/users/googleLogin`, {id : token})
-      .then(res => {
-        console.log("Google login access", res)
-        const { token } = res.data;
-        localStorage.clear();
-        localStorage.setItem("jwtToken", token);
-        console.log("user logged in",res.data)
-        this.props.history.push("/",{current : true});
-        window.location.reload()
-      })
-      .catch(err => {
-        toast.error(err.response.data.message,{ autoClose: 3000,hideProgressBar: true,})
-      })
-    }
-    else{
-      alert("no account selected!!")
+      if(typeof(e.tokenId) !== "undefined"){
+      const token = e.tokenId;
+      axios
+        .post(`${process.env.REACT_APP_LOCALHOST}/api/users/googleLogin`, {id : token})
+        .then(res => {
+          console.log("Google login access", res)
+          const { token } = res.data;
+          localStorage.clear();
+          localStorage.setItem("jwtToken", token);
+          toast.success("Login successfull");
+          setTimeout(() => {
+            this.props.history.push("/");
+            window.location.reload()
+          }, 1000);
+        })
+        .catch(err => {
+          toast.error(err.response.data.message,{ autoClose: 3000,hideProgressBar: true,})
+        })
+      }
+     else {
+      toast.warn("No account selected!!",{ autoClose: 3000,hideProgressBar: true,})
     }
   }
   onChange = (e) => {
@@ -53,10 +55,13 @@ class Login extends Component {
         const { token } = res.data;
         localStorage.clear();
         localStorage.setItem("jwtToken", token);
-        toast("Login successfull");
+        toast.success("Login successfull");
         console.log("Login successfull");
-        this.props.history.push("/", { current: true });
-        window.location.reload()
+        setTimeout(() => {
+          this.props.history.push("/");
+          window.location.reload()          
+        }, 1000);
+
       })
       .catch((err) => {
         console.log(err.response.data.message)
