@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { withRouter } from "react-router-dom";
+// import { connect } from "react-redux"
 class Navbar extends Component {
   
   handleClick = () => {
@@ -8,6 +9,14 @@ class Navbar extends Component {
     this.props.history.push("/");
     window.location.reload();
   };
+//   mapStateToProps = (state) => ({
+//     songs: state.songs
+//   });
+//   mapDispatchToProps = () => ({
+//     actionOne,
+//     actionTwo,
+// })
+
   render() {
 
     return (
@@ -40,4 +49,5 @@ class Navbar extends Component {
     );
   }
 }
+// export default withRouter(connect(mapStateToProps,mapDispatchToProps)(Navbar));
 export default withRouter(Navbar);

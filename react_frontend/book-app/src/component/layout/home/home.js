@@ -2,9 +2,11 @@ import React, {Component} from 'react'
 import axios from 'axios'
 import ReactPaginate from 'react-paginate';
 import Loader from "react-loader-spinner";
-export  class Home extends Component {
-  constructor(props) {
-      super(props);
+import { connect } from "react-redux";
+import { view_book } from "../../../action/view_book";
+class Home extends Component {
+  constructor() {
+      super();
       this.state = {
           offset: 0,
           data: [],
@@ -28,6 +30,7 @@ export  class Home extends Component {
           .then(res => {
                 // console.log(res.data)
               const data = res.data;
+              this.props.view_book(res.data)
               const slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
               const postData = slice.map(pd => <React.Fragment key = {pd._id}>
                   <li key = {pd._id}><p><em>{pd.title}</em></p><p><em>{pd.author}</em></p></li>
@@ -90,3 +93,7 @@ export  class Home extends Component {
       )
   }
 }
+const mapStateToProps = state => ({
+    book: state.book,
+  })
+ export default connect(mapStateToProps,{view_book})(Home);
