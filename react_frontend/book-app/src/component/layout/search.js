@@ -4,6 +4,8 @@ import { DebounceInput } from "react-debounce-input";
 import Loader from "react-loader-spinner";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {TextField} from '@material-ui/core';
+
 export default class Search extends Component {
   constructor() {
     super();
@@ -23,22 +25,22 @@ export default class Search extends Component {
     loadingStatus : false });
     if (name.length > 1) {
       axios
-        .get(`${process.env.REACT_APP_LOCALHOST}/api/search/` + name)
-        .then((res) => {
-          console.log(res.data.length);
-          if (res.data.length === 0) {
-            this.setState({
-              bookStatus: false,
-            });
-            toast.error("No book found!")
-          } else {
-            this.setState({
-              bookStatus: true,
-            });
-          }
-          this.setState({ data: res.data, 
-          loadingStatus : true});
-        });
+      .get(`${process.env.REACT_APP_LOCALHOST}/api/search/` + name)
+      .then((res) => {
+        console.log(res.data.length);
+        if (res.data.length === 0) {
+          this.setState({
+            bookStatus: false,
+          });
+          toast.error("No book found!")
+        } else {
+          this.setState({
+            bookStatus: true,
+          });
+        }
+        this.setState({ data: res.data, 
+        loadingStatus : true});
+      });
     }
     if (name.length === 0) {
       this.setState({
@@ -50,6 +52,7 @@ export default class Search extends Component {
   render() {
     return (
       <div>
+      <TextField id="outlined-basic" label="Search for books" variant="outlined" placeholder="Search for books" onChange={this.handleChange} />
                 <DebounceInput
           minLength={1}
           debounceTimeout={500}

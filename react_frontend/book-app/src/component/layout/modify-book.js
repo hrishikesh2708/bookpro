@@ -4,6 +4,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { DebounceInput } from "react-debounce-input";
 import Loader from "react-loader-spinner";
+import { TextField, Button, Fab } from "@material-ui/core";
+import EditIcon from "@material-ui/icons/Edit";
 class Modify extends Component {
   constructor() {
     super();
@@ -147,7 +149,9 @@ class Modify extends Component {
                 <em>{this.state.newAuthor}</em>
               </b>
             </p>
-            <button onClick={this.refresh}>Back</button>
+            <Button variant="contained" color="primary" onClick={this.refresh}>
+              Back
+            </Button>
           </>
         ) : (
           <>
@@ -183,20 +187,27 @@ class Modify extends Component {
                           <li key={item._id}>
                             <p>{item.title}</p>
                             <p>{item.author}</p>
-                            <button onClick={this.handleClick.bind(this, item)}>
-                              Edit
-                            </button>
+                            <Fab onClick={this.handleClick.bind(this, item)}>
+                              <EditIcon />
+                            </Fab>
                             {this.state.showComponent &&
                             item._id === this.state.selectedBook_id ? (
                               <form noValidate onSubmit={this.onSubmit}>
-                                <input
-                                  type="text"
-                                  placeholder="Enter name of new Author"
-                                  value={this.state.newAuthor}
-                                  onChange={this.onChange}
+                                <TextField
                                   id="newAuthor"
+                                  label="Author Name"
+                                  variant="outlined"
+                                  placeholder="Enter name of new Author"
+                                  onChange={this.onChange}
+                                  value={this.state.newAuthor}
                                 />
-                                <button type="submit">submit</button>
+                                <Button
+                                  type="submit"
+                                  variant="contained"
+                                  color="primary"
+                                >
+                                  submit
+                                </Button>
                               </form>
                             ) : null}
                           </li>

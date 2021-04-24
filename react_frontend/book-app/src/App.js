@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Container } from "@material-ui/core";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Navbar from "./component/layout/navbar";
-import Home  from "./component/layout/home/home";
+import Home from "./component/layout/home/home";
 import Auth from "./component/layout/auth/auth";
 import Search from "./component/layout/search";
 import Add from "./component/layout/add-book";
@@ -10,23 +10,10 @@ import Modify from "./component/layout/modify-book";
 import Login from "./component/layout/auth/login";
 import jwt_decode from "jwt-decode";
 import Ser from "./component/layout/ser";
-
+import axios from "axios";
 import { connect } from "react-redux";
 import { user_details } from "./action/user_details";
-// import { createStore, applyMiddleware, compose } from "redux";
-// import thunk from "redux-thunk";
-
-// const initialState = {};
-// const middleware = [thunk];
-// const store = createStore(
-//   () => [],
-//   initialState,
-//   compose(
-//     applyMiddleware(...middleware),
-//     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-//   )
-// );
-
+import { set_store } from './action/book_action'
 class App extends Component {
   constructor() {
     super();
@@ -42,13 +29,20 @@ class App extends Component {
       var decode = jwt_decode(token);
       console.log(token);
       console.log(decode);
-      this.props.user_details(decode);
+      this.props.user_details({decode, token});
       this.setState({
         userId: decode.id,
         userName: decode.name,
         current_status: "logged in",
       });
     }
+    axios.get(`${process.env.REACT_APP_LOCALHOST}/api/boook`).then((res) => {
+      console.log(res.data.message);
+    });
+    axios.get(`${process.env.REACT_APP_LOCALHOST}/api/getbook`).then((res) => {
+      console.log(res.data);
+      this.props.set_store(res.data);
+    });
   }
 
   render() {
@@ -56,9 +50,9 @@ class App extends Component {
       <BrowserRouter>
         <Container maxWidth="lg">
           <Navbar
-            current_user_status={this.state.current_status}
-            name={this.state.userName}
-            id={this.state.userId}
+            // current_user_status={this.state.current_status}
+            // name={this.state.userName}
+            // id={this.state.userId}
           />
           <Switch>
             <Route path="/" exact component={Home} />
@@ -74,7 +68,8 @@ class App extends Component {
     );
   }
 }
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   user: state.user,
-})
-export default connect(mapStateToProps, { user_details })(App);
+  set: state.set
+});
+export default connect(mapStateToProps, { user_details,set_store })(App);

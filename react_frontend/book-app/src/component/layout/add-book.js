@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {TextField, Button} from '@material-ui/core';
 class Add extends Component {
   constructor() {
     super();
     this.state = {
       bookAdded: false,
-      id: 1,
       title: "",
       author: "",
       errors: {},
@@ -17,7 +17,6 @@ class Add extends Component {
   refresh = (e) => {
     this.setState({
       bookAdded: false,
-      id: 1,
       title: "",
       author: "",
       errors: {},
@@ -35,9 +34,6 @@ class Add extends Component {
     console.log(bookData);
     axios
       .post(`${process.env.REACT_APP_LOCALHOST}/api/book-addition`, bookData)
-      // .then(res =>{
-      //   console.log("book added")
-      //   return res.json(res)})
       .then((res) => {
         console.log(res);
         this.setState({
@@ -71,7 +67,7 @@ class Add extends Component {
         {this.state.bookAdded ? (
           <>
             <p>!!Book added!!</p>
-            <button onClick={this.refresh}>Add more</button>
+            <Button onClick={this.refresh} variant="contained" color="primary">Add more</Button>
           </>
         ) : (
           <>
@@ -80,37 +76,21 @@ class Add extends Component {
             </div>
             <form noValidate onSubmit={this.onSubmit}>
               <div>
-                <label htmlFor="title">Name:</label>
-                <input
-                  onChange={this.onChange}
+                <TextField id="title" label="Name" variant="outlined" placeholder="Enter book name" onChange={this.onChange}
                   value={this.state.title}
-                  error={errors.title}
-                  id="title"
-                  type="text"
-                />
+                  error={errors.title}/>
               </div>
               <div>
-                <label htmlFor="author">Author:</label>
-                <input
-                  onChange={this.onChange}
+                <TextField id="author" label="Author" variant="outlined" placeholder="Enter author name" onChange={this.onChange}
                   value={this.state.author}
-                  error={errors.author}
-                  id="author"
-                  type="text"
-                />
+                  error={errors.author}/>
               </div>
               <div>
-                <button
-                  style={{
-                    width: "150px",
-                    borderRadius: "3px",
-                    letterSpacing: "1.5px",
-                    marginTop: "1rem",
-                  }}
+                <Button variant="contained" color="primary"
                   type="submit"
                 >
                   submit
-                </button>
+                </Button>
               </div>
             </form>
           </>

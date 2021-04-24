@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
-import axios from 'axios'
+// import axios from 'axios'
 import ReactPaginate from 'react-paginate';
 import Loader from "react-loader-spinner";
 import { connect } from "react-redux";
-import { view_book } from "../../../action/view_book";
+import { view_book, set_store } from "../../../action/book_action";
 class Home extends Component {
   constructor() {
       super();
@@ -19,29 +19,48 @@ class Home extends Component {
           .bind(this);
   }
 
-  receivedData() {
-      axios
-        .get(`${process.env.REACT_APP_LOCALHOST}/api/boook`)
-        .then(res => {
-            console.log(res.data.message)
-        })
-      axios
-          .get(`${process.env.REACT_APP_LOCALHOST}/api/getbook`)
-          .then(res => {
-                // console.log(res.data)
-              const data = res.data;
-              this.props.view_book(res.data)
-              const slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
-              const postData = slice.map(pd => <React.Fragment key = {pd._id}>
-                  <li key = {pd._id}><p><em>{pd.title}</em></p><p><em>{pd.author}</em></p></li>
-              </React.Fragment>)
+//   receivedData() {
+//       axios
+//         .get(`${process.env.REACT_APP_LOCALHOST}/api/boook`)
+//         .then(res => {
+//             console.log(res.data.message)
+//         })
+//       axios
+//           .get(`${process.env.REACT_APP_LOCALHOST}/api/getbook`)
+//           .then(res => {
+//             const data  = res.data
+//                 console.log(res.data)
+//               this.props.view_book(res.data)
+//               const slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
+//               const postData = slice.map(pd => <React.Fragment key = {pd._id}>
+//                   <li key = {pd._id}><p><em>{pd.title}</em></p><p><em>{pd.author}</em></p></li>
+//               </React.Fragment>)
 
-              this.setState({
-                  pageCount: Math.ceil(data.length / this.state.perPage),
-                  loadingStatus : true,
-                  postData
-              })
-          });
+//               this.setState({
+//                   pageCount: Math.ceil(data.length / this.state.perPage),
+//                   loadingStatus : true,
+//                   postData
+//               })
+//           });
+//   }
+  dataFromStore(){
+    setTimeout(() => {
+        console.log("data from store",this.props)
+        const data  = this.props.set
+        console.log(data)
+        const slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
+        const postData = slice.map(pd => <React.Fragment key = {pd._id}>
+            <li key = {pd._id}><p><em>{pd.title}</em></p><p><em>{pd.author}</em></p></li>
+        </React.Fragment>)
+    
+        this.setState({
+            pageCount: Math.ceil(data.length / this.state.perPage),
+            loadingStatus : true,
+            postData
+        })
+        
+    }, 2000);
+
   }
   handlePageClick = (e) => {
       const selectedPage = e.selected;
@@ -52,13 +71,15 @@ class Home extends Component {
           currentPage: selectedPage,
           offset: offset
       }, () => {
-          this.receivedData()
+        //   this.receivedData()
+          this.dataFromStore()
       });
 
   };
  
   componentDidMount() {
-      this.receivedData()
+    //   this.receivedData()
+      this.dataFromStore()
   }
   render() {
       return (
@@ -94,6 +115,7 @@ class Home extends Component {
   }
 }
 const mapStateToProps = state => ({
-    book: state.book,
+    book: state.book || [],
+    set : state.set
   })
- export default connect(mapStateToProps,{view_book})(Home);
+ export default connect(mapStateToProps,{view_book, set_store})(Home);
