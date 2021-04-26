@@ -1,20 +1,22 @@
-
-export const book_reducer = (state = [], action) => {
-    switch(action.type){
-        case "VIEW_BOOK":
-            state = action.payload
-            return state
-        default:
-            return state    
-    }
+const initialState ={
+    set:[]
 }
-export const set_reducer = (state = [], action) => {
+export const set_reducer = (state = initialState, action) => {
     switch(action.type){
         case "SET_STORE":
-            state = action.payload
-            return state
+            // return action.payload
+            return action.payload
+        case "ADD_BOOK":
+            return [...state,action.payload]
+        case "MODIFY_BOOK":
+            let data =[...state]
+            let index = data.findIndex(element => element.name  === action.payload.name)
+            if(index > -1){
+                data[index] = action.payload
+                return data
+            }
+            else return state
         default:
             return state    
     }
 }
-// export default book_reducer;

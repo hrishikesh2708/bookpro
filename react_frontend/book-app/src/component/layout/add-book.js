@@ -3,11 +3,14 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {TextField, Button} from '@material-ui/core';
+import { connect } from "react-redux";
+import { set_store, add_book ,modify_book } from "../../action/book_action";
 class Add extends Component {
   constructor() {
     super();
     this.state = {
       bookAdded: false,
+      // _id : null,
       title: "",
       author: "",
       errors: {},
@@ -32,11 +35,14 @@ class Add extends Component {
       title: this.state.title,
     };
     console.log(bookData);
+    this.props.add_book(bookData)
     axios
       .post(`${process.env.REACT_APP_LOCALHOST}/api/book-addition`, bookData)
       .then((res) => {
         console.log(res);
+        this.props.modify_book({_id : res.data._id})
         this.setState({
+          // _id : res.data._id,
           bookAdded: true,
         });
         toast.success("Book added successfully!!", {
@@ -59,6 +65,7 @@ class Add extends Component {
           });
         }
       });
+      
   };
   render() {
     const { errors } = this.state;
@@ -100,4 +107,8 @@ class Add extends Component {
     );
   }
 }
-export default Add;
+const mapStateToProps = state => ({
+  set : state.set
+})
+export default connect(mapStateToProps,{ set_store, add_book , modify_book })(Add);
+

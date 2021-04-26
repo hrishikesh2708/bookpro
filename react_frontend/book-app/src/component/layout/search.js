@@ -1,12 +1,13 @@
 import React, { Component } from "react";
-import axios from "axios";
-import { DebounceInput } from "react-debounce-input";
+// import axios from "axios";
 import Loader from "react-loader-spinner";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {TextField} from '@material-ui/core';
-
-export default class Search extends Component {
+import  {debounce} from 'lodash'
+import { connect } from "react-redux";
+import {set_store } from "../../action/book_action";
+class Search extends Component {
   constructor() {
     super();
     this.state = {
@@ -17,51 +18,80 @@ export default class Search extends Component {
       loadingStatus : true
     };
     this.handleChange = this.handleChange.bind(this);
+
   }
+  apiCall = debounce((name) => {
+
+    const c = this.props.set
+    const b = Object.values(this.props.set)
+    console.log(c)
+    console.log(b)
+    const regex = new RegExp(name,'i')
+    // b.forEach(element => {
+    //   console.log(element.title)
+    // });
+    // console.log(data)
+    const postData = b.filter(({title}) => title.match(regex))
+    console.log(" postdata ", postData)
+      if (postData.length === 0) {
+        this.setState({
+          bookStatus: false,
+        });
+        toast.error("No book found!")
+      } else {
+        this.setState({
+          bookStatus: true,
+        });
+      }
+      this.setState({ 
+        data: postData, 
+      loadingStatus : true
+    });
+    // axios
+    // .get(`${process.env.REACT_APP_LOCALHOST}/api/search/` + name)
+    // .then((res) => {
+    //   console.log(res.data.length);
+    //   if (res.data.length === 0) {
+    //     this.setState({
+    //       bookStatus: false,
+    //     });
+    //     toast.error("No book found!")
+    //   } else {
+    //     this.setState({
+    //       bookStatus: true,
+    //     });
+    //   }
+    //   this.setState({ data: res.data, 
+    //   loadingStatus : true});
+    // });
+  },500) 
   handleChange = (e) => {
-    const name = e.target.value;
+    const name = e.target.value.trim();
     console.log("handle change called", name);
-    this.setState({ bookname: name,
-    loadingStatus : false });
+    this.setState({ 
+      bookname: name,
+      loadingStatus : false
+    });
     if (name.length > 1) {
-      axios
-      .get(`${process.env.REACT_APP_LOCALHOST}/api/search/` + name)
-      .then((res) => {
-        console.log(res.data.length);
-        if (res.data.length === 0) {
-          this.setState({
-            bookStatus: false,
-          });
-          toast.error("No book found!")
-        } else {
-          this.setState({
-            bookStatus: true,
-          });
-        }
-        this.setState({ data: res.data, 
-        loadingStatus : true});
-      });
+      this.apiCall(name)
     }
-    if (name.length === 0) {
+
+    if (name.length <= 1 ) {
+      console.log("hi")
       this.setState({
         data: [],
         loadingStatus : true
       });
     }
+
+
+    
   };
+
   render() {
     return (
       <div>
       <TextField id="outlined-basic" label="Search for books" variant="outlined" placeholder="Search for books" onChange={this.handleChange} />
-                <DebounceInput
-          minLength={1}
-          debounceTimeout={500}
-          type="text"
-          placeholder="Search for books"
-          name={this.state.bookname}
-          value={this.state.bookname}
-          onChange={this.handleChange}
-        />
         {this.state.loadingStatus ? (
           <>
 
@@ -100,3 +130,7 @@ export default class Search extends Component {
     );
   }
 }
+const mapStateToProps = state => ({
+  set : state.set
+})
+export default connect(mapStateToProps,{ set_store})(Search);

@@ -3,7 +3,7 @@ import React, {Component} from 'react'
 import ReactPaginate from 'react-paginate';
 import Loader from "react-loader-spinner";
 import { connect } from "react-redux";
-import { view_book, set_store } from "../../../action/book_action";
+import { set_store } from "../../../action/book_action";
 class Home extends Component {
   constructor() {
       super();
@@ -45,9 +45,9 @@ class Home extends Component {
 //   }
   dataFromStore(){
     setTimeout(() => {
-        console.log("data from store",this.props)
+        // console.log("data from store",this.props)
         const data  = this.props.set
-        console.log(data)
+        // console.log(data)
         const slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
         const postData = slice.map(pd => <React.Fragment key = {pd._id}>
             <li key = {pd._id}><p><em>{pd.title}</em></p><p><em>{pd.author}</em></p></li>
@@ -115,7 +115,6 @@ class Home extends Component {
   }
 }
 const mapStateToProps = state => ({
-    book: state.book || [],
-    set : state.set
+   set : state.set
   })
- export default connect(mapStateToProps,{view_book, set_store})(Home);
+ export default connect(mapStateToProps,{set_store})(Home);

@@ -2,10 +2,12 @@ import React, { Component } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { DebounceInput } from "react-debounce-input";
+import  { debounce } from 'lodash'
 import Loader from "react-loader-spinner";
 import { TextField, Button, Fab } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
+import { connect } from "react-redux";
+import { set_store , modify_book} from "../../action/book_action";
 class Modify extends Component {
   constructor() {
     super();
@@ -61,6 +63,7 @@ class Modify extends Component {
       title: this.state.selectedBookTitle,
       author: this.state.newAuthor,
     };
+    this.props.modify_book(bookdetails)
     axios
       .put(`${process.env.REACT_APP_LOCALHOST}/api/book-modify`, bookdetails)
       .then((res) => {
@@ -78,49 +81,81 @@ class Modify extends Component {
         console.log(err);
       });
   };
+  apiCall = debounce((name) => {
+    const b = this.props.set
+    const regex = new RegExp(name,'i')
+    const postData = b.filter(({title}) => title.match(regex))
+    console.log(" postdata ", postData)
+      if (postData.length > 0) {
+        this.setState({
+          loadingStatus: false,
+          data: postData,
+        });
+        toast("book present!!", {
+          autoClose: 2000,
+          hideProgressBar: true,
+        });
+      } else {
+        this.setState({
+          bookPresent: "Book not found",
+          loadingStatus: false,
+        });
+        toast.warn("book not present!!", {
+          autoClose: 2000,
+          hideProgressBar: true,
+        });
+      }
+    // axios
+    // .get(`${process.env.REACT_APP_LOCALHOST}/api/search/` + name)
+    // .then((res) => {
+    //   this.setState({
+    //     bookPresent: "",
+    //   });
+    //   console.log(res.data);
+    //   if (res.data.length > 0) {
+    //     this.setState({
+    //       loadingStatus: false,
+    //       data: res.data,
+    //     });
+    //     toast("book present!!", {
+    //       autoClose: 2000,
+    //       hideProgressBar: true,
+    //     });
+    //   } else {
+    //     this.setState({
+    //       bookPresent: "Book not found",
+    //       loadingStatus: false,
+    //     });
+    //     toast.warn("book not present!!", {
+    //       autoClose: 2000,
+    //       hideProgressBar: true,
+    //     });
+    //   }
+    // });
+  },1000) 
   handleChange = (e) => {
-    const name = e.target.value;
+    const name = e.target.value.trim();
     console.log("handle change called", name);
     this.setState({
       bookname: name,
       loadingStatus: true,
     });
     if (name.length > 1) {
-      axios
-        .get(`${process.env.REACT_APP_LOCALHOST}/api/search/` + name)
-        .then((res) => {
-          this.setState({
-            bookPresent: "",
-          });
-          console.log(res.data);
-          if (res.data.length > 0) {
-            this.setState({
-              loadingStatus: false,
-              data: res.data,
-            });
-            toast("book present!!", {
-              autoClose: 2000,
-              hideProgressBar: true,
-            });
-          } else {
-            this.setState({
-              bookPresent: "Book not found",
-            });
-            toast.warn("book not present!!", {
-              autoClose: 2000,
-              hideProgressBar: true,
-            });
-          }
+      this.apiCall(name)
+    }
+    setTimeout(() => {
+      if (name.length <= 1) {
+        this.setState({
+          data: [],
+          loadingStatus: false
         });
-    }
-    if (name.length === 0) {
-      this.setState({
-        data: [],
-      });
-    }
+        toast.dismiss()
+      }
+    }, 1000);
+
   };
   handleClick = (e) => {
-    console.log(e);
+    console.log(e._id);
     this.setState({
       showComponent: true,
       selectedBookAuthor: e.authors,
@@ -159,15 +194,7 @@ class Modify extends Component {
               <h1>Enter name of book you want to update</h1>
             </div>
             <div>
-              <DebounceInput
-                minLength={1}
-                debounceTimeout={500}
-                type="text"
-                placeholder="Search for books"
-                name={this.state.bookname}
-                value={this.state.bookname}
-                onChange={this.handleChange}
-              />
+            <TextField id="outlined-basic" label="Search for books" variant="outlined" placeholder="Search for books" onChange={this.handleChange} />
               {this.state.loadingStatus ? (
                 <Loader
                   type="ThreeDots"
@@ -225,4 +252,7 @@ class Modify extends Component {
     );
   }
 }
-export default Modify;
+const mapStateToProps = state => ({
+  set : state.set
+})
+export default connect(mapStateToProps,{set_store,modify_book})(Modify);

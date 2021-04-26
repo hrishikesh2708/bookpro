@@ -40,7 +40,7 @@ class App extends Component {
       console.log(res.data.message);
     });
     axios.get(`${process.env.REACT_APP_LOCALHOST}/api/getbook`).then((res) => {
-      console.log(res.data);
+      // console.log(res.data);
       this.props.set_store(res.data);
     });
   }

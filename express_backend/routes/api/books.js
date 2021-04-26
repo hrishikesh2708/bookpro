@@ -28,7 +28,10 @@ router.post("/book-add", async (req, res) => {
         title: req.body.title,
       });
       newbook.save().then((x) => {
-        res.json(x);
+        setTimeout(() => {
+          res.json(x);
+        }, 2000);
+    
       });
     } else {
       return res.status(400).json({ message: "book is already present!" });

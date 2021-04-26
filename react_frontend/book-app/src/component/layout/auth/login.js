@@ -87,7 +87,7 @@ class Login extends Component {
             <b>Sign In</b> below
           </h4>
           <p>
-            Don't have an account? <Button size="small" color="default"  to="/auth" Component={Link}>Create new</Button>
+            Don't have an account?<Button variant="contained" component={Link} to="/auth" size="small">Create new</Button>
           </p>
         </div>
         <form noValidate onSubmit={this.onSubmit}>
@@ -142,7 +142,7 @@ class Login extends Component {
             />
           </div>
         </form>
-        <Button  size="small" color="default" to="/" Component={Link}>Back to home</Button>
+        <Button variant="contained" component={Link} to="/" size="small">Back to home</Button>
         <ToastContainer />
       </div>
     );

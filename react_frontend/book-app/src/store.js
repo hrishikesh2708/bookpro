@@ -10,7 +10,7 @@ const persistConfig = {
 };
 const pReducer = persistReducer(persistConfig, allReducers);
 const saveState = (state) => {
-  console.log("state", state);
+//   console.log("state", state);
   if (state.client_side.length !== 0) {
     localStorage.setItem("store_state", JSON.stringify(state));
   }
@@ -37,7 +37,7 @@ export const store = createStore(
 );
 
 store.subscribe(() => {
-  console.log(store);
+//   console.log(store);
   saveState({
     client_side: store.getState(),
     // favorites : store.favorites

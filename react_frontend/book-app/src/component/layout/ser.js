@@ -27,7 +27,7 @@ export default class Search extends Component {
         })
   }
   handleChange = (e) => {
-    const name = e.target.value;
+    const name = e.target.value.trim();
     console.log("handle change called", name);
     const regex = new RegExp(name,'i')
     this.setState({
@@ -36,7 +36,7 @@ export default class Search extends Component {
     });
     if (name.length > 1) {
         const b = JSON.parse(localStorage.getItem("books"))
-        console.log(b[1000])
+        // console.log(b[1000])
         const postdata = b.filter(({title}) => title.match(regex))
         console.log(postdata)
           if (postdata.length === 0) {

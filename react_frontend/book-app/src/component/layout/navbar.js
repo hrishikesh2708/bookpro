@@ -130,30 +130,6 @@ class Navbar extends Component {
           </Toolbar>
         </AppBar>
 
-        {/* <div>
-          <Link to="/">BookPro</Link>
-          {this.props.current_user_status === "logged in" ? (
-            <>
-              <p>{this.props.name}</p>
-              <div>
-                <Link to="/search"> Serach </Link>
-              </div>
-              <div>
-                <Link to="/add"> Add Book </Link>
-              </div>
-              <div>
-                <Link to="/modify"> Update book </Link>
-              </div>
-              <div>
-                <button onClick={this.handleClick}>Logout</button>
-              </div>
-            </>
-          ) : (
-            <div>
-              <Link to="/auth">Signup</Link>
-            </div>
-          )}
-        </div> */}
       </>
     );
   }
@@ -163,4 +139,3 @@ const mapStateToProps = (state) => ({
   set: state.set
 });
 export default withRouter(connect(mapStateToProps, { user_details,set_store })(withStyles(useStyles)(Navbar)));
-// export default withRouter(withStyles(useStyles)(Navbar));
