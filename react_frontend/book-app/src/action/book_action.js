@@ -10,7 +10,14 @@ export const set_store = (contents) => ({
 })
 export const add_book = (contents) => ({
     type: ADD_BOOK,
-    payload: contents
+    payload: contents,
+    meta: {
+        offline: {
+          effect: { url: `${process.env.REACT_APP_LOCALHOST}/api/book-addition`, method: 'POST', json: { contents } },
+        //   commit: { type: 'ADD_BOOK', meta: { contents } },
+        //   rollback: { type: '', meta: {  } }
+        }
+      }
 })
 export const modify_book = (contents) => ({
     type: MODIFY_BOOK,

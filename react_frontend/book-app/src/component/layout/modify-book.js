@@ -1,24 +1,20 @@
 import React, { Component } from "react";
-import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import  { debounce } from 'lodash'
-import Loader from "react-loader-spinner";
 import { TextField, Button, Fab } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import { connect } from "react-redux";
-import { set_store , modify_book} from "../../action/book_action";
+import { set_store, modify_book } from "../../action/book_action";
+import { modify } from "../../api routes/api";
+
 class Modify extends Component {
   constructor() {
     super();
     this.state = {
-      loadingStatus: false,
       bookPresent: "",
-      bookname: "",
       data: [],
       newAuthor: "",
       selectedBook_id: "",
-      selectedBookid: "",
       selectedBookAuthor: "",
       selectedBookTitle: "",
       showComponent: false,
@@ -46,26 +42,13 @@ class Modify extends Component {
   };
   onSubmit = (e) => {
     e.preventDefault();
-    console.log("onSummit event is called");
-    console.log(
-      e.target.value,
-      " ",
-      this.state.selectedBookAuthor,
-      " ",
-      this.state.selectedBookTitle,
-      " ",
-      this.state.selectedBook_id,
-      " ",
-      this.state.newAuthor
-    );
     const bookdetails = {
       _id: this.state.selectedBook_id,
       title: this.state.selectedBookTitle,
       author: this.state.newAuthor,
     };
-    this.props.modify_book(bookdetails)
-    axios
-      .put(`${process.env.REACT_APP_LOCALHOST}/api/book-modify`, bookdetails)
+    this.props.modify_book(bookdetails);
+    modify(bookdetails)
       .then((res) => {
         console.log(res);
         console.log("book details updated");
@@ -81,14 +64,17 @@ class Modify extends Component {
         console.log(err);
       });
   };
-  apiCall = debounce((name) => {
-    const b = this.props.set
-    const regex = new RegExp(name,'i')
-    const postData = b.filter(({title}) => title.match(regex))
-    console.log(" postdata ", postData)
+  handleChange = (e) => {
+    const name = e.target.value.replace(/\s+/g, " ").trim();
+    const b = this.props.set;
+    const regex = new RegExp(name, "i");
+    console.log("handle change called", name);
+    if (name.length > 1) {
+      const postData = b.filter(({ title }) => title.match(regex));
+      console.log(" postdata ", postData);
       if (postData.length > 0) {
         this.setState({
-          loadingStatus: false,
+          bookPresent: "",
           data: postData,
         });
         toast("book present!!", {
@@ -98,61 +84,22 @@ class Modify extends Component {
       } else {
         this.setState({
           bookPresent: "Book not found",
-          loadingStatus: false,
+          data: postData,
         });
         toast.warn("book not present!!", {
           autoClose: 2000,
           hideProgressBar: true,
         });
       }
-    // axios
-    // .get(`${process.env.REACT_APP_LOCALHOST}/api/search/` + name)
-    // .then((res) => {
-    //   this.setState({
-    //     bookPresent: "",
-    //   });
-    //   console.log(res.data);
-    //   if (res.data.length > 0) {
-    //     this.setState({
-    //       loadingStatus: false,
-    //       data: res.data,
-    //     });
-    //     toast("book present!!", {
-    //       autoClose: 2000,
-    //       hideProgressBar: true,
-    //     });
-    //   } else {
-    //     this.setState({
-    //       bookPresent: "Book not found",
-    //       loadingStatus: false,
-    //     });
-    //     toast.warn("book not present!!", {
-    //       autoClose: 2000,
-    //       hideProgressBar: true,
-    //     });
-    //   }
-    // });
-  },1000) 
-  handleChange = (e) => {
-    const name = e.target.value.trim();
-    console.log("handle change called", name);
-    this.setState({
-      bookname: name,
-      loadingStatus: true,
-    });
-    if (name.length > 1) {
-      this.apiCall(name)
     }
     setTimeout(() => {
-      if (name.length <= 1) {
+      if (name.length === 0) {
         this.setState({
           data: [],
-          loadingStatus: false
         });
-        toast.dismiss()
+        toast.dismiss();
       }
     }, 1000);
-
   };
   handleClick = (e) => {
     console.log(e._id);
@@ -194,56 +141,52 @@ class Modify extends Component {
               <h1>Enter name of book you want to update</h1>
             </div>
             <div>
-            <TextField id="outlined-basic" label="Search for books" variant="outlined" placeholder="Search for books" onChange={this.handleChange} />
-              {this.state.loadingStatus ? (
-                <Loader
-                  type="ThreeDots"
-                  color="#00BFFF"
-                  height={40}
-                  width={40}
-                  timeout={3000} //3 secs
-                />
-              ) : (
-                <>
-                  {this.state.bookPresent === "Book not found" ? (
-                    <p>Book not found please add book to update</p>
-                  ) : (
-                    <>
-                      <ul>
-                        {this.state.data.map((item) => (
-                          <li key={item._id}>
-                            <p>{item.title}</p>
-                            <p>{item.author}</p>
-                            <Fab onClick={this.handleClick.bind(this, item)}>
-                              <EditIcon />
-                            </Fab>
-                            {this.state.showComponent &&
-                            item._id === this.state.selectedBook_id ? (
-                              <form noValidate onSubmit={this.onSubmit}>
-                                <TextField
-                                  id="newAuthor"
-                                  label="Author Name"
-                                  variant="outlined"
-                                  placeholder="Enter name of new Author"
-                                  onChange={this.onChange}
-                                  value={this.state.newAuthor}
-                                />
-                                <Button
-                                  type="submit"
-                                  variant="contained"
-                                  color="primary"
-                                >
-                                  submit
-                                </Button>
-                              </form>
-                            ) : null}
-                          </li>
-                        ))}
-                      </ul>
-                    </>
-                  )}
-                </>
-              )}
+              <TextField
+                id="outlined-basic"
+                label="Search for books"
+                variant="outlined"
+                placeholder="Search for books"
+                onChange={this.handleChange}
+              />
+              <>
+                {this.state.bookPresent === "Book not found" ? (
+                  <p>Book not found please add book to update</p>
+                ) : (
+                  <>
+                    <ul>
+                      {this.state.data.map((item) => (
+                        <li key={item._id}>
+                          <p>{item.title}</p>
+                          <p>{item.author}</p>
+                          <Fab onClick={this.handleClick.bind(this, item)}>
+                            <EditIcon />
+                          </Fab>
+                          {this.state.showComponent &&
+                          item._id === this.state.selectedBook_id ? (
+                            <form noValidate onSubmit={this.onSubmit}>
+                              <TextField
+                                id="newAuthor"
+                                label="Author Name"
+                                variant="outlined"
+                                placeholder="Enter name of new Author"
+                                onChange={this.onChange}
+                                value={this.state.newAuthor}
+                              />
+                              <Button
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                              >
+                                submit
+                              </Button>
+                            </form>
+                          ) : null}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </>
             </div>
           </>
         )}
@@ -252,7 +195,7 @@ class Modify extends Component {
     );
   }
 }
-const mapStateToProps = state => ({
-  set : state.set
-})
-export default connect(mapStateToProps,{set_store,modify_book})(Modify);
+const mapStateToProps = (state) => ({
+  set: state.set,
+});
+export default connect(mapStateToProps, { set_store, modify_book })(Modify);

@@ -1,16 +1,16 @@
 import React, { Component } from "react";
-import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {TextField, Button} from '@material-ui/core';
+import { TextField, Button } from "@material-ui/core";
 import { connect } from "react-redux";
-import { set_store, add_book ,modify_book } from "../../action/book_action";
+import { set_store, add_book, modify_book } from "../../action/book_action";
+import { add } from "../../api routes/api";
+
 class Add extends Component {
   constructor() {
     super();
     this.state = {
       bookAdded: false,
-      // _id : null,
       title: "",
       author: "",
       errors: {},
@@ -26,7 +26,9 @@ class Add extends Component {
     });
   };
   onChange = (e) => {
-    this.setState({ [e.target.id]: e.target.value });
+    this.setState({
+      [e.target.id]: e.target.value.replace(/\s+/g, " ").trim(),
+    });
   };
   onSubmit = (e) => {
     e.preventDefault();
@@ -35,12 +37,26 @@ class Add extends Component {
       title: this.state.title,
     };
     console.log(bookData);
-    this.props.add_book(bookData)
-    axios
-      .post(`${process.env.REACT_APP_LOCALHOST}/api/book-addition`, bookData)
-      .then((res) => {
-        console.log(res);
-        this.props.modify_book({_id : res.data._id})
+    const b = Object.values(this.props.set);
+    const regex = new RegExp(this.state.title, "i");
+    const postData = b.filter(({ title }) => title.match(regex));
+    console.log(" postdata ", postData);
+    if (postData.length === 0) {
+      this.props.add_book(bookData);
+      toast.success("Book added successfully!!", {
+        autoClose: 2000,
+        hideProgressBar: true,
+      });
+    } else {
+      toast.error("Book already exist!!", {
+        autoClose: 2000,
+        hideProgressBar: true,
+      });
+    }
+
+    add(bookData)
+      .then((value) => {
+        console.log(value);
         this.setState({
           // _id : res.data._id,
           bookAdded: true,
@@ -50,22 +66,23 @@ class Add extends Component {
           hideProgressBar: true,
         });
       })
-      .catch((res) => {
-        console.log(res);
-        console.log(res.response.status);
-        if (res.response.status === 400) {
-          toast.error("Book already exist!!", {
-            autoClose: 2000,
-            hideProgressBar: true,
-          });
-        } else if (res.response.status === 422) {
-          toast.error("input can not be empty!!", {
-            autoClose: 2000,
-            hideProgressBar: true,
-          });
+      .catch((e) => {
+        console.log("err", e.response.status);
+        var mes =""
+        if (e.response.status === 400) {
+          mes =" book already exist "
+          // toast.error("Book already exist!!", {
+          //   autoClose: 2000,
+          //   hideProgressBar: true,
+          // });
+        } else if (e.response.status === 422) {
+          mes =" book not exist "
         }
+        toast.error(mes, {
+          autoClose: 2000,
+          hideProgressBar: true,
+        });
       });
-      
   };
   render() {
     const { errors } = this.state;
@@ -74,7 +91,9 @@ class Add extends Component {
         {this.state.bookAdded ? (
           <>
             <p>!!Book added!!</p>
-            <Button onClick={this.refresh} variant="contained" color="primary">Add more</Button>
+            <Button onClick={this.refresh} variant="contained" color="primary">
+              Add more
+            </Button>
           </>
         ) : (
           <>
@@ -83,19 +102,29 @@ class Add extends Component {
             </div>
             <form noValidate onSubmit={this.onSubmit}>
               <div>
-                <TextField id="title" label="Name" variant="outlined" placeholder="Enter book name" onChange={this.onChange}
+                <TextField
+                  id="title"
+                  label="Name"
+                  variant="outlined"
+                  placeholder="Enter book name"
+                  onChange={this.onChange}
                   value={this.state.title}
-                  error={errors.title}/>
+                  error={errors.title}
+                />
               </div>
               <div>
-                <TextField id="author" label="Author" variant="outlined" placeholder="Enter author name" onChange={this.onChange}
+                <TextField
+                  id="author"
+                  label="Author"
+                  variant="outlined"
+                  placeholder="Enter author name"
+                  onChange={this.onChange}
                   value={this.state.author}
-                  error={errors.author}/>
+                  error={errors.author}
+                />
               </div>
               <div>
-                <Button variant="contained" color="primary"
-                  type="submit"
-                >
+                <Button variant="contained" color="primary" type="submit">
                   submit
                 </Button>
               </div>
@@ -107,8 +136,9 @@ class Add extends Component {
     );
   }
 }
-const mapStateToProps = state => ({
-  set : state.set
-})
-export default connect(mapStateToProps,{ set_store, add_book , modify_book })(Add);
-
+const mapStateToProps = (state) => ({
+  set: state.set,
+});
+export default connect(mapStateToProps, { set_store, add_book, modify_book })(
+  Add
+);

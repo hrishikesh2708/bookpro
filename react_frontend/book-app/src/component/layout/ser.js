@@ -1,81 +1,60 @@
 import React, { Component } from "react";
-import axios from "axios";
-import { DebounceInput } from "react-debounce-input";
-import Loader from "react-loader-spinner";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { get_books } from "../../api routes/api";
+import { TextField } from "@material-ui/core";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 export default class Search extends Component {
   constructor() {
     super();
     this.state = {
-      loadingStatus: true,
       bookStatus: true,
-      bookname: "",
       data: [],
-      show: true,
     };
     this.handleChange = this.handleChange.bind(this);
   }
   componentDidMount() {
-    axios
-        .get(`${process.env.REACT_APP_LOCALHOST}/api/getbook`)
-        .then(res =>{ 
-              this.setState({
-              bookStatus: true,
-            }); 
-            localStorage.setItem("books",JSON.stringify(res.data))         
-        })
+    get_books().then((value) => {
+      localStorage.setItem("books", JSON.stringify(value));
+    });
   }
   handleChange = (e) => {
-    const name = e.target.value.trim();
+    const name = e.target.value.replace(/\s+/g, " ").trim();
     console.log("handle change called", name);
-    const regex = new RegExp(name,'i')
-    this.setState({
-      bookname: name,
-      loadingStatus : false
-    });
+    const regex = new RegExp(name, "i");
     if (name.length > 1) {
-        const b = JSON.parse(localStorage.getItem("books"))
-        // console.log(b[1000])
-        const postdata = b.filter(({title}) => title.match(regex))
-        console.log(postdata)
-          if (postdata.length === 0) {
-            this.setState({
-              bookStatus: false,
-            });
-            toast.error("No book found!")
-          } else {
-            this.setState({
-              bookStatus: true,
-            });
-          }
-          this.setState({ 
-            data: postdata,
-            loadingStatus :true
-          });
+      const b = JSON.parse(localStorage.getItem("books"));
+      const postdata = b.filter(({ title }) => title.match(regex));
+      // console.log(postdata)
+      if (postdata.length === 0) {
+        this.setState({
+          bookStatus: false,
+          data: postdata,
+        });
+        toast.error("No book found!");
+      } else {
+        this.setState({
+          bookStatus: true,
+          data: postdata,
+        });
       }
+    }
     if (name.length === 0) {
       this.setState({
         data: [],
-        loadingStatus : true
       });
     }
   };
   render() {
     return (
       <div>
-                <DebounceInput
-          minLength={1}
-          debounceTimeout={500}
-          type="text"
+        <TextField
+          id="outlined-basic"
+          label="Search for books"
+          variant="outlined"
           placeholder="Search for books"
-          name={this.state.bookname}
-          value={this.state.bookname}
           onChange={this.handleChange}
         />
-        {this.state.loadingStatus ? (
-          <>
-
         {this.state.bookStatus === true ? (
           <>
             <ul>
@@ -89,23 +68,13 @@ export default class Search extends Component {
           </>
         ) : (
           <>
-          <p>
-            <b>
-              <em>No book found</em>
-            </b>
-          </p>
+            <p>
+              <b>
+                <em>No book found</em>
+              </b>
+            </p>
             <ToastContainer />
           </>
-        )}
-        </>
-        ):(
-          <Loader
-                    type="ThreeDots"
-                    color="#00BFFF"
-                    height={40}
-                    width={40}
-                    timeout={3000} //3 secs
-                />
         )}
       </div>
     );

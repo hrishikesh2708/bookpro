@@ -13,6 +13,7 @@ router.get("/book", async (req, res) => {
   }
 });
 router.post("/book-add", async (req, res) => {
+  console.log(req.body)
   const { errors, isValid } = validateBook(req.body);
   if (!isValid) {
     return res.status(422).json(errors);

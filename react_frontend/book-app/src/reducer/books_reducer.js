@@ -7,10 +7,11 @@ export const set_reducer = (state = initialState, action) => {
             // return action.payload
             return action.payload
         case "ADD_BOOK":
+            console.log(action)
             return [...state,action.payload]
         case "MODIFY_BOOK":
             let data =[...state]
-            let index = data.findIndex(element => element.name  === action.payload.name)
+            let index = data.findIndex(element => element._id  === action.payload._id)
             if(index > -1){
                 data[index] = action.payload
                 return data
