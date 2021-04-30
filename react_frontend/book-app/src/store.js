@@ -3,8 +3,8 @@ import { createStore, applyMiddleware, compose } from "redux";
 import thunk from "redux-thunk";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import { offline } from 'redux-offline';
-import offlineConfig from 'redux-offline/lib/defaults';
+// import { offline } from 'redux-offline';
+// import offlineConfig from 'redux-offline/lib/defaults';
 // import * as localforage from "localforage";
 // offlineConfig.persistOptions = { storage: localforage }
 const persistConfig = {
@@ -37,7 +37,7 @@ export const store = createStore(
   compose(
     applyMiddleware(thunk),    
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
-    offline(offlineConfig),
+    // offline(offlineConfig),
   )
 );
 

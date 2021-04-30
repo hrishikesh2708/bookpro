@@ -45,7 +45,8 @@ router.get("/getbook", async (req, res) => {
   }
 });
 router.post("/book-addition", async (req, res) => {
-  const { errors, isValid } = validateBook(req.body);
+  console.log(req)
+  const { errors, isValid } = validateBook(req.body);  
   if (!isValid) {
     return res.status(422).json(errors);
   } else {

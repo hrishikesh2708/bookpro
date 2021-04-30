@@ -1,17 +1,22 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { withRouter } from "react-router-dom";
-
-import { withStyles } from "@material-ui/core/styles";
+import { withRouter, useHistory } from "react-router-dom";
+import { makeStyles } from "@material-ui/core/styles";
 import LocalLibraryRoundedIcon from "@material-ui/icons/LocalLibraryRounded";
 import { deepOrange } from "@material-ui/core/colors";
-import {MenuItem, Menu, Avatar, IconButton, Button, Typography, Toolbar, AppBar, } from "@material-ui/core";
+import {
+  MenuItem,
+  Menu,
+  Avatar,
+  IconButton,
+  Button,
+  Typography,
+  Toolbar,
+  AppBar,
+} from "@material-ui/core";
+import { useSelector } from "react-redux";
 
-import { connect } from "react-redux";
-import { user_details } from "../../action/user_details";
-import { set_store } from '../../action/book_action'
-
-const useStyles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
@@ -26,116 +31,107 @@ const useStyles = (theme) => ({
     flexGrow: 1,
     textDecoration: "none",
   },
-});
+}));
 
-class Navbar extends Component {
-  constructor() {
-    super();
-    this.state = {
-      menu: null,
-      open: false,
-    };
-  }
-  handleMenu = (event) => {
-    this.setState({
-      menu: event.currentTarget,
-      open: true,
-    });
+function Navbar() {
+  const history = useHistory();
+  const classes = useStyles();
+  const [menu, setmenu] = useState(null);
+  const [Open, setOpen] = useState(false);
+  const state = useSelector((state) => state);
+
+  const handleMenu = (event) => {
+    setmenu(event.currentTarget);
+    setOpen(true);
   };
-  handleClose = () => {
-    this.setState({
-      menu: null,
-      open: false,
-    });
+  const handleClose = () => {
+    setmenu(null);
+    setOpen(false);
   };
-  handleClick = () => {
+  const handleClick = () => {
     localStorage.clear();
-    this.props.history.push("/");
+    history.push("/");
     window.location.reload();
   };
-  render() {
-    const { classes } = this.props;
-    return (
-      <>
-        <AppBar position="static" color="default">
-          <Toolbar>
-            <IconButton
-              edge="start"
-              className={classes.menuButton}
-              color="inherit"
-              aria-label="menu"
-              component={Link}
-              to="/"
-            >
-              <LocalLibraryRoundedIcon />
-            </IconButton>
-            <Typography
-              variant="h6"
-              className={classes.title}
-              to="/"
-              component={Link}
-              color="inherit"
-            >
-              BookPro
-            </Typography>
-            {this.props.user.USER_CURRENT_STATUS ? (
-              <>
-              <Button to="/modify" component={Link}> Update book </Button>
-              <Button to="/add" component={Link}> Add book </Button>
-              <Button to="/search" component={Link}> Search book </Button>
-                <IconButton
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={this.handleMenu}
-                  color="inherit"
-                >
-                  <Avatar className={classes.orange}>
-                    {this.props.user.USER_NAME.charAt(0)}
-                  </Avatar>
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={this.state.menu}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={this.state.open}
-                  onClose={this.handleClose}
-                >
-                  <MenuItem>
-                  {this.props.user.USER_NAME}
-                  </MenuItem>
-                  <MenuItem>
-                  {this.props.set.length}, books present
-                  </MenuItem>
-                  <MenuItem onClick={this.handleClick}>
-                    Logout
-                  </MenuItem>
-                </Menu>
-              </>
-            ) : (
-              <>
-                <Button to="/auth" component={Link} color="inherit">
-                  Sign up
-                </Button>
-              </>
-            )}
-          </Toolbar>
-        </AppBar>
 
-      </>
-    );
-  }
+  return (
+    <>
+      <AppBar position="static" color="default">
+        <Toolbar>
+          <IconButton
+            edge="start"
+            className={classes.menuButton}
+            color="inherit"
+            aria-label="menu"
+            component={Link}
+            to="/"
+          >
+            <LocalLibraryRoundedIcon />
+          </IconButton>
+          <Typography
+            variant="h6"
+            className={classes.title}
+            to="/"
+            component={Link}
+            color="inherit"
+          >
+            BookPro
+          </Typography>
+          {state.user.USER_CURRENT_STATUS ? (
+            <>
+              <Button to="/modify" component={Link}>
+                {" "}
+                Update book{" "}
+              </Button>
+              <Button to="/add" component={Link}>
+                {" "}
+                Add book{" "}
+              </Button>
+              <Button to="/search" component={Link}>
+                {" "}
+                Search book{" "}
+              </Button>
+              <IconButton
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenu}
+                color="inherit"
+              >
+                <Avatar className={classes.orange}>
+                  {state.user.USER_NAME.charAt(0)}
+                </Avatar>
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={menu}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Open}
+                onClose={handleClose}
+              >
+                <MenuItem>{state.user.USER_NAME}</MenuItem>
+                <MenuItem>{state.set.set.length}, books present</MenuItem>
+                <MenuItem onClick={handleClick}>Logout</MenuItem>
+              </Menu>
+            </>
+          ) : (
+            <>
+              <Button to="/auth" component={Link} color="inherit">
+                Sign up
+              </Button>
+            </>
+          )}
+        </Toolbar>
+      </AppBar>
+    </>
+  );
 }
-const mapStateToProps = (state) => ({
-  user: state.user,
-  set: state.set
-});
-export default withRouter(connect(mapStateToProps, { user_details,set_store })(withStyles(useStyles)(Navbar)));
+export default withRouter(Navbar);

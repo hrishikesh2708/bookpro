@@ -1,144 +1,117 @@
-import React, { Component } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import React, { useState } from "react";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { TextField, Button } from "@material-ui/core";
-import { connect } from "react-redux";
-import { set_store, add_book, modify_book } from "../../action/book_action";
+import { useSelector, useDispatch } from "react-redux";
+import { add_book } from "../../action/book_action";
 import { add } from "../../api routes/api";
+import toasting from "../../toast/toast";
 
-class Add extends Component {
-  constructor() {
-    super();
-    this.state = {
-      bookAdded: false,
-      title: "",
-      author: "",
-      errors: {},
-    };
-  }
-
-  refresh = (e) => {
-    this.setState({
-      bookAdded: false,
-      title: "",
-      author: "",
-      errors: {},
-    });
+function Add() {
+  const [bookAdded, setbookAdded] = useState(false);
+  const [title, settitle] = useState("");
+  const [author, setauthor] = useState("");
+  const [errors, seterrors] = useState({});
+  const dispatch = useDispatch();
+  const state = useSelector((state) => state);
+  const refresh = (e) => {
+    setauthor("");
+    setbookAdded(false);
+    settitle("");
+    seterrors({});
   };
-  onChange = (e) => {
-    this.setState({
-      [e.target.id]: e.target.value.replace(/\s+/g, " ").trim(),
-    });
-  };
-  onSubmit = (e) => {
+  const onSubmit = (e) => {
+    var mes = "";
+    var type = "";
     e.preventDefault();
     const bookData = {
-      author: this.state.author,
-      title: this.state.title,
+      author: author,
+      title: title,
     };
     console.log(bookData);
-    const b = Object.values(this.props.set);
-    const regex = new RegExp(this.state.title, "i");
-    const postData = b.filter(({ title }) => title.match(regex));
+    const regex = new RegExp(title, "i");
+    const postData = state.set.set.filter(({ title }) => title.match(regex));
     console.log(" postdata ", postData);
     if (postData.length === 0) {
-      this.props.add_book(bookData);
-      toast.success("Book added successfully!!", {
-        autoClose: 2000,
-        hideProgressBar: true,
-      });
+      dispatch(add_book(bookData));
+      mes = "Book added successfully!!";
+      type = "success";
     } else {
-      toast.error("Book already exist!!", {
-        autoClose: 2000,
-        hideProgressBar: true,
-      });
+      mes = "Book already exist!!";
+      type = "error";
     }
-
-    add(bookData)
-      .then((value) => {
-        console.log(value);
-        this.setState({
-          // _id : res.data._id,
-          bookAdded: true,
-        });
-        toast.success("Book added successfully!!", {
-          autoClose: 2000,
-          hideProgressBar: true,
-        });
-      })
-      .catch((e) => {
-        console.log("err", e.response.status);
-        var mes =""
-        if (e.response.status === 400) {
-          mes =" book already exist "
-          // toast.error("Book already exist!!", {
-          //   autoClose: 2000,
-          //   hideProgressBar: true,
-          // });
-        } else if (e.response.status === 422) {
-          mes =" book not exist "
-        }
-        toast.error(mes, {
-          autoClose: 2000,
-          hideProgressBar: true,
-        });
-      });
+    toasting(type, mes);
+    // add(bookData)
+    //   .then((value) => {
+    //     console.log(value);
+    //     setbookAdded(true);
+    //     mes = "Book added successfully!!";
+    //     type = "success";
+    //   })
+    //   .catch((e) => {
+    //     console.log("err", e.response.status);
+    //     if (e.response.status === 400) {
+    //       mes = "Book already exist!!";
+    //       type = "error";
+    //     } else if (e.response.status === 422) {
+    //       mes = "Book does not exist!!";
+    //       type = "error";
+    //     }
+    //   });
+    // toasting(type, mes);
   };
-  render() {
-    const { errors } = this.state;
-    return (
-      <div>
-        {this.state.bookAdded ? (
-          <>
-            <p>!!Book added!!</p>
-            <Button onClick={this.refresh} variant="contained" color="primary">
-              Add more
-            </Button>
-          </>
-        ) : (
-          <>
+
+  return (
+    <div>
+      {bookAdded ? (
+        <>
+          <p>!!Book added!!</p>
+          <Button onClick={refresh} variant="contained" color="primary">
+            Add more
+          </Button>
+        </>
+      ) : (
+        <>
+          <div>
+            <h1>Enter details of book</h1>
+          </div>
+          <form noValidate onSubmit={onSubmit}>
             <div>
-              <h1>Enter details of book</h1>
+              <TextField
+                id="title"
+                label="Name"
+                variant="outlined"
+                placeholder="Enter book name"
+                onChange={(e) =>
+                  settitle(e.target.value.replace(/\s+/g, " ").trim())
+                }
+                value={title}
+                error={errors.title}
+              />
             </div>
-            <form noValidate onSubmit={this.onSubmit}>
-              <div>
-                <TextField
-                  id="title"
-                  label="Name"
-                  variant="outlined"
-                  placeholder="Enter book name"
-                  onChange={this.onChange}
-                  value={this.state.title}
-                  error={errors.title}
-                />
-              </div>
-              <div>
-                <TextField
-                  id="author"
-                  label="Author"
-                  variant="outlined"
-                  placeholder="Enter author name"
-                  onChange={this.onChange}
-                  value={this.state.author}
-                  error={errors.author}
-                />
-              </div>
-              <div>
-                <Button variant="contained" color="primary" type="submit">
-                  submit
-                </Button>
-              </div>
-            </form>
-          </>
-        )}
-        <ToastContainer />
-      </div>
-    );
-  }
+            <div>
+              <TextField
+                id="author"
+                label="Author"
+                variant="outlined"
+                placeholder="Enter author name"
+                onChange={(e) =>
+                  setauthor(e.target.value.replace(/\s+/g, " ").trim())
+                }
+                value={author}
+                error={errors.author}
+              />
+            </div>
+            <div>
+              <Button variant="contained" color="primary" type="submit">
+                submit
+              </Button>
+            </div>
+          </form>
+        </>
+      )}
+      <ToastContainer />
+    </div>
+  );
 }
-const mapStateToProps = (state) => ({
-  set: state.set,
-});
-export default connect(mapStateToProps, { set_store, add_book, modify_book })(
-  Add
-);
+export default Add;

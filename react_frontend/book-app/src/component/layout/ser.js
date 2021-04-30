@@ -1,82 +1,74 @@
-import React, { Component } from "react";
 import { get_books } from "../../api routes/api";
-import { TextField } from "@material-ui/core";
-import { ToastContainer, toast } from "react-toastify";
+import React, { useState, useEffect } from "react";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { TextField } from "@material-ui/core";
+import toasting from "../../toast/toast";
 
-export default class Search extends Component {
-  constructor() {
-    super();
-    this.state = {
-      bookStatus: true,
-      data: [],
-    };
-    this.handleChange = this.handleChange.bind(this);
-  }
-  componentDidMount() {
+function Search() {
+  const [bookStatus, setbookStatus] = useState(true);
+  const [data, setdata] = useState([]);
+  useEffect(() => {
     get_books().then((value) => {
       localStorage.setItem("books", JSON.stringify(value));
     });
-  }
-  handleChange = (e) => {
+  });
+  const handleChange = (e) => {
+    var errormessage = "";
     const name = e.target.value.replace(/\s+/g, " ").trim();
-    console.log("handle change called", name);
     const regex = new RegExp(name, "i");
+    console.log("handle change called", name);
     if (name.length > 1) {
       const b = JSON.parse(localStorage.getItem("books"));
-      const postdata = b.filter(({ title }) => title.match(regex));
-      // console.log(postdata)
-      if (postdata.length === 0) {
-        this.setState({
-          bookStatus: false,
-          data: postdata,
-        });
-        toast.error("No book found!");
+      console.log(b);
+      const postData = b.data.filter(({ title }) => title.match(regex));
+      console.log(" postdata ", postData);
+      if (postData.length === 0) {
+        setbookStatus(false);
+        setdata(postData);
+        errormessage = "No book found!";
+        toasting("error", errormessage);
       } else {
-        this.setState({
-          bookStatus: true,
-          data: postdata,
-        });
+        setbookStatus(true);
+        setdata(postData);
       }
     }
-    if (name.length === 0) {
-      this.setState({
-        data: [],
-      });
+
+    if (name.length <= 1) {
+      setdata([]);
     }
   };
-  render() {
-    return (
-      <div>
-        <TextField
-          id="outlined-basic"
-          label="Search for books"
-          variant="outlined"
-          placeholder="Search for books"
-          onChange={this.handleChange}
-        />
-        {this.state.bookStatus === true ? (
-          <>
-            <ul>
-              {this.state.data.map((item) => (
-                <li key={item._id}>
-                  <p>{item.title}</p>
-                  <p>{item.author}</p>
-                </li>
-              ))}
-            </ul>
-          </>
-        ) : (
-          <>
-            <p>
-              <b>
-                <em>No book found</em>
-              </b>
-            </p>
-            <ToastContainer />
-          </>
-        )}
-      </div>
-    );
-  }
+  return (
+    <>
+      <TextField
+        id="outlined-basic"
+        label="Search for books"
+        variant="outlined"
+        placeholder="Search for books"
+        onChange={handleChange}
+      />
+      {bookStatus === true ? (
+        <>
+          <ul>
+            {data.map((item) => (
+              <li key={item._id}>
+                <p>{item.title}</p>
+                <p>{item.author}</p>
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : (
+        <>
+          <p>
+            <b>
+              <em>No book found</em>
+            </b>
+          </p>
+          <ToastContainer />
+        </>
+      )}
+    </>
+  );
 }
+export default Search;

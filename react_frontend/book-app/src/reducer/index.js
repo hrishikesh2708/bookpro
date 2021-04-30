@@ -6,5 +6,8 @@ const allReducers = combineReducers({
     user: user_reducer,
     set: set_reducer
 })
+// export const rootReducer = (state, action) => {
+// 	return allReducers(state, action)
+// }
 
 export default allReducers;

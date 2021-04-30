@@ -1,86 +1,67 @@
-import React, { Component } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import React, { useState } from "react";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { TextField } from "@material-ui/core";
-import { connect } from "react-redux";
-import { set_store } from "../../action/book_action";
-class Search extends Component {
-  constructor() {
-    super();
-    this.state = {
-      bookStatus: true,
-      data: [],
-    };
-    this.handleChange = this.handleChange.bind(this);
-  }
-  handleChange = (e) => {
+import { useSelector } from "react-redux";
+import toasting from "../../toast/toast";
+function Search() {
+  const [bookStatus, setbookStatus] = useState(true);
+  const [data, setdata] = useState([]);
+  const state = useSelector((state) => state);
+  const handleChange = (e) => {
+    var errormessage = "";
     const name = e.target.value.replace(/\s+/g, " ").trim();
+    const regex = new RegExp(name, "i");
     console.log("handle change called", name);
     if (name.length > 1) {
-      // const c = this.props.set;
-      const b = Object.values(this.props.set);
-      // console.log(c);
-      console.log(b);
-      const regex = new RegExp(name, "i");
-      const postData = b.filter(({ title }) => title.match(regex));
-      console.log(" postdata ", postData);
+      const postData = state.set.set.filter(({ title }) => title.match(regex));
+      // console.log(" postdata ", postData);
       if (postData.length === 0) {
-        this.setState({
-          bookStatus: false,
-          data: postData,
-        });
-        toast.error("No book found!");
+        setbookStatus(false);
+        setdata(postData);
+        errormessage = "No book found!";
+        toasting("error", errormessage);
       } else {
-        this.setState({
-          bookStatus: true,
-          data: postData,
-        });
+        setbookStatus(true);
+        setdata(postData);
       }
     }
 
     if (name.length <= 1) {
-      this.setState({
-        data: [],
-      });
+      setdata([]);
     }
   };
-
-  render() {
-    return (
-      <div>
-        <TextField
-          id="outlined-basic"
-          label="Search for books"
-          variant="outlined"
-          placeholder="Search for books"
-          onChange={this.handleChange}
-        />
-        {this.state.bookStatus === true ? (
-          <>
-            <ul>
-              {this.state.data.map((item) => (
-                <li key={item._id}>
-                  <p>{item.title}</p>
-                  <p>{item.author}</p>
-                </li>
-              ))}
-            </ul>
-          </>
-        ) : (
-          <>
-            <p>
-              <b>
-                <em>No book found</em>
-              </b>
-            </p>
-            <ToastContainer />
-          </>
-        )}
-      </div>
-    );
-  }
+  return (
+    <>
+      <TextField
+        id="outlined-basic"
+        label="Search for books"
+        variant="outlined"
+        placeholder="Search for books"
+        onChange={handleChange}
+      />
+      {bookStatus === true ? (
+        <>
+          <ul>
+            {data.map((item) => (
+              <li key={item._id}>
+                <p>{item.title}</p>
+                <p>{item.author}</p>
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : (
+        <>
+          <p>
+            <b>
+              <em>No book found</em>
+            </b>
+          </p>
+          <ToastContainer />
+        </>
+      )}
+    </>
+  );
 }
-const mapStateToProps = (state) => ({
-  set: state.set,
-});
-export default connect(mapStateToProps, { set_store })(Search);
+export default Search;

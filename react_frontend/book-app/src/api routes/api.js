@@ -5,6 +5,10 @@ export const get_books = async() => {
     // console.log(" api call", data)
     return data
 }
+export const dbupdate = async(req) => {
+    const data = await axios.get(`${process.env.REACT_APP_LOCALHOST}/api/boook`)
+    return data 
+}
 export const add = async(req) => {
     const data = await axios.post(`${process.env.REACT_APP_LOCALHOST}/api/book-addition`,req)
     return data 
