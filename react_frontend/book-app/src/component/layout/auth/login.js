@@ -1,151 +1,179 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import GoogleLogin from "react-google-login";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { withRouter } from "react-router-dom";
-import { Button, TextField } from "@material-ui/core";
-class Login extends Component {
-  constructor() {
-    super();
-    this.state = {
-      email: "",
-      password: "",
-      errors: {},
-    };
-  }
-  google = (e) => {
-    console.log(e.tokenId);
+import { withRouter, useHistory } from "react-router-dom";
+import toasting from "../../../toast/toast";
+import { googleLogin, login } from "../../../api routes/api";
+import { login_css } from "../../componentCSS";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import {
+  Typography,
+  Link as Liink,
+  Box,
+  Button,
+  TextField,
+  Container,
+  Avatar,
+  Grid,
+  Paper
+} from "@material-ui/core";
+
+function Copyright() {
+  return (
+    <Typography variant="body2" color="textSecondary" align="center">
+      {"Copyright © "}
+      <Liink color="inherit" href="/">
+        Bookpro
+      </Liink>{" "}
+      {new Date().getFullYear()}
+      {"."}
+    </Typography>
+  );
+}
+function Login() {
+  const history = useHistory();
+  const classes = login_css();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({});
+  const google = (e) => {
     if (typeof e.tokenId !== "undefined") {
       const token = e.tokenId;
-      axios
-        .post(`${process.env.REACT_APP_LOCALHOST}/api/users/googleLogin`, {
-          id: token,
-        })
+      googleLogin({ id: token })
         .then((res) => {
           console.log("Google login access", res);
           const { token } = res.data;
           localStorage.clear();
           localStorage.setItem("jwtToken", token);
-          toast.success("Login successfull");
+          toasting("success", "Login successfull");
           setTimeout(() => {
-            this.props.history.push("/");
+            history.push("/");
             window.location.reload();
           }, 1000);
         })
         .catch((err) => {
-          toast.error(err.response.data.message, {
-            autoClose: 3000,
-            hideProgressBar: true,
-          });
+          toasting("error", err.response.data.message);
         });
     } else {
-      toast.warn("No account selected!!", {
-        autoClose: 3000,
-        hideProgressBar: true,
-      });
+      toasting("warn", "No account selected!!");
     }
   };
-  onChange = (e) => {
-    this.setState({ [e.target.id]: e.target.value });
-  };
-  onSubmit = (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
     const userData = {
-      email: this.state.email,
-      password: this.state.password,
+      email: email,
+      password: password,
     };
     console.log(userData);
-    axios
-      .post(`${process.env.REACT_APP_LOCALHOST}/api/users/login`, userData)
+    login(userData)
       .then((res) => {
         const { token } = res.data;
         localStorage.clear();
         localStorage.setItem("jwtToken", token);
-        toast.success("Login successfull");
+        toasting("success", "Login successfull");
         console.log("Login successfull");
         setTimeout(() => {
-          this.props.history.push("/");
+          history.push("/");
           window.location.reload();
         }, 1000);
       })
       .catch((err) => {
-        console.log(err.response.data.message);
-        toast.error(err.response.data.message, {
-          autoClose: 2000,
-          hideProgressBar: true,
-        });
+        console.log(err.response.data.email);
+        toasting("error", err.response.data.eamil);
       });
   };
-  render() {
-    const { errors } = this.state;
-    return (
-      <div>
-        <div style={{ paddingLeft: "11.250px" }}>
-          <h4>
-            <b>Sign In</b> below
-          </h4>
-          <p>
-            Don't have an account?<Button variant="contained" component={Link} to="/auth" size="small">Create new</Button>
-          </p>
-        </div>
-        <form noValidate onSubmit={this.onSubmit}>
-          <div>
-            {/* <label htmlFor="email">Email</label>
-            <input
-              onChange={this.onChange}
-              value={this.state.email}
-              error={errors.email}
-              id="email"
-              type="email"
-            /> */}
-            <TextField
-              id="email"
-              label="Email"
-              type="email"
-              variant="outlined"
-              onChange={this.onChange}
-              value={this.state.email}
-              error={errors.email}
-            />
-          </div>
-          <div>
-            {/* <label htmlFor="password">Password</label>
-            <input
-              onChange={this.onChange}
-              value={this.state.password}
-              error={errors.password}
-              id="password"
-              type="password"
-            /> */}
-            <TextField
-              id="password"
-              type="password"
-              label="Password"
-              variant="outlined"
-              onChange={this.onChange}
-              value={this.state.password}
-              error={errors.password}
-            />
-          </div>
-          <div>
-            <Button variant="contained" color="primary" type="submit">
-              Sign in
-            </Button>
-            <GoogleLogin
-              clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-              buttonText="Continue with Google"
-              onSuccess={this.google}
-              onFailure={this.google}
-              cookiePolicy={"single_host_origin"}
-            />
-          </div>
+  return (
+    <Container component="main" maxWidth="xs">
+      {/* <CssBaseline /> */}
+      <Paper className={classes.paper}>
+      <Container className={classes.content}>
+      <Avatar className={classes.avatar}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          Sign in
+        </Typography>
+        <form noValidate className={classes.form} onSubmit={onSubmit}>
+          <TextField
+           className={classes.typo}
+            id="email"
+            label="Email Address"
+            type="email"
+            variant="outlined"
+            required
+            fullWidth
+            autoFocus
+            autoComplete="email"
+            onChange={(e) => {
+              setEmail(e.target.value.replace(/\s+/g, " ").trim());
+            }}
+            value={email}
+            error={errors.email}
+          />
+          <TextField
+           className={classes.typo}
+            id="password"
+            type="password"
+            label="Password"
+            variant="outlined"
+            required
+            fullWidth
+            onChange={(e) => {
+              setPassword(e.target.value.replace(/\s+/g, " ").trim());
+            }}
+            value={password}
+            error={errors.password}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+            fullWidth
+            type="submit"
+          >
+            Sign in
+          </Button>
+          <GoogleLogin
+            clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+            buttonText="Continue with Google"
+            render={(renderProps) => (
+              <Button
+                onClick={renderProps.onClick}
+                className={classes.googlejsx}
+                color="default"
+                variant="contained"
+                fullWidth
+              >
+                Sign in with Google
+              </Button>
+            )}
+            onSuccess={google}
+            onFailure={google}
+            cookiePolicy={"single_host_origin"}
+          />
+          <Grid container>
+            <Grid item xs>
+              <Liink component={Link} to="/" variant="body2">
+                Back to home
+              </Liink>
+            </Grid>
+            <Grid item>
+              <Liink component={Link} to="/auth" variant="body2">
+                {"Don't have an account? Sign Up"}
+              </Liink>
+            </Grid>
+          </Grid>
+          <Box className={classes.submit}>
+            <Copyright />
+          </Box>
         </form>
-        <Button variant="contained" component={Link} to="/" size="small">Back to home</Button>
-        <ToastContainer />
-      </div>
-    );
-  }
+      </Container>
+      </Paper>
+
+      <ToastContainer />
+    </Container>
+  );
 }
 export default withRouter(Login);

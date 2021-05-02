@@ -1,9 +1,9 @@
-import React, { Component, useState } from "react";
+import React from "react";
 // import ReactPaginate from "react-paginate";
 // import Loader from "react-loader-spinner";
 import { useSelector } from "react-redux";
 // import {LinearProgress} from '@material-ui/core';
-import { DataGrid, GridOverlay } from "@material-ui/data-grid";
+import { DataGrid } from "@material-ui/data-grid";
 
 function Home() {
   const state = useSelector((state) => state);
@@ -15,30 +15,20 @@ function Home() {
     { field: "title", headerName: "Book Name", flex: 1 },
     { field: "author", headerName: "Author", flex: 1 },
   ];
-  // function CustomLoadingOverlay() {
-  //   return (
-  //     <GridOverlay>
-  //       <div style={{ position: 'absolute', top: 0, width: '100%' }}>
-  //         <LinearProgress />
-  //       </div>
-  //     </GridOverlay>
-  //   );
-  // }
+
   return (
-    <GridOverlay>
-      <div style={{ height: 400, width: "100%" }}>
-        <DataGrid
-          pagination
-          rows={rows}
-          columns={columns}
-          getRowId={(row,index) => index.toString()}
-          // components={{
-          //   LoadingOverlay: CustomLoadingOverlay,
-          // }}
-          // loading
-        />
-      </div>
-    </GridOverlay>
+    <div style={{ height: 400, width: "100%" }}>
+    <DataGrid
+      pagination
+      rows={rows}
+      columns={columns}
+      getRowId={(row) => row._id}
+      // components={{
+      //   LoadingOverlay: CustomLoadingOverlay,
+      // }}
+      // loading
+    />
+  </div>
   );
 }
 export default Home;

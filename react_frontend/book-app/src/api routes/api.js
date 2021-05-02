@@ -17,3 +17,17 @@ export const modify = async(req) => {
     const data = await axios.put(`${process.env.REACT_APP_LOCALHOST}/api/book-modify`,req)
     return data 
 }
+
+export const googleLogin = async(req) => {
+    const data = await axios.post(`${process.env.REACT_APP_LOCALHOST}/api/users/googleLogin`,req)
+    return data 
+}
+
+export const login = async(req) => {
+    const data = await axios.post(`${process.env.REACT_APP_LOCALHOST}/api/users/login`,req)
+    return data 
+}
+export const signIn = async(req) => {
+    const data = await axios.post(`${process.env.REACT_APP_LOCALHOST}/api/users/register`,req)
+    return data 
+}

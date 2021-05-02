@@ -1,140 +1,218 @@
-import { withRouter } from "react-router-dom";
-import React, { Component } from "react";
+import { withRouter, useHistory } from "react-router-dom";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import {Button, TextField} from "@material-ui/core"
-class Auth extends Component {
-  constructor() {
-    super();
-    this.state = {
-      name: "",
-      email: "",
-      password: "",
-      password2: "",
-      errors: {},
-    };
-  }
-  onChange = (e) => {
-    this.setState({ [e.target.id]: e.target.value });
+import toasting from "../../../toast/toast";
+import { signIn, login } from "../../../api routes/api";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { auth_css } from "../../componentCSS";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import { googleLogin } from "../../../api routes/api";
+import GoogleLogin from "react-google-login";
+import {
+  Typography,
+  Link as Liink,
+  Box,
+  Button,
+  TextField,
+  Container,
+  Avatar,
+  Grid,
+  Paper,
+} from "@material-ui/core";
+
+function Copyright() {
+  return (
+    <Typography variant="body2" color="textSecondary" align="center">
+      {"Copyright © "}
+      <Liink color="inherit" href="/">
+        Bookpro
+      </Liink>{" "}
+      {new Date().getFullYear()}
+      {"."}
+    </Typography>
+  );
+}
+
+function Auth() {
+  const history = useHistory();
+  const classes = auth_css();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [password2, setPassword2] = useState("");
+  const [errors, seterrors] = useState({});
+
+  const google = (e) => {
+    if (typeof e.tokenId !== "undefined") {
+      const token = e.tokenId;
+      googleLogin({ id: token })
+        .then((res) => {
+          console.log("Google login access", res);
+          const { token } = res.data;
+          localStorage.clear();
+          localStorage.setItem("jwtToken", token);
+          toasting("success", "Login successfull");
+          setTimeout(() => {
+            history.push("/");
+            window.location.reload();
+          }, 500);
+        })
+        .catch((err) => {
+          toasting("error", err.response.data.message);
+        });
+    } else {
+      toasting("warn", "No account selected!!");
+    }
   };
-  onSubmit = (e) => {
+
+  const onSubmit = (e) => {
     e.preventDefault();
     const newUser = {
-      name: this.state.name,
-      email: this.state.email,
-      password: this.state.password,
-      password2: this.state.password2,
+      name: name,
+      email: email,
+      password: password,
+      password2: password2,
     };
     console.log(newUser);
-
-    axios
-      .post(`${process.env.REACT_APP_LOCALHOST}/api/users/register`, newUser)
+    signIn(newUser)
       .then((res) => {
-        console.log("register",res.data);
-        axios
-        .post(`${process.env.REACT_APP_LOCALHOST}/api/users/login`, newUser) 
-        .then((res) => {
-        console.log("login",res.data);
-        const { token } = res.data;
-        localStorage.clear();
-        localStorage.setItem("jwtToken", token);
-        console.log("user logged in")
-        toast.success("Login Successfull",{autoClose: 2000,hideProgressBar: true,})
-        setTimeout(() => {
-          this.props.history.push("/")
-          window.location.reload()
-        }, 1000);
-      });
+        console.log("register", res.data);
+        login(newUser).then((res) => {
+          console.log("login", res.data);
+          const { token } = res.data;
+          localStorage.clear();
+          localStorage.setItem("jwtToken", token);
+          console.log("user logged in");
+          toasting("success", "Login Successfull");
+          setTimeout(() => {
+            history.push("/");
+            window.location.reload();
+          }, 1000);
+        });
       })
       .catch((error) => {
-        if (error.response.status === 404){
-          toast.error(error.response.data.email,{autoClose: 2000,hideProgressBar: true,});
-        } 
-        else {
-          toast.error("Input data not valid",{ autoClose: 2000,hideProgressBar: true,});
+        if (error.response.status === 404) {
+          toasting("error", error.response.data.email);
+        } else {
+          toasting("error", "Input data not valid");
         }
       });
-
   };
-  render() {
-    const { errors } = this.state;
-    return (
-      <div>
-        <div>
-          <h4>Sign up below</h4>
-          <p>
-            Already have an account? <Button to="/login" variant="contained" color="default" component={Link} size="small">Sign in</Button>
-          </p>
-        </div>
-        <form noValidate onSubmit={this.onSubmit}>
-          <div>
-            {/* <label htmlFor="name">Name</label>
-            <input
-              onChange={this.onChange}
-              value={this.state.name}
-              error={errors.name}
+
+  return (
+    <Container component="main" maxWidth="xs">
+      <Paper className={classes.paper}>
+        <Container className={classes.content}>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign up
+          </Typography>
+          <form noValidate className={classes.form} onSubmit={onSubmit}>
+            <TextField
+              className={classes.typo}
+              autoFocus
               id="name"
-              type="text"
-            /> */}
-            <TextField id="name" label="Name" variant="outlined" onChange={this.onChange}
-              value={this.state.name}
-              error={errors.name} />
-          </div>
-          <div>
-            {/* <label htmlFor="email">Email</label>
-            <input
-              onChange={this.onChange}
-              value={this.state.email}
-              error={errors.email}
+              label="Name"
+              variant="outlined"
+              required
+              fullWidth
+              onChange={(e) => {
+                setName(e.target.value.replace(/\s+/g, " ").trim());
+              }}
+              value={name}
+              error={errors.name}
+            />
+            <TextField
+              className={classes.typo}
               id="email"
-              type="email"
-            /> */}
-            <TextField id="email" label="Email" variant="outlined" onChange={this.onChange}
-              value={this.state.email}
-              error={errors.email}/>
-          </div>
-          <div>
-            {/* <label htmlFor="password">Password</label>
-            <input
-              onChange={this.onChange}
-              value={this.state.password}
-              error={errors.password}
+              label="Email Address"
+              variant="outlined"
+              required
+              fullWidth
+              onChange={(e) => {
+                setEmail(e.target.value.replace(/\s+/g, " ").trim());
+              }}
+              value={email}
+              error={errors.email}
+            />
+            <TextField
+              className={classes.typo}
               id="password"
+              label="Password"
+              variant="outlined"
+              required
+              fullWidth
+              onChange={(e) => {
+                setPassword(e.target.value.trim());
+              }}
               type="password"
-            /> */}
-            <TextField id="password" label="Password" variant="outlined" onChange={this.onChange} type="password"
-              value={this.state.password}
-              error={errors.password}/>
-          </div>
-          <div>
-            {/* <label htmlFor="password2">Confirm Password</label>
-            <input
-              onChange={this.onChange}
-              value={this.state.password2}
-              error={errors.password2}
+              value={password}
+              error={errors.password}
+            />
+            <TextField
+              className={classes.typo}
               id="password2"
+              label="Confirm Password"
+              variant="outlined"
+              required
+              fullWidth
+              onChange={(e) => {
+                setPassword2(e.target.value.trim());
+              }}
               type="password"
-            /> */}
-            <TextField id="password2" label="Confirm Password" variant="outlined" onChange={this.onChange} type="password"
-              value={this.state.password2}
-              error={errors.password2}/>
-          </div>
-          <div>
+              value={password2}
+              error={errors.password2}
+            />
             <Button
               type="submit"
               color="primary"
               variant="contained"
+              className={classes.submit}
+              fullWidth
             >
               Sign up
             </Button>
-          </div>
-        </form>
-        <Button variant="contained" component={Link} to="/" size="small">Back to home</Button>
-        <ToastContainer/>
-      </div>
-    );
-  }
+            <GoogleLogin
+              clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+              buttonText="Continue with Google"
+              render={(renderProps) => (
+                <Button
+                  onClick={renderProps.onClick}
+                  className={classes.googlejsx}
+                  color="default"
+                  variant="contained"
+                  fullWidth
+                >
+                  Sign Up with Google
+                </Button>
+              )}
+              onSuccess={google}
+              onFailure={google}
+              cookiePolicy={"single_host_origin"}
+            />
+            <Grid container>
+              <Grid item xs>
+                <Liink component={Link} to="/" variant="body2">
+                  Back to home
+                </Liink>
+              </Grid>
+              <Grid item>
+                <Liink component={Link} to="/login" variant="body2">
+                  {"Have an account? Sign In"}
+                </Liink>
+              </Grid>
+            </Grid>
+            <Box className={classes.submit}>
+              <Copyright />
+            </Box>
+          </form>
+        </Container>
+      </Paper>
+      <ToastContainer />
+    </Container>
+  );
 }
 export default withRouter(Auth);
