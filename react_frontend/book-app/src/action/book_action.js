@@ -34,5 +34,7 @@ export const add_book = (contents) => ({
 })
 export const modify_book = (contents) => ({
     type: MODIFY_BOOK,
-    payload: contents
+    payload: {
+        contents
+    }
 })

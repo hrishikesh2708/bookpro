@@ -6,11 +6,7 @@ import thunk from "redux-thunk";
 // import * as localforage from "localforage";
 import logger from "redux-logger";
 // offlineConfig.persistOptions = { storage: localforage }
-// const saveState = (state) => {
-//   if (state.client_side.length !== 0) {
-//     localStorage.setItem("store_state", JSON.stringify(state));
-//   }
-// };
+
 // console.log(offlineConfig)
 const newstore = createStore(
   allReducers,
@@ -22,12 +18,6 @@ const newstore = createStore(
   )
 );
 
-// newstore.subscribe(() => {
-//   //   console.log(store);
-//   saveState({
-//     client_side: newstore.getState(),
-//   });
-// });
 
 export default newstore;
 

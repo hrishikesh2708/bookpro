@@ -1,137 +1,92 @@
-import React from "react";
-// import ReactPaginate from "react-paginate";
-// import Loader from "react-loader-spinner";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-// import {LinearProgress} from '@material-ui/core';
 import { DataGrid } from "@material-ui/data-grid";
+import {
+  Box,
+  Container,
+  Grid,
+  Paper,
+  Typography,
+  LinearProgress,
+} from "@material-ui/core";
+import Recent from "../recent";
+import { homejsx } from "../../componentCSS";
 
 function Home() {
   const state = useSelector((state) => state);
-  console.log(" sate data ", state.set.set.slice(0, 100));
   const rows = state.set.set;
-
+  const classes = homejsx();
+  const [loading, setloading] = useState(true);
   const columns = [
     { field: "_id", hide: true },
-    { field: "title", headerName: "Book Name", flex: 1 },
-    { field: "author", headerName: "Author", flex: 1 },
+    { field: "title", headerName: "Book Name", flex: 1, type: "string" },
+    { field: "author", headerName: "Author", flex: 1, type: "string" },
+    {
+      field: "date_added",
+      headerName: "Date Added",
+      flex: 1,
+      type: "dateTime",
+    },
   ];
+  useEffect(() => {
+    return () => {
+      setloading(false);
+    };
+  });
 
   return (
-    <div style={{ height: 400, width: "100%" }}>
-    <DataGrid
-      pagination
-      rows={rows}
-      columns={columns}
-      getRowId={(row) => row._id}
-      // components={{
-      //   LoadingOverlay: CustomLoadingOverlay,
-      // }}
-      // loading
-    />
-  </div>
+    <>
+      {loading ? (
+        <div className={classes.load}>
+          <LinearProgress />
+        </div>
+      ) : (
+        <></>
+      )}
+
+      <Container className={classes.margin}>
+        <Grid
+          container
+          spacing={2}
+          direction="row"
+          justify="space-around"
+          alignItems="flex-start"
+        >
+          <Grid item xs>
+            <Paper elevation={5} className={classes.paper}>
+              <Box className={classes.box}>
+                <Typography className={classes.sepration}>
+                  Books List
+                </Typography>
+                <Box style={{ height: "65vh", width: "100%" }}>
+                  <DataGrid
+                    disableColumnMenu
+                    pagination
+                    rows={rows}
+                    columns={columns}
+                    getRowId={(row) => row._id}
+                    sortingOrder={["desc", "asc"]}
+                    sortModel={[
+                      {
+                        field: "title",
+                        sort: "desc",
+                      },
+                    ]}
+                  />
+                </Box>
+              </Box>
+            </Paper>
+          </Grid>
+          {state.user.USER_CURRENT_STATUS ? (
+            <Grid item xs={4}>
+              <Recent />
+            </Grid>
+          ) : (
+            <></>
+          )}
+        </Grid>
+      </Container>
+    </>
   );
 }
 export default Home;
-
-// class Home extends Component {
-//   constructor() {
-//     super();
-//     this.state = {
-//       offset: 0,
-//       perPage: 10,
-//       currentPage: 0,
-//       loadingStatus: false,
-//     };
-//     this.handlePageClick = this.handlePageClick.bind(this);
-//   }
-
-//   dataFromStore() {
-//     setTimeout(() => {
-//       const data = this.props.set.set;
-//       const slice = data.slice(
-//         this.state.offset,
-//         this.state.offset + this.state.perPage
-//       );
-//       const postData = slice.map((pd) => (
-//         <React.Fragment key={pd._id}>
-//           <li key={pd._id}>
-//             <p>
-//               <em>{pd.title}</em>
-//             </p>
-//             <p>
-//               <em>{pd.author}</em>
-//             </p>
-//           </li>
-//         </React.Fragment>
-//       ));
-//       // <>
-//       // <p>hello</p>
-//       // <DataGrid pageSize={5} rowsPerPageOptions={[5, 10, 20]} pagination {...this.props.set} />
-//       // </>
-//       this.setState({
-//         pageCount: Math.ceil(data.length / this.state.perPage),
-//         loadingStatus: true,
-//         postData,
-//         // data:this.props.set
-//       });
-
-//       console.log(this.props.set.set)
-//     }, 2000);
-//   }
-//   handlePageClick = (e) => {
-//     const selectedPage = e.selected;
-//     const offset = selectedPage * this.state.perPage;
-
-//     this.setState(
-//       {
-//         loadingStatus: false,
-//         currentPage: selectedPage,
-//         offset: offset,
-//       },
-//       () => {
-//         this.dataFromStore();
-//       }
-//     );
-//   };
-
-//   componentDidMount() {
-//     this.dataFromStore();
-//   }
-//   render() {
-//     return (
-//       <div>
-//         {this.state.loadingStatus ? (
-//           <>
-//             {this.state.postData}
-//             {/* <DataGrid pageSize={5} rowsPerPageOptions={[5, 10, 20]} pagination {...this.props.set} /> */}
-//             <ReactPaginate
-//               previousLabel={"prev"}
-//               nextLabel={"next"}
-//               breakLabel={"..."}
-//               breakClassName={"break-me"}
-//               pageCount={this.state.pageCount}
-//               marginPagesDisplayed={2}
-//               pageRangeDisplayed={5}
-//               onPageChange={this.handlePageClick}
-//               containerClassName={"pagination"}
-//               subContainerClassName={"pages pagination"}
-//               activeClassName={"active"}
-//             />
-//           </>
-//         ) : (
-//           <Loader
-//             type="ThreeDots"
-//             color="#00BFFF"
-//             height={40}
-//             width={40}
-//             timeout={3000} //3 secs
-//           />
-//         )}
-//       </div>
-//     );
-//   }
-// }
-// const mapStateToProps = (state) => ({
-//   set: state.set,
-// });
-// export default connect(mapStateToProps, { set_store })(Home);

@@ -20,7 +20,7 @@ router.post("/book-add", async (req, res) => {
   } else {
     const reg = new RegExp("^" + req.body.title + "$", "i");
     console.log(req.body.title);
-    const x = await book.findOne({ title: req.body.title });
+    const x = await book.findOne({ title: reg });
     console.log(x);
     if (x == null) {
       const newbook = new book({

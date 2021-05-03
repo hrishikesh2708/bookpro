@@ -9,11 +9,14 @@ import Add from "./component/layout/add-book";
 import Modify from "./component/layout/modify-book";
 import Login from "./component/layout/auth/login";
 import Ser from "./component/layout/ser";
+import Footer from "./component/layout/footer";
 import { user_details } from "./action/user_details";
 import { book_details } from "./action/book_action";
 import { useDispatch } from "react-redux";
+import { main } from "./component/componentCSS";
 
 function App() {
+  const classes = main();
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(book_details());
@@ -21,7 +24,7 @@ function App() {
   }, [dispatch]);
   return (
     <BrowserRouter>
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" className={classes.root}>
         <Navbar />
         <Switch>
           <Route path="/" exact component={Home} />
@@ -33,6 +36,7 @@ function App() {
         <Route excat path="/modify" component={Modify} />
         <Route excat path="/login" component={Login} />
       </Container>
+      <Footer/>
     </BrowserRouter>
   );
 }

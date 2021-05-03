@@ -20,7 +20,7 @@ const toasting = (type,message) => {
               });
               break
         default:
-            toast.default(message, {
+            toast(message, {
                 autoClose: 2000,
                 hideProgressBar: true,
               });

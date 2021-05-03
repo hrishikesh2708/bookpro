@@ -1,4 +1,4 @@
-import { SET_CURRENT_USER } from "./type"
+import { SET_CURRENT_USER, SET_CURRENT_USER_LOGOUT } from "./type"
 import jwt_decode from "jwt-decode";
 
 export const user_details_success = (contents) => ({
@@ -10,12 +10,20 @@ export const user_details_success = (contents) => ({
         USER_TOKEN: contents.token
     },
 })
+export const user_logout = (e) => ({
+    type: SET_CURRENT_USER_LOGOUT,
+    payload: {
+        USER_ID: "",
+        USER_NAME: "" ,
+        USER_CURRENT_STATUS: false,
+        USER_TOKEN: ""
+    },
+})
 export const user_details =  () => {
     return async dispatch => {
         try {
             let token = localStorage.getItem("jwtToken");
             let decode = jwt_decode(token);
-            console.log(token,decode)
             dispatch(user_details_success({decode , token}))
         }
         catch(e){
