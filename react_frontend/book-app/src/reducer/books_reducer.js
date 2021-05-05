@@ -1,5 +1,6 @@
 const initialState ={
     set:[],
+    loading_status: true,
     recently_added:[{author: "Adele Beahan",
     date_added: "2021-04-30T12:02:36.424Z",
     title: "ONE.' 'One.",
@@ -10,9 +11,11 @@ export const set_reducer = (state = initialState, action) => {
     switch(action.type){
         case "SET_STORE":
             // return action.payload
-            return {
-                ...state,
+            return {    
+                // ...state,            
                 set : action.payload.contents,
+                loading_status: false,
+                recently_added: state.recently_added
             }
         case "ADD_BOOK":
             console.log(action)

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import { DataGrid } from "@material-ui/data-grid";
 import {
@@ -16,7 +16,6 @@ function Home() {
   const state = useSelector((state) => state);
   const rows = state.set.set;
   const classes = homejsx();
-  const [loading, setloading] = useState(true);
   const columns = [
     { field: "_id", hide: true },
     { field: "title", headerName: "Book Name", flex: 1, type: "string" },
@@ -28,15 +27,10 @@ function Home() {
       type: "dateTime",
     },
   ];
-  useEffect(() => {
-    return () => {
-      setloading(false);
-    };
-  });
 
   return (
     <>
-      {loading ? (
+      {state.set.loading_status ? (
         <div className={classes.load}>
           <LinearProgress />
         </div>

@@ -1,5 +1,5 @@
 import { withRouter, useHistory } from "react-router-dom";
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import toasting from "../../../toast/toast";
 import { signIn, login } from "../../../api routes/api";
@@ -9,6 +9,8 @@ import { auth_css } from "../../componentCSS";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { googleLogin } from "../../../api routes/api";
 import GoogleLogin from "react-google-login";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import {
   Typography,
   Link as Liink,
@@ -37,11 +39,6 @@ function Copyright() {
 function Auth() {
   const history = useHistory();
   const classes = auth_css();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [password2, setPassword2] = useState("");
-  const [errors, seterrors] = useState({});
 
   const google = (e) => {
     if (typeof e.tokenId !== "undefined") {
@@ -52,54 +49,65 @@ function Auth() {
           const { token } = res.data;
           localStorage.clear();
           localStorage.setItem("jwtToken", token);
-          toasting("success", "Login successfull");
-          setTimeout(() => {
-            history.push("/");
-            window.location.reload();
-          }, 500);
+          history.push("/");
+          window.location.reload();
         })
         .catch((err) => {
-          toasting("error", err.response.data.message);
+          if (typeof err.response === "undefined") {
+            toasting("warn", "Server is offline, try after sometime");
+          } else {
+            toasting("error", err.response.data.message);
+          }
         });
     } else {
       toasting("warn", "No account selected!!");
     }
   };
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    const newUser = {
-      name: name,
-      email: email,
-      password: password,
-      password2: password2,
-    };
-    console.log(newUser);
-    signIn(newUser)
+  const onsubmit = (values, props) => {
+    console.log(values);
+    console.log(props);
+    signIn(values)
       .then((res) => {
         console.log("register", res.data);
-        login(newUser).then((res) => {
+        login(values).then((res) => {
           console.log("login", res.data);
           const { token } = res.data;
           localStorage.clear();
           localStorage.setItem("jwtToken", token);
           console.log("user logged in");
-          toasting("success", "Login Successfull");
-          setTimeout(() => {
-            history.push("/");
-            window.location.reload();
-          }, 1000);
+          props.resetForm(true)
+          history.push("/");
+          window.location.reload();
         });
       })
-      .catch((error) => {
-        if (error.response.status === 404) {
-          toasting("error", error.response.data.email);
+      .catch((err) => {
+        if (typeof err.response === "undefined") {
+          toasting("warn", "Server is offline, try after sometime");
         } else {
-          toasting("error", "Input data not valid");
+          console.log(err.response.data);
+          toasting("error", err.response.data.message);
         }
       });
   };
-
+  const initialValues = {
+    name: "",
+    email: "",
+    password: "",
+    password2: "",
+  };
+  const validationSchema = Yup.object().shape({
+    name: Yup.string().required("Required"),
+    email: Yup.string().email("Please enter valid Email").required("Required"),
+    password: Yup.string()
+      .min(6, "Password is too short")
+      .max(20, "Password is too long")
+      .matches(/[a-zA-Z]/, "Password can only contain Latin letters.")
+      .required("Required"),
+    password2: Yup.string()
+      .oneOf([Yup.ref("password"), null], "Passwords must match")
+      .required("Required"),
+  });
   return (
     <Container component="main" maxWidth="xs">
       <Paper className={classes.paper}>
@@ -110,105 +118,105 @@ function Auth() {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
-          <form noValidate className={classes.form} onSubmit={onSubmit}>
-            <TextField
-              className={classes.typo}
-              autoFocus
-              id="name"
-              label="Name"
-              variant="outlined"
-              required
-              fullWidth
-              onChange={(e) => {
-                setName(e.target.value.replace(/\s+/g, " ").trim());
-              }}
-              value={name}
-              error={errors.name}
-            />
-            <TextField
-              className={classes.typo}
-              id="email"
-              label="Email Address"
-              variant="outlined"
-              required
-              fullWidth
-              onChange={(e) => {
-                setEmail(e.target.value.replace(/\s+/g, " ").trim());
-              }}
-              value={email}
-              error={errors.email}
-            />
-            <TextField
-              className={classes.typo}
-              id="password"
-              label="Password"
-              variant="outlined"
-              required
-              fullWidth
-              onChange={(e) => {
-                setPassword(e.target.value.trim());
-              }}
-              type="password"
-              value={password}
-              error={errors.password}
-            />
-            <TextField
-              className={classes.typo}
-              id="password2"
-              label="Confirm Password"
-              variant="outlined"
-              required
-              fullWidth
-              onChange={(e) => {
-                setPassword2(e.target.value.trim());
-              }}
-              type="password"
-              value={password2}
-              error={errors.password2}
-            />
-            <Button
-              type="submit"
-              color="primary"
-              variant="contained"
-              className={classes.submit}
-              fullWidth
-            >
-              Sign up
-            </Button>
-            <GoogleLogin
-              clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-              buttonText="Continue with Google"
-              render={(renderProps) => (
+          <Formik
+            initialValues={initialValues}
+            onSubmit={onsubmit}
+            validationSchema={validationSchema}
+          >
+            {(props) => (
+              <Form className={classes.form}>
+                <Field
+                  as={TextField}
+                  className={classes.typo}
+                  name="name"
+                  autoFocus
+                  id="name"
+                  label="Name"
+                  variant="outlined"
+                  required
+                  fullWidth
+                  helperText={<ErrorMessage name="name" />}
+                />
+                <Field
+                  as={TextField}
+                  className={classes.typo}
+                  id="email"
+                  name="email"
+                  label="Email Address"
+                  variant="outlined"
+                  required
+                  fullWidth
+                  helperText={<ErrorMessage name="email" />}
+                />
+                <Field
+                  as={TextField}
+                  className={classes.typo}
+                  id="password"
+                  name="password"
+                  label="Password"
+                  variant="outlined"
+                  required
+                  fullWidth
+                  helperText={<ErrorMessage name="password" />}
+                  type="password"
+                />
+                <Field
+                  as={TextField}
+                  className={classes.typo}
+                  id="password2"
+                  name="password2"
+                  label="Confirm Password"
+                  variant="outlined"
+                  required
+                  fullWidth
+                  helperText={<ErrorMessage name="password2" />}
+                  type="password"
+                />
                 <Button
-                  onClick={renderProps.onClick}
-                  className={classes.googlejsx}
-                  color="default"
+                  type="submit"
+                  color="primary"
                   variant="contained"
+                  className={classes.submit}
                   fullWidth
                 >
-                  Sign Up with Google
+                  Sign up
                 </Button>
-              )}
-              onSuccess={google}
-              onFailure={google}
-              cookiePolicy={"single_host_origin"}
-            />
-            <Grid container>
-              <Grid item xs>
-                <Liink component={Link} to="/" variant="body2">
-                  Back to home
-                </Liink>
-              </Grid>
-              <Grid item>
-                <Liink component={Link} to="/login" variant="body2">
-                  {"Have an account? Sign In"}
-                </Liink>
-              </Grid>
-            </Grid>
-            <Box className={classes.submit}>
-              <Copyright />
-            </Box>
-          </form>
+                <GoogleLogin
+                  clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+                  buttonText="Continue with Google"
+                  render={(renderProps) => (
+                    <Button
+                      onClick={renderProps.onClick}
+                      className={classes.googlejsx}
+                      color="default"
+                      variant="contained"
+                      fullWidth
+                    >
+                      Sign Up with Google
+                    </Button>
+                  )}
+                  onSuccess={google}
+                  onFailure={google}
+                  cookiePolicy={"single_host_origin"}
+                />
+                <Grid container>
+                  <Grid item xs>
+                    <Liink component={Link} to="/" variant="body2">
+                      Back to home
+                    </Liink>
+                  </Grid>
+                  <Grid item>
+                    <Liink component={Link} to="/login" variant="body2">
+                      {"Have an account? Sign In"}
+                    </Liink>
+                  </Grid>
+                </Grid>
+                <Box className={classes.submit}>
+                  <Copyright />
+                </Box>
+              </Form>
+            )}
+          </Formik>
         </Container>
       </Paper>
       <ToastContainer />

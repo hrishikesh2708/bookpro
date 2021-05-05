@@ -24,8 +24,8 @@ export default function Recent() {
           <Typography>No book found</Typography>
         ) : (
           <List style={{maxHeight: '40vh', overflow: 'auto'}}>
-            {state.set.recently_added.map((row) => (
-              <ListItem  key={row._id}>
+            {state.set.recently_added.map((row,index) => (
+              <ListItem  key={row._id || index.toString()}>
                 <ListItemAvatar>
                   <Avatar>
                     <ImportContactsSharpIcon />

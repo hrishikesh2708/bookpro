@@ -13,6 +13,25 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors())
 
+var winston = require('winston'),
+    expressWinston = require('express-winston');
+app.use(expressWinston.logger({
+  transports: [
+    new winston.transports.Console()
+  ],
+  format: winston.format.combine(
+    winston.format.colorize(),
+    winston.format.json()
+  ),
+  meta: true,
+  msg: "HTTP {{req.method}} {{req.url}}", 
+  expressFormat: true, 
+  colorize: true, 
+  ignoreRoute: function (req, res) { return false; } 
+}));
+
+
+
 const port = process.env.PORT || 4201;
 app.use(passport.initialize());
 require("./config/passport")(passport);

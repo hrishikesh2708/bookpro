@@ -24,7 +24,6 @@ router.post("/book-add", async (req, res) => {
     console.log(x);
     if (x == null) {
       const newbook = new book({
-        id: req.body.id,
         authors: req.body.authors,
         title: req.body.title,
       });

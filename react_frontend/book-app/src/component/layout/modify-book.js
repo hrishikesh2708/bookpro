@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from "react-redux";
 import toasting from "../../toast/toast";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import ImportContactsSharpIcon from "@material-ui/icons/ImportContactsSharp";
 import {
   TextField,
@@ -46,15 +48,25 @@ export default function Modify() {
   const [data, setdata] = useState([]);
   const state = useSelector((state) => state.set.set);
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    // console.log(title,selectedBook_id,newAuthor)
+  const initialValues = {
+    newauthor: "",
+  };
+
+  const validationSchema = Yup.object().shape({
+    newauthor: Yup.string().required("Required"),
+  });
+
+  const onSubmit = (values, props) => {
+    console.log(values, props);
     const bookdetails = {
       _id: selectedBook_id,
       title: title,
-      author: newAuthor,
+      author: values.newauthor,
     };
+    setnewAuthor(values.newauthor);
     dispatch(modify_book(bookdetails));
+    props.resetForm(true);
+    setUpdateStatus(true);
     modify(bookdetails)
       .then((res) => {
         console.log(res);
@@ -62,7 +74,11 @@ export default function Modify() {
         setUpdateStatus(true);
       })
       .catch((err) => {
-        console.log(err);
+        if (typeof err.response === "undefined") {
+          toasting("warn", "Server is offline, try after sometime");
+        } else {
+          toasting("error", err.response.data.message);
+        }
       });
   };
 
@@ -76,16 +92,17 @@ export default function Modify() {
       if (postData.length > 0) {
         setbookStatus(true);
         setdata(postData);
-        toasting("default","book present!!")
+        toasting("default", "book present!!");
       } else {
         setbookStatus(false);
         setdata(postData);
-        toasting("warn","book not present!!")
+        toasting("warn", "book not present!!");
       }
     }
     setTimeout(() => {
       if (name.length === 0) {
         setdata([]);
+        setbookStatus(false);
         toast.dismiss();
       }
     }, 1000);
@@ -104,9 +121,10 @@ export default function Modify() {
 
   const handleClick = (e) => {
     setOpen(!open);
-    settitle(e.title)
+    settitle(e.title);
     setselectedBook_id(e._id);
     setauthor(e.author);
+    console.log(e);
   };
 
   return (
@@ -162,10 +180,10 @@ export default function Modify() {
                 Search Result..
               </Typography>
               <List style={{ maxHeight: "40vh", overflow: "auto" }}>
-                {data.map((row) => (
+                {data.map((row, index) => (
                   <>
                     <ListItem
-                      key={row._id}
+                      key={row._id || index.toString()}
                       button
                       onClick={(e) => {
                         handleClick(row);
@@ -186,29 +204,39 @@ export default function Modify() {
                     {selectedBook_id === row._id ? (
                       <Collapse in={open} timeout="auto" unmountOnExit>
                         <List component="div" disablePadding>
-                          <ListItem className={classes.nested}>
-                            <form noValidate onSubmit={onSubmit}>
-                              <TextField
-                                auto
-                                id="newAuthor"
-                                label="Author Name"
-                                variant="outlined"
-                                placeholder="Enter name of new Author"
-                                onChange={(e) => {
-                                  setnewAuthor(
-                                    e.target.value.replace(/\s+/g, " ").trim()
-                                  );
-                                }}
-                                value={newAuthor}
-                              />
-                              <Button
-                                type="submit"
-                                variant="contained"
-                                color="primary"
-                              >
-                                submit
-                              </Button>
-                            </form>
+                          <ListItem
+                            className={classes.nested}
+                            key={row._id || index.toString()}
+                          >
+                            <Formik
+                              initialValues={initialValues}
+                              validationSchema={validationSchema}
+                              onSubmit={onSubmit}
+                            >
+                              {(props) => (
+                                <Form>
+                                  <Field
+                                    as={TextField}
+                                    auto
+                                    id="newAuthor"
+                                    name="newauthor"
+                                    label="Author Name"
+                                    variant="outlined"
+                                    placeholder="Enter name of new Author"
+                                    helperText={
+                                      <ErrorMessage name="newauthor" />
+                                    }
+                                  />
+                                  <Button
+                                    type="submit"
+                                    variant="contained"
+                                    color="primary"
+                                  >
+                                    submit
+                                  </Button>
+                                </Form>
+                              )}
+                            </Formik>
                           </ListItem>
                         </List>
                       </Collapse>

@@ -51,14 +51,14 @@ function Navbar() {
               color="inherit"
               aria-label="menu"
               component={Link}
-              to="/"
+              to="/home"
             >
               <LocalLibraryRoundedIcon />
             </IconButton>
             <Typography
               variant="h6"
               className={classes.title}
-              to="/"
+              to="/home"
               component={Link}
               color="inherit"
             >

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import {
   TextField,
   Button,
@@ -16,7 +18,7 @@ import {
   Box,
 } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
-import { add_book, book_details } from "../../action/book_action";
+import { add_book } from "../../action/book_action";
 import { add } from "../../api routes/api";
 import toasting from "../../toast/toast";
 import { addjsx } from "../componentCSS";
@@ -28,45 +30,49 @@ function Add() {
   const [bookAdded, setbookAdded] = useState(false);
   const [title, settitle] = useState("");
   const [author, setauthor] = useState("");
-  const [errors, seterrors] = useState({});
   const dispatch = useDispatch();
   const state = useSelector((state) => state);
   const refresh = (e) => {
     setauthor("");
     setbookAdded(false);
     settitle("");
-    seterrors({});
   };
-  const onSubmit = (e) => {
-    e.preventDefault();
-    const bookData = {
-      author: author,
-      title: title,
-    };
-    console.log(bookData);
-    const regex = new RegExp(title, "i");
+
+  const onSubmit = (values,props) => {
+    console.log(props)
+    console.log(values)
+    setauthor(values.author);
+    settitle(values.title);
+    const regex = new RegExp(values.title, "i");
     const postData = state.set.set.filter(({ title }) => title.match(regex));
-    // console.log(" postdata ", postData);
+    console.log(" postdata ", postData.length ,postData);
     if (postData.length === 0) {
-      dispatch(add_book(bookData));
+      dispatch(add_book(values));
     } else {
-      toasting("error", "Book already exist!!");
+      toasting("error", "Book already Present!!");
     }
-    add(bookData)
+    add(values)
       .then((value) => {
         console.log(value);
         setbookAdded(true);
       })
-      .catch((e) => {
-        console.log("err", e.response.status);
-        if (e.response.status === 400) {
-          toasting("error", "Book already exist!!");
-        } else if (e.response.status === 422) {
-          toasting("error", "Book does not exist!!");
+      .catch((err) => {
+        if (typeof err.response === "undefined") {
+          toasting("warn", "Server is offline, try after sometime");
+        } else {
+          toasting("error", err.response.data.message);
         }
       });
+      props.resetForm(true)
   };
-
+  const initialValues ={
+    title:"",
+    author:"",
+  }
+  const validationSchema = Yup.object().shape({
+    title: Yup.string().required("Required"),
+    author: Yup.string().required("Required")    
+  })
   return (
     <Container maxWidth="xs">
       <Dialog
@@ -94,8 +100,12 @@ function Add() {
       <Paper elevation={5} className={classes.paper}>
         <Box mx={4} my={3} p={1}>
           <Typography variant="h5">Enter Book Details</Typography>
-          <form noValidate onSubmit={onSubmit}>
-            <TextField
+          <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
+            {(props)=>(
+              <Form>
+            <Field
+            as={TextField}
+            name="title"
               autoFocus
               required
               fullWidth
@@ -104,13 +114,11 @@ function Add() {
               label="Enter Book Name"
               variant="outlined"
               placeholder="Enter Book Name"
-              onChange={(e) =>
-                settitle(e.target.value.replace(/\s+/g, " ").trim())
-              }
-              value={title}
-              error={errors.title}
+              helperText={<ErrorMessage name="title"/>}
             />
-            <TextField
+            <Field
+            as={TextField}
+            name="author"
               className={classes.typo}
               required
               fullWidth
@@ -118,11 +126,7 @@ function Add() {
               label="Author Enter Author Name"
               variant="outlined"
               placeholder="Author"
-              onChange={(e) =>
-                setauthor(e.target.value.replace(/\s+/g, " ").trim())
-              }
-              value={author}
-              error={errors.author}
+              helperText={<ErrorMessage name="author"/>}
             />
             <Button
               variant="contained"
@@ -133,7 +137,9 @@ function Add() {
             >
               Submit
             </Button>
-          </form>
+          </Form>
+            )}
+          </Formik>
         </Box>
       </Paper>
 

@@ -74,8 +74,8 @@ function Search() {
           <Box className={classes.box}>
           <Typography className={classes.sepration} >Search Result..</Typography>
             <List style={{maxHeight: '40vh', overflow: 'auto'}}>
-              {data.map((row) => (
-                <ListItem key={row._id}>
+              {data.map((row,index) => (
+                <ListItem key={row._id || index.toString()}>
                   <ListItemAvatar>
                     <Avatar>
                       <ImportContactsSharpIcon />

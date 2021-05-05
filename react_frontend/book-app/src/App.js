@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Container } from "@material-ui/core";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Switch, Route ,Redirect } from "react-router-dom";
 import Navbar from "./component/layout/navbar";
 import Home from "./component/layout/home/home";
 import Auth from "./component/layout/auth/auth";
@@ -15,19 +15,30 @@ import { book_details } from "./action/book_action";
 import { useDispatch } from "react-redux";
 import { main } from "./component/componentCSS";
 
+
 function App() {
   const classes = main();
   const dispatch = useDispatch();
   useEffect(() => {
+    let token = localStorage.getItem("jwtToken");
+     if(token !== null){
+      dispatch(user_details());
+    }
+    else{
     dispatch(book_details());
-    dispatch(user_details());
+    }
+
   }, [dispatch]);
   return (
     <BrowserRouter>
       <Container maxWidth="lg" className={classes.root}>
         <Navbar />
+        {}
+        <Redirect from="/" to="/home"/>
         <Switch>
-          <Route path="/" exact component={Home} />
+        {/* <Redirect from="/" to="/home"/> */}
+        {/* <Route path="/" exact component={Navbar} /> */}
+          <Route path="/home" excat component={Home} />
           <Route path="/auth" excat component={Auth} />
         </Switch>
         <Route excat path="/search" component={Search} />

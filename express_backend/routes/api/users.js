@@ -21,7 +21,7 @@ router.post("/register", (req, res) => {
   }
   User.findOne({ email: mail }).then((user) => {
     if (user) {
-      return res.status(404).json({ email: "Email already exists" });
+      return res.status(404).json({ message : "Email already exists" });
     } else {
       const newUser = new User({
         name: req.body.name,
@@ -122,11 +122,6 @@ router.post("/googleLogin", (req, res) => {
               });
             }
           );
-          // else if (user.password !== ""){
-          //   console.log("Email already exist please login manually!!")
-          //   return res.status(404).json({message:"Email already exist please login manually!!"})
-          // }
-
         } else {
           const newAccount = new User({
             name: name,
