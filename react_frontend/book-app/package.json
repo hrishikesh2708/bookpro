@@ -15,6 +15,7 @@
     "is-empty": "^1.2.0",
     "jwt-decode": "^3.1.2",
     "localforage": "^1.9.0",
+    "material-table": "^1.69.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-google-login": "^5.2.2",

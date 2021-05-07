@@ -14,21 +14,28 @@ import { user_details } from "./action/user_details";
 import { book_details } from "./action/book_action";
 import { useDispatch } from "react-redux";
 import { main } from "./component/componentCSS";
+import NewHome from "./component/layout/home/newhome";
 
 
 function App() {
   const classes = main();
   const dispatch = useDispatch();
-  useEffect(() => {
-    let token = localStorage.getItem("jwtToken");
-     if(token !== null){
-      dispatch(user_details());
-    }
-    else{
-    dispatch(book_details());
-    }
+  // dispatch(book_details());
+  let token = localStorage.getItem("jwtToken");
+  if(token !== null){
+   dispatch(user_details());
+ }
+  // useEffect(() => {
+  //   let token = localStorage.getItem("jwtToken");
+  //    if(token !== null){
+  //     dispatch(user_details());
+  //   }
+  //   else{
+  //     console.log("else bolock")
+  //   dispatch(book_details());
+  //   }
 
-  }, [dispatch]);
+  // }, [dispatch]);
   return (
     <BrowserRouter>
       <Container maxWidth="lg" className={classes.root}>
@@ -41,6 +48,7 @@ function App() {
           <Route path="/home" excat component={Home} />
           <Route path="/auth" excat component={Auth} />
         </Switch>
+        <Route excat path="/page" component={NewHome} />
         <Route excat path="/search" component={Search} />
         <Route excat path="/ser" component={Ser} />
         <Route excat path="/add" component={Add} />

@@ -39,6 +39,7 @@ function Search() {
         toasting("error", errormessage);
       } else {
         setbookStatus(true);
+        // console.log(postData._id)
         setdata(postData);
       }
     }
@@ -83,7 +84,7 @@ function Search() {
                   </ListItemAvatar>
                   <ListItemText
                     primary={row.title}
-                    secondary={row.author}
+                    secondary={row.author,row._id}
                   ></ListItemText>
                 </ListItem>
               ))}

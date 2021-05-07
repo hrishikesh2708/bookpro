@@ -9,6 +9,8 @@ import { auth_css } from "../../componentCSS";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { googleLogin } from "../../../api routes/api";
 import GoogleLogin from "react-google-login";
+import { useDispatch } from "react-redux";
+import { user_details } from "../../../action/user_details";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import {
@@ -39,18 +41,18 @@ function Copyright() {
 function Auth() {
   const history = useHistory();
   const classes = auth_css();
+  const dispatch = useDispatch();
 
   const google = (e) => {
     if (typeof e.tokenId !== "undefined") {
       const token = e.tokenId;
       googleLogin({ id: token })
         .then((res) => {
-          console.log("Google login access", res);
           const { token } = res.data;
           localStorage.clear();
           localStorage.setItem("jwtToken", token);
-          history.push("/");
-          window.location.reload();
+          dispatch(user_details())
+          history.push("/home");
         })
         .catch((err) => {
           if (typeof err.response === "undefined") {
@@ -76,9 +78,9 @@ function Auth() {
           localStorage.clear();
           localStorage.setItem("jwtToken", token);
           console.log("user logged in");
+          dispatch(user_details())
           props.resetForm(true)
-          history.push("/");
-          window.location.reload();
+          history.push("/home");
         });
       })
       .catch((err) => {

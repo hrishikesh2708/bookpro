@@ -29,7 +29,7 @@ import {
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import { modify_book } from "../../action/book_action";
-import { modify } from "../../api routes/api";
+// import { modify } from "../../api routes/api";
 import { modifyjsx } from "../componentCSS";
 import SearchIcon from "@material-ui/icons/Search";
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -67,19 +67,19 @@ export default function Modify() {
     dispatch(modify_book(bookdetails));
     props.resetForm(true);
     setUpdateStatus(true);
-    modify(bookdetails)
-      .then((res) => {
-        console.log(res);
-        console.log("book details updated");
-        setUpdateStatus(true);
-      })
-      .catch((err) => {
-        if (typeof err.response === "undefined") {
-          toasting("warn", "Server is offline, try after sometime");
-        } else {
-          toasting("error", err.response.data.message);
-        }
-      });
+    // modify(bookdetails)
+    //   .then((res) => {
+    //     console.log(res);
+    //     console.log("book details updated");
+    //     setUpdateStatus(true);
+    //   })
+    //   .catch((err) => {
+    //     if (typeof err.response === "undefined") {
+    //       toasting("warn", "Server is offline, try after sometime");
+    //     } else {
+    //       toasting("error", err.response.data.message);
+    //     }
+    //   });
   };
 
   const handleChange = (e) => {

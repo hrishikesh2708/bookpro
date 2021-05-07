@@ -37,8 +37,7 @@ function Navbar() {
   const handleClick = () => {
     localStorage.clear();
     dispatch(user_logout(menu))
-    history.push("/");
-    window.location.reload();
+    history.push("/home");
   };
   return (
     <>
@@ -79,6 +78,10 @@ function Navbar() {
                 <Button to="/search" component={Link}>
                   {" "}
                   Search book{" "}
+                </Button>
+                <Button to="/page" component={Link}>
+                  {" "}
+                  home{" "}
                 </Button>
               </Box>
               <Box>

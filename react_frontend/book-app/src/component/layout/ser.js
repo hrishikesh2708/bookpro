@@ -20,9 +20,9 @@ function Search() {
     console.log("handle change called", name);
     if (name.length > 1) {
       const b = JSON.parse(localStorage.getItem("books"));
-      console.log(b);
+      // console.log(b);
       const postData = b.data.filter(({ title }) => title.match(regex));
-      console.log(" postdata ", postData);
+      // console.log(" postdata ", postData);
       if (postData.length === 0) {
         setbookStatus(false);
         setdata(postData);

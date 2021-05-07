@@ -9,7 +9,7 @@ export const book_details = () => {
     return async dispatch => {
         try {
             let post = await get_books()
-            console.log("post",post)
+            // console.log("post",post)
             dispatch(set_store(post.data))
         }
         catch(e){
@@ -26,15 +26,20 @@ export const add_book = (contents) => ({
     payload: { contents },
     meta: {
         offline: {
-          effect: { url: `${process.env.REACT_APP_LOCALHOST}/api/book-addition`, method: 'POST', json: { contents } },
-          commit: { type: 'ADD_BOOK_COMMIT', meta: { contents } },
+          effect: { url: `${process.env.REACT_APP_LOCALHOST}/api/book-addition`, method: 'POST', json: { ...contents } },
+          commit: { type: 'ADD_BOOK_COMMIT' },
           rollback: { type: 'ADD_BOOK_ROLLBACK', meta: {  } }
         }
       }
 })
 export const modify_book = (contents) => ({
     type: MODIFY_BOOK,
-    payload: {
-        contents
-    }
+    payload: { contents },
+    meta: {
+        offline: {
+          effect: { url: `${process.env.REACT_APP_LOCALHOST}/api/book-modify`, method: 'PUT', json: { ...contents } },
+          commit: { type: 'MODIFY_BOOK_COMMIT' },
+          rollback: { type: 'MODIFY_BOOK_ROLLBACK'}
+        }
+      }
 })

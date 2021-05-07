@@ -19,7 +19,7 @@ import {
 } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { add_book } from "../../action/book_action";
-import { add } from "../../api routes/api";
+// import { add } from "../../api routes/api";
 import toasting from "../../toast/toast";
 import { addjsx } from "../componentCSS";
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -48,21 +48,22 @@ function Add() {
     console.log(" postdata ", postData.length ,postData);
     if (postData.length === 0) {
       dispatch(add_book(values));
+      setbookAdded(true);
     } else {
       toasting("error", "Book already Present!!");
     }
-    add(values)
-      .then((value) => {
-        console.log(value);
-        setbookAdded(true);
-      })
-      .catch((err) => {
-        if (typeof err.response === "undefined") {
-          toasting("warn", "Server is offline, try after sometime");
-        } else {
-          toasting("error", err.response.data.message);
-        }
-      });
+    // add(values)
+    //   .then((value) => {
+    //     console.log(value);
+    //     setbookAdded(true);
+    //   })
+    //   .catch((err) => {
+    //     if (typeof err.response === "undefined") {
+    //       toasting("warn", "Server is offline, try after sometime");
+    //     } else {
+    //       toasting("error", err.response.data.message);
+    //     }
+    //   });
       props.resetForm(true)
   };
   const initialValues ={

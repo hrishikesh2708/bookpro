@@ -45,15 +45,13 @@ router.get("/getbook", async (req, res) => {
   }
 });
 router.post("/book-addition", async (req, res) => {
-  console.log(req)
+  console.log("request:",req.body)
   const { errors, isValid } = validateBook(req.body);  
   if (!isValid) {
     return res.status(422).json(errors);
   } else {
     const reg = new RegExp("^" + req.body.title + "$", "i");
-    console.log(req.body.title);
     const x = await book.findOne({ title: req.body.title });
-    console.log(x);
     if (x == null) {
       const newbook = new book({
         author: req.body.author,

@@ -11,11 +11,13 @@ import {
 } from "@material-ui/core";
 import Recent from "../recent";
 import { homejsx } from "../../componentCSS";
+import Search from "../search"
 
 function Home() {
   const state = useSelector((state) => state);
   const rows = state.set.set;
   const classes = homejsx();
+  const id  = Math.floor(Math.random() * 10000)
   const columns = [
     { field: "_id", hide: true },
     { field: "title", headerName: "Book Name", flex: 1, type: "string" },
@@ -48,6 +50,7 @@ function Home() {
         >
           <Grid item xs>
             <Paper elevation={5} className={classes.paper}>
+            <Search/>
               <Box className={classes.box}>
                 <Typography className={classes.sepration}>
                   Books List
@@ -58,7 +61,9 @@ function Home() {
                     pagination
                     rows={rows}
                     columns={columns}
-                    getRowId={(row) => row._id}
+                    // getRowId={(row) => row._id}
+                    getRowId={(row) => (row._id || id)} 
+                    // getRowId={(row,index) => (row._id || index.toString())}
                     sortingOrder={["desc", "asc"]}
                     sortModel={[
                       {

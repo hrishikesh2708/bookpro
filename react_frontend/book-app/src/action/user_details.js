@@ -6,7 +6,7 @@ export const user_details_success = (contents) => ({
     type: SET_CURRENT_USER,
     payload: {contents},
 })
-export const user_logout = (e) => ({
+export const user_logout = () => ({
     type: SET_CURRENT_USER_LOGOUT,
     payload: {
         USER_ID: "",
@@ -29,7 +29,7 @@ export const user_logout = (e) => ({
 // }
 export const user_details = () => async (dispatch) => {
     let token = localStorage.getItem("jwtToken");
-    console.log(token)
+    // console.log(token)
     let decode = jwt_decode(token);
     await Promise.all([
         dispatch(user_details_success({decode , token})),

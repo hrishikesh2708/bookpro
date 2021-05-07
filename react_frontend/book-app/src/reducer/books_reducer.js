@@ -18,7 +18,7 @@ export const set_reducer = (state = initialState, action) => {
                 recently_added: state.recently_added
             }
         case "ADD_BOOK":
-            console.log(action)
+            // console.log(action)
             // return [...state,action.payload]
             return {
                 set:[...state.set,action.payload.contents],
@@ -39,9 +39,60 @@ export const set_reducer = (state = initialState, action) => {
              return {
                  set:data
              }
+             case "MODIFY_BOOK_COMMIT":
+                 console.log("modify commit ", action.payload)
+                 return state
+                // let data =[...state.set]
+                // let index = data.findIndex(element => element._id  === action.payload.contents._id)
+                // if(index > -1){
+                //     data[index] = action.payload.contents
+                //     console.log(data[index])
+                //     return {
+                //         set:data,
+                //         recently_added : [...state.recently_added]
+                //     }
+                // }
+                // else
+                //  return {
+                //      set:data
+                //  }
+                case "MODIFY_BOOK_ROLLBACK":
+                    console.log("modify rollback ", action.payload)
+                    return state
+                //    let d1 =[...state.set]
+                //    let index = d1.findIndex(element => element._id  === action.payload.contents._id)
+                //    if(index > -1){
+                //        d1[index] = action.payload.contents
+                //        console.log(d1[index])
+                //        return {
+                //            set:d1,
+                //            recently_added : [...state.recently_added]
+                //        }
+                //    }
+                //    else
+                //     return {
+                //         set:d1
+                //     }                
+    
+
         case "ADD_BOOK_COMMIT":
-            return state
+            console.log("commit: ",action.payload)
+            let arr =[...state.set]
+            let ind = arr.findIndex(element => element.title  === action.payload.title)
+            if(ind > -1){
+                arr[ind] = action.payload
+                console.log("commit: ",arr[ind])
+                return {
+                    set:arr,
+                    recently_added : [...state.recently_added]
+                }
+            }
+            else
+             return {
+                 set:arr
+             }
         case "ADD_BOOK_ROLLBACK":
+            console.log("add book rollback")
             return state    
         default:
             return state    

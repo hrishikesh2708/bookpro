@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import GoogleLogin from "react-google-login";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useDispatch } from "react-redux";
+import { user_details } from "../../../action/user_details";
 import { withRouter, useHistory } from "react-router-dom";
 import toasting from "../../../toast/toast";
 import { googleLogin, login } from "../../../api routes/api";
@@ -37,17 +39,17 @@ function Copyright() {
 function Login() {
   const history = useHistory();
   const classes = login_css();
+  const dispatch = useDispatch()
   const google = (e) => {
     if (typeof e.tokenId !== "undefined") {
       const token = e.tokenId;
       googleLogin({ id: token })
         .then((res) => {
-          console.log("Google login access", res);
           const { token } = res.data;
           localStorage.clear();
           localStorage.setItem("jwtToken", token);
-          history.push("/");
-          window.location.reload();
+          dispatch(user_details())
+          history.push("/home");
         })
         .catch((err) => {
           if (typeof err.response === "undefined") {
@@ -70,8 +72,8 @@ function Login() {
         localStorage.clear();
         localStorage.setItem("jwtToken", token);
         props.resetForm(true)
-        history.push("/");
-        window.location.reload();
+        dispatch(user_details())
+        history.push("/home");
       })
       .catch((err) => {
         if (typeof err.response === "undefined") {
