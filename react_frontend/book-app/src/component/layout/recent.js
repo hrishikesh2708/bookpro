@@ -15,7 +15,7 @@ import { recent } from "../componentCSS";
 export default function Recent() {
   const classes = recent();
   const state = useSelector((state) => state);
-  console.log("recent", state);
+  // console.log("recent", state);  
   return (
     <Paper elevation={5} className={classes.paper}>
       <Box className={classes.box}>

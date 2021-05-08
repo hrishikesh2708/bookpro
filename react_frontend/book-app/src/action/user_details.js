@@ -15,27 +15,27 @@ export const user_logout = () => ({
         USER_TOKEN: ""
     },
 })
-// export const user_details =  () => {
-//     return async dispatch => {
-//         try {
-//             let token = localStorage.getItem("jwtToken");
-//             let decode = jwt_decode(token);
-//             dispatch(user_details_success({decode , token}))
-//         }
-//         catch(e){
-//             console.log(e)
-//         }
-//     }
-// }
-export const user_details = () => async (dispatch) => {
-    let token = localStorage.getItem("jwtToken");
-    // console.log(token)
-    let decode = jwt_decode(token);
-    await Promise.all([
-        dispatch(user_details_success({decode , token})),
-      ]);
+export const user_details =  () => {
+    return async dispatch => {
+        try {
+            let token = localStorage.getItem("jwtToken");
+            let decode = jwt_decode(token);
+            dispatch(user_details_success({decode , token}))
+        }
+        catch(e){
+            console.log(e)
+        }
+    }
+}
+// export const user_details = () => async (dispatch) => {
+//     let token = localStorage.getItem("jwtToken");
+//     // console.log(token)
+//     let decode = jwt_decode(token);
+//     await Promise.all([
+//         dispatch(user_details_success({decode , token})),
+//       ]);
 
   
-    return dispatch(book_details());
-  };
+//     return dispatch(book_details());
+//   };
   

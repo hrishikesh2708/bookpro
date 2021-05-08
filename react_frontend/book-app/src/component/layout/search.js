@@ -84,7 +84,7 @@ function Search() {
                   </ListItemAvatar>
                   <ListItemText
                     primary={row.title}
-                    secondary={row.author,row._id}
+                    secondary={row.author}
                   ></ListItemText>
                 </ListItem>
               ))}

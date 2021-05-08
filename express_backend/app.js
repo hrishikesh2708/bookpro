@@ -10,7 +10,7 @@ const newbook = require("./routes/api/newbooks");
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors())
-
+mongoose.set('useFindAndModify', false);
 var winston = require('winston'),
     expressWinston = require('express-winston');
 

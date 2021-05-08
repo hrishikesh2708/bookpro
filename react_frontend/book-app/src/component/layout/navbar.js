@@ -36,7 +36,7 @@ function Navbar() {
   };
   const handleClick = () => {
     localStorage.clear();
-    dispatch(user_logout(menu))
+    dispatch(user_logout())
     history.push("/home");
   };
   return (
@@ -67,22 +67,22 @@ function Navbar() {
           {state.user.USER_CURRENT_STATUS ? (
             <>
               <Box>
-                <Button to="/modify" component={Link}>
+                {/* <Button to="/modify" component={Link}>
                   {" "}
                   Update book{" "}
-                </Button>
+                </Button> */}
                 <Button to="/add" component={Link}>
                   {" "}
                   Add book{" "}
                 </Button>
-                <Button to="/search" component={Link}>
+                {/* <Button to="/search" component={Link}>
                   {" "}
                   Search book{" "}
-                </Button>
-                <Button to="/page" component={Link}>
+                </Button> */}
+                {/* <Button to="/page" component={Link}>
                   {" "}
                   home{" "}
-                </Button>
+                </Button> */}
               </Box>
               <Box>
                 <IconButton

@@ -4,7 +4,8 @@ import {set_reducer} from "./books_reducer"
 
 const allReducers = combineReducers({
     user: user_reducer,
-    set: set_reducer
+    set: set_reducer,
+    // store: store_setup,
 })
 // export const rootReducer = (state, action) => {
 // 	return allReducers(state, action)

@@ -40,14 +40,18 @@ function Add() {
 
   const onSubmit = (values,props) => {
     console.log(props)
-    console.log(values)
+    console.log(values,state.user.USER_ID)
     setauthor(values.author);
     settitle(values.title);
     const regex = new RegExp(values.title, "i");
     const postData = state.set.set.filter(({ title }) => title.match(regex));
     console.log(" postdata ", postData.length ,postData);
     if (postData.length === 0) {
-      dispatch(add_book(values));
+      dispatch(add_book({
+        title: values.title,
+        author: values.author,
+        id:state.user.USER_ID || ""
+      }));
       setbookAdded(true);
     } else {
       toasting("error", "Book already Present!!");

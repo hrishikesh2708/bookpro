@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Container } from "@material-ui/core";
 import { BrowserRouter, Switch, Route ,Redirect } from "react-router-dom";
 import Navbar from "./component/layout/navbar";
-import Home from "./component/layout/home/home";
+// import Home from "./component/layout/home/home";
 import Auth from "./component/layout/auth/auth";
 import Search from "./component/layout/search";
 import Add from "./component/layout/add-book";
@@ -14,17 +14,20 @@ import { user_details } from "./action/user_details";
 import { book_details } from "./action/book_action";
 import { useDispatch } from "react-redux";
 import { main } from "./component/componentCSS";
-import NewHome from "./component/layout/home/newhome";
+import NewHome from "./component/layout/home/NewHome";
 
 
 function App() {
   const classes = main();
   const dispatch = useDispatch();
-  // dispatch(book_details());
+  dispatch(book_details());
   let token = localStorage.getItem("jwtToken");
   if(token !== null){
    dispatch(user_details());
- }
+  }
+//  else{
+  //  dispatch(book_details());
+//  }
   // useEffect(() => {
   //   let token = localStorage.getItem("jwtToken");
   //    if(token !== null){
@@ -41,14 +44,14 @@ function App() {
       <Container maxWidth="lg" className={classes.root}>
         <Navbar />
         {}
-        <Redirect from="/" to="/home"/>
+        {/* <Redirect from="/" to="/home"/> */}
         <Switch>
         {/* <Redirect from="/" to="/home"/> */}
         {/* <Route path="/" exact component={Navbar} /> */}
-          <Route path="/home" excat component={Home} />
+          <Route path="/home" excat component={NewHome} />
           <Route path="/auth" excat component={Auth} />
         </Switch>
-        <Route excat path="/page" component={NewHome} />
+        {/* <Route excat path="/page" component={NewHome} /> */}
         <Route excat path="/search" component={Search} />
         <Route excat path="/ser" component={Ser} />
         <Route excat path="/add" component={Add} />

@@ -10,6 +10,9 @@ const Books = new Schema({
         type: String,
         require: true
     },
+    user_id: {
+        type: String,
+    },
     date_added: {
         type: Date,
         default: Date.now

@@ -4,6 +4,7 @@ const router = express.Router();
 const book = require("../../model/newbooks");
 const { request, response } = require("express");
 const axios = require("axios");
+const { findOne } = require("../../model/newbooks");
 
 router.get("/boook", async (req, res) => {
   try {
@@ -45,8 +46,8 @@ router.get("/getbook", async (req, res) => {
   }
 });
 router.post("/book-addition", async (req, res) => {
-  console.log("request:",req.body)
-  const { errors, isValid } = validateBook(req.body);  
+  console.log("request:", req.body);
+  const { errors, isValid } = validateBook(req.body);
   if (!isValid) {
     return res.status(422).json(errors);
   } else {
@@ -56,6 +57,7 @@ router.post("/book-addition", async (req, res) => {
       const newbook = new book({
         author: req.body.author,
         title: req.body.title,
+        user_id: req.body.id,
       });
       newbook.save().then((x) => {
         res.json(x);
@@ -84,5 +86,33 @@ router.put("/book-modify", async (req, res) => {
       res.json(x);
     });
   }
+});
+router.delete("/book-delete/:id/:user", async (req, res) => {
+  console.log(req.body);
+  const z = await book.findOne({ _id: req.params.id });
+  console.log(req.params.user ," ==== ",z.user_id)
+  if (z.user_id === req.params.user) {
+    // book.deleteOne({ id: req.params.id }, function (err,data) {
+    // if (!err) {
+    //   console.log("Deleted");
+    //   return res.json(data);
+    // }
+    // });
+    await book.findByIdAndRemove(req.params.id, req.body, function (err, data) {
+    if (!err) {
+      console.log("Deleted");
+      return res.json(data);
+    }
+  });
+  }
+  else{
+    return res.status(401).json({})
+  }
+  // await book.findByIdAndRemove(req.params.id, req.body, function (err, data) {
+  //   if (!err) {
+  //     console.log("Deleted");
+  //     return res.json(data);
+  //   }
+  // });
 });
 module.exports = router;

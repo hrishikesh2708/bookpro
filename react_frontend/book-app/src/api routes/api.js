@@ -31,3 +31,7 @@ export const signIn = async(req) => {
     const data = await axios.post(`${process.env.REACT_APP_LOCALHOST}/api/users/register`,req)
     return data 
 }
+export const Deleted = async(req) => {
+    const data = await axios.delete(`${process.env.REACT_APP_LOCALHOST}/api/book-delete/${req}`)
+    return data 
+}

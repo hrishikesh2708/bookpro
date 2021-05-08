@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core";
 import Recent from "../recent";
 import { homejsx } from "../../componentCSS";
-import Search from "../search"
+// import Search from "../search"
 
 function Home() {
   const state = useSelector((state) => state);
@@ -50,7 +50,7 @@ function Home() {
         >
           <Grid item xs>
             <Paper elevation={5} className={classes.paper}>
-            <Search/>
+            {/* <Search/> */}
               <Box className={classes.box}>
                 <Typography className={classes.sepration}>
                   Books List
