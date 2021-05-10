@@ -1,11 +1,21 @@
+
+const jwt_decode = require("jwt-decode")
 const express = require("express");
 const validateBook = require("../../validation/book-add");
 const router = express.Router();
 const book = require("../../model/newbooks");
+// const User = require("../../model/user");
 const { request, response } = require("express");
 const axios = require("axios");
 const { findOne } = require("../../model/newbooks");
+const user = require("../../model/user");
 
+// router.get("/",async (req,res)=>{
+//   console.log("hi / ")
+//     var io = req.app.get('socketio');
+//   io.emit('bookDetails',{message:"book scanned"});
+//   console.log("io ",io)
+// })
 router.get("/boook", async (req, res) => {
   try {
     const x = await book.find();
@@ -38,6 +48,10 @@ router.get("/boook", async (req, res) => {
 });
 
 router.get("/getbook", async (req, res) => {
+  console.log("hi / ")
+    var io = req.app.get('socketio');
+  io.emit('bookDetails',{message:"book scanned"});
+  console.log("io ",io)
   try {
     const x = await book.find();
     res.json(x);
@@ -76,43 +90,56 @@ router.get("/search/:bookname", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
-router.put("/book-modify", async (req, res) => {
-  const x = await book.findOne({ _id: req.body._id });
-  if (x == null) {
-    return res.status(400).json({ message: "book is not present!" });
-  } else {
-    x.author = req.body.author;
-    x.save().then((x) => {
-      res.json(x);
-    });
-  }
-});
-router.delete("/book-delete/:id/:user", async (req, res) => {
-  console.log(req.body);
-  const z = await book.findOne({ _id: req.params.id });
-  console.log(req.params.user ," ==== ",z.user_id)
-  if (z.user_id === req.params.user) {
-    // book.deleteOne({ id: req.params.id }, function (err,data) {
-    // if (!err) {
-    //   console.log("Deleted");
-    //   return res.json(data);
-    // }
-    // });
-    await book.findByIdAndRemove(req.params.id, req.body, function (err, data) {
-    if (!err) {
-      console.log("Deleted");
-      return res.json(data);
+router.put("/book-modify/:token", async (req, res) => {
+  console.log(req.params)
+  console.log(req.body)
+  if(req.params.token !== "null") {
+    let decode = jwt_decode(req.params.token);
+    const client_exist = await user.findOne({_id: decode.id})
+    console.log(client_exist)
+    const x = await book.findOne({ _id: req.body.newData._id });
+    if(client_exist !== null){
+      if (x == null) {
+        return res.status(400).json({ message: "book is not present!" });
+      } else {
+        x.author = req.body.newData.author;
+        x.save().then((x) => {
+          res.json(x);
+        });
+      }
     }
-  });
+    else{
+      res.status(401).json(req.body.oldData)
+    }
   }
   else{
-    return res.status(401).json({})
+    res.status(404).json(req.body.oldData)
   }
-  // await book.findByIdAndRemove(req.params.id, req.body, function (err, data) {
-  //   if (!err) {
-  //     console.log("Deleted");
-  //     return res.json(data);
-  //   }
-  // });
+
+
+});
+router.delete("/book-delete/:id/:token", async (req, res) => {
+  console.log(req.body);
+  const z = await book.findOne({ _id: req.params.id });
+  if(req.params.token !== "null") {    
+    console.log(req.params)
+    let decode = jwt_decode(req.params.token);
+    console.log(decode.id ," ==== ",z.user_id)
+    if (z.user_id === decode.id) {
+      await book.findByIdAndRemove(req.params.id, req.body, function (err, data) {
+      if (!err) {
+        console.log("Deleted");
+        return res.json(data);
+      }
+    });
+    }
+    else{
+      return res.status(401).json(z)
+    }
+  }
+  else{
+    res.status(404).json(z)
+  }
+
 });
 module.exports = router;

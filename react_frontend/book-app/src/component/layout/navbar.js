@@ -35,9 +35,22 @@ function Navbar() {
     setOpen(false);
   };
   const handleClick = () => {
+    var DBOpenRequest = window.indexedDB.open("localforage", 2);
+    DBOpenRequest.onsuccess = function(event) {
+     var db = DBOpenRequest.result;
+     deleteData(db);
+    };
     localStorage.clear();
     dispatch(user_logout())
     history.push("/home");
+  };
+  function deleteData(db) {
+        var transaction = db.transaction(["keyvaluepairs"], "readwrite");
+    var objectStore = transaction.objectStore("keyvaluepairs");
+    var objectStoreRequest = objectStore.delete("persist:user");  
+    objectStoreRequest.onsuccess = function(event) {
+      console.log("logout from persist")
+    };
   };
   return (
     <>

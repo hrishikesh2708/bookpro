@@ -1,4 +1,4 @@
-import React from "react";
+import React,{ useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { DataGrid } from "@material-ui/data-grid";
 import {
@@ -11,9 +11,11 @@ import {
 } from "@material-ui/core";
 import Recent from "../recent";
 import { homejsx } from "../../componentCSS";
+import socketIOClient from "socket.io-client";
 // import Search from "../search"
 
 function Home() {
+  const [response, setResponse] = useState("");
   const state = useSelector((state) => state);
   const rows = state.set.set;
   const classes = homejsx();
@@ -29,9 +31,16 @@ function Home() {
       type: "dateTime",
     },
   ];
+  useEffect(() => {
+    const socket = socketIOClient(`${process.env.REACT_APP_LOCALHOST}/api`);
+    socket.on("bookDetails", data => {
+      setResponse(data);
+    });
+  }, []);
 
   return (
     <>
+    <p>response from socket {response} </p>
       {state.set.loading_status ? (
         <div className={classes.load}>
           <LinearProgress />

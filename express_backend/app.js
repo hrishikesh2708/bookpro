@@ -1,12 +1,15 @@
 const express = require("express");
+const http = require("http")
 const mongoose = require("mongoose");
 const db = require("./config/default.json").mongoUri;
-const app = express();
 const cors = require('cors');
 const passport = require("passport");
 const users = require("./routes/api/users");
-const books = require("./routes/api/books");
+// const books = require("./routes/api/books");
 const newbook = require("./routes/api/newbooks");
+const app = express();
+const server = http.createServer(app);
+const io = require("socket.io")(server)
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors())
@@ -37,6 +40,7 @@ require("./config/passport")(passport);
 app.use("/api/users", users);
 // app.use("/api/books", books);
 app.use("/api", newbook);
+app.set("socketio",io)
 mongoose.connect(db,{ useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
   app.listen(port, () => console.log(`server started on port: ${port}`));

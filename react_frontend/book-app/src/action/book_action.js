@@ -43,12 +43,13 @@ export const add_book = (contents) => ({
 });
 export const modify_book = (contents) => ({
   type: MODIFY_BOOK,
-  payload: { contents },
+  payload: { ...contents },
   meta: {
     offline: {
       effect: {
-        url: `${process.env.REACT_APP_LOCALHOST}/api/book-modify`,
+        url: `${process.env.REACT_APP_LOCALHOST}/api/book-modify/as${contents.token}`,
         method: "PUT",
+        // json: { ...contents.data },
         json: { ...contents },
       },
       commit: { type: "MODIFY_BOOK_COMMIT" },
@@ -61,7 +62,7 @@ export const delete_book = (contents) => ({
   payload: { contents },
   meta: {
       offline: {
-        effect: { url: `${process.env.REACT_APP_LOCALHOST}/api/book-delete/${contents.id}/${contents.user}`, method: 'DELETE' },
+        effect: { url: `${process.env.REACT_APP_LOCALHOST}/api/book-delete/${contents.id}/${contents.token}`, method: 'DELETE' },
         commit: { type: 'DELETE_BOOK_COMMIT' },
         rollback: { type: 'DELETE_BOOK_ROLLBACK'}
       }

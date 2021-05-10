@@ -21,6 +21,7 @@ export const set_reducer = (state = initialState, action) => {
         loading_status: false,
         recently_added: state.recently_added,
       };
+
     case "ADD_BOOK":
       // console.log(action)
       // return [...state,action.payload]
@@ -28,6 +29,7 @@ export const set_reducer = (state = initialState, action) => {
         set: [...state.set, action.payload.contents],
         recently_added: [action.payload.contents],
       };
+
     case "ADD_BOOK_COMMIT":
       console.log("commit: ", action.payload);
       let arr = [...state.set];
@@ -45,36 +47,72 @@ export const set_reducer = (state = initialState, action) => {
         return {
           set: arr,
         };
+
     case "ADD_BOOK_ROLLBACK":
       console.log("add book rollback");
       return state;
+
     case "MODIFY_BOOK":
       let data = [...state.set];
       let index = data.findIndex(
-        (element) => element._id === action.payload.contents._id
+        (element) => element._id === action.payload.newData._id
       );
+      console.log("mod data", action.payload.newData, index);
       if (index > -1) {
-        data[index] = action.payload.contents;
-        console.log(data[index]);
+        data[index] = action.payload.newData;
         return {
+          ...state,
           set: data,
-          recently_added: [...state.recently_added],
+          modifyEffectCall: true,
+          modifyCommitCall: false,
+          modifyRollBackCall: false,
         };
       } else
         return {
+          ...state,
           set: data,
+          modifyEffectCall: true,
+          modifyCommitCall: false,
+          modifyRollBackCall: false,
         };
+
     case "MODIFY_BOOK_COMMIT":
       console.log("modify commit ", action.payload);
-      return state;
+      return {
+        ...state,
+        modifyEffectCall: false,
+        modifyCommitCall: true,
+        modifyRollBackCall: false,
+      };
 
     case "MODIFY_BOOK_ROLLBACK":
-      console.log("modify rollback ", action.payload);
-      return state;
+      const modData = [...state.set];
+      let modIndex = modData.findIndex(
+        (element) => element._id === action.payload.response._id
+      );
+      console.log("modify rollback ", action.payload, modIndex);
+      if (modIndex > -1) {
+        modData[modIndex] = action.payload.response;
+        return {
+          ...state,
+          set: modData,
+          modifyEffectCall: false,
+          modifyCommitCall: false,
+          modifyRollBackCall: true,
+        };
+      } else
+        return {
+          ...state,
+          set: modData,
+          modifyEffectCall: false,
+          modifyCommitCall: false,
+          modifyRollBackCall: true,
+        };
 
     case "DELETE_BOOK":
       console.log("DELETEBOOK", action.payload);
       let delData = [...state.set];
+
       let i = delData.findIndex(
         (element) => element._id === action.payload._id
       );
@@ -82,6 +120,9 @@ export const set_reducer = (state = initialState, action) => {
       return {
         ...state,
         set: delData,
+        deleteCommitCall: false,
+        deleteEffectCall: true,
+        deleteRollBackCall: false,
       };
 
     case "DELETE_BOOK_COMMIT":
@@ -92,34 +133,22 @@ export const set_reducer = (state = initialState, action) => {
       return {
         ...state,
         set: del,
+        deleteCommitCall: true,
+        deleteEffectCall: false,
+        deleteRollBackCall: false,
       };
+
     case "DELETE_BOOK_ROLLBACK":
-      console.log("DELETEBOOK rollback", action.payload);
-      return state;
+      console.log("DELETEBOOK rollback", action.payload.response);
+      return {
+        ...state,
+        set: [...state.set, { ...action.payload.response }],
+        deleteCommitCall: false,
+        deleteEffectCall: false,
+        deleteRollBackCall: true,
+      };
 
     default:
       return state;
   }
 };
-
-// const initial = {
-//     user:{},
-//     set: [],
-//     loading_status: true,
-//     recently_added: [],
-
-
-// }
-// export const store_setup = (state = initial, action) => {
-//   switch (action.type) {
-//     case "STORE_SET":
-//       return {
-//         ...state,
-//         set: action.payload.contents,
-//         loading_status: false,
-//         recently_added: state.recently_added,
-//       };
-//     default:
-//       return state;
-//   }
-// };

@@ -20,6 +20,11 @@ import NewHome from "./component/layout/home/NewHome";
 function App() {
   const classes = main();
   const dispatch = useDispatch();
+  var request = window.indexedDB.open("localforage",2)
+  request.onupgradeneeded = event => {
+    const db = event.target.result
+    console.log(db)
+  }
   dispatch(book_details());
   let token = localStorage.getItem("jwtToken");
   if(token !== null){
