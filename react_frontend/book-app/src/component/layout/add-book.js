@@ -128,7 +128,7 @@ function Add() {
               required
               fullWidth
               id="author"
-              label="Author Enter Author Name"
+              label="Enter Author Name"
               variant="outlined"
               placeholder="Author"
               helperText={<ErrorMessage name="author"/>}

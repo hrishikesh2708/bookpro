@@ -1,6 +1,6 @@
 import React from "react";
 import { Container } from "@material-ui/core";
-import { BrowserRouter, Switch, Route ,Redirect } from "react-router-dom";
+import { BrowserRouter, Switch, Route ,Redirect, HashRouter } from "react-router-dom";
 import Navbar from "./component/layout/navbar";
 // import Home from "./component/layout/home/home";
 import Auth from "./component/layout/auth/auth";
@@ -45,7 +45,7 @@ function App() {
 
   // }, [dispatch]);
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Container maxWidth="lg" className={classes.root}>
         <Navbar />
         {}
@@ -64,7 +64,7 @@ function App() {
         <Route excat path="/login" component={Login} />
       </Container>
       <Footer/>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 export default App;
