@@ -113,28 +113,33 @@ router.put("/book-modify/:token", async (req, res) => {
   }
 });
 router.delete("/book-delete/:id/:token", async (req, res) => {
-  console.log(req.body);
   const z = await book.findOne({ _id: req.params.id });
   if (req.params.token !== "null") {
     console.log(req.params);
     let decode = jwt_decode(req.params.token);
     console.log(decode.id, " ==== ", z.user_id);
     if (z.user_id === decode.id) {
-      await book.findByIdAndRemove(
-        req.params.id,
-        req.body,
-        function (err, data) {
-          if (!err) {
-            console.log("Deleted");
-            return res.json(data);
-          }
-        }
-      );
+      // await book.findByIdAndRemove(
+      //   req.params.id,
+      //   req.body,
+      //   function (err, data) {
+      //     if (!err) {
+      //       console.log("Deleted");
+      //       return res.json(data);
+      //     }
+      //   }
+      // );
+      await book.deleteOne({ _id: req.params.id },      
+          function (err) {
+            if (!err) {
+              console.log("Deleted");
+            }
+          })
     } else {
-      return res.status(401).json(z);
+      return res.status(401).json({});
     }
   } else {
-    res.status(404).json(z);
+    res.status(404).json({});
   }
 });
 module.exports = router;

@@ -13,6 +13,11 @@ const initialState = {
 };
 export const set_reducer = (state = initialState, action) => {
   switch (action.type) {
+    case "SEARCH_RESULT":
+      return {
+        ...state,
+        search: action.payload.contents,
+      };
     case "SET_STORE":
       // return action.payload
       return {
@@ -111,15 +116,15 @@ export const set_reducer = (state = initialState, action) => {
 
     case "DELETE_BOOK":
       console.log("DELETEBOOK", action.payload);
-      let delData = [...state.set];
+      // let delData = [...state.set];
 
-      let i = delData.findIndex(
-        (element) => element._id === action.payload._id
-      );
-      delData.splice(i, 1);
+      // let i = delData.findIndex(
+      //   (element) => element._id === action.payload._id
+      // );
+      // delData.splice(i, 1);
       return {
         ...state,
-        set: delData,
+        // set: delData,
         deleteCommitCall: false,
         deleteEffectCall: true,
         deleteRollBackCall: false,

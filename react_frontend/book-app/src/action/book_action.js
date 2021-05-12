@@ -4,6 +4,7 @@ import {
   MODIFY_BOOK,
   SET_STORE,
   DELETE_BOOK,
+  SEARCH_RESULT
 } from "./type";
 import { get_books } from "../api routes/api";
 
@@ -22,6 +23,10 @@ export const book_details = () => {
     }
   };
 };
+export const search_results = (contents) => ({
+  type: SEARCH_RESULT,
+  payload: { contents },
+});
 export const set_store = (contents) => ({
   type: SET_STORE,
   payload: { contents },

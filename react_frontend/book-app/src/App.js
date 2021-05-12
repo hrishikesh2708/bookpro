@@ -1,6 +1,6 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { Container } from "@material-ui/core";
-import { BrowserRouter, Switch, Route ,Redirect, HashRouter } from "react-router-dom";
+import { Switch, Route , HashRouter } from "react-router-dom";
 import Navbar from "./component/layout/navbar";
 // import Home from "./component/layout/home/home";
 import Auth from "./component/layout/auth/auth";
@@ -20,38 +20,24 @@ import NewHome from "./component/layout/home/NewHome";
 function App() {
   const classes = main();
   const dispatch = useDispatch();
-  var request = window.indexedDB.open("localforage",2)
-  request.onupgradeneeded = event => {
-    const db = event.target.result
-    console.log(db)
-  }
-  dispatch(book_details());
-  let token = localStorage.getItem("jwtToken");
-  if(token !== null){
-   dispatch(user_details());
-  }
-//  else{
-  //  dispatch(book_details());
-//  }
-  // useEffect(() => {
-  //   let token = localStorage.getItem("jwtToken");
-  //    if(token !== null){
-  //     dispatch(user_details());
-  //   }
-  //   else{
-  //     console.log("else bolock")
-  //   dispatch(book_details());
-  //   }
-
-  // }, [dispatch]);
+  // dispatch(book_details());
+  // let token = localStorage.getItem("jwtToken");
+  // if(token !== null){
+  //  dispatch(user_details());
+  // }
+  useEffect(() => {
+    let token = localStorage.getItem("jwtToken");
+    if(token !== null){
+     dispatch(user_details());
+    }else{
+     dispatch(book_details());
+    }
+  }, [dispatch])
   return (
     <HashRouter>
       <Container maxWidth="lg" className={classes.root}>
         <Navbar />
-        {}
-        {/* <Redirect from="/" to="/home"/> */}
-        <Switch>
-        {/* <Redirect from="/" to="/home"/> */}
+         <Switch>
         {/* <Route path="/" exact component={Navbar} /> */}
           <Route path="/home" excat component={NewHome} />
           <Route path="/auth" excat component={Auth} />
