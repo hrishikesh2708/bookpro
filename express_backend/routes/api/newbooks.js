@@ -3,7 +3,6 @@ const express = require("express");
 const validateBook = require("../../validation/book-add");
 const router = express.Router();
 const book = require("../../model/newbooks");
-// const User = require("../../model/user");
 const { request, response } = require("express");
 const axios = require("axios");
 const { findOne } = require("../../model/newbooks");
@@ -71,7 +70,7 @@ router.post("/book-addition", async (req, res) => {
         user_id: req.body.id,
       });
       newbook.save().then((x) => {
-        res.json(x);
+        return res.json(x);
       });
       io.emit("Book Added", newbook);
     } else {
@@ -89,8 +88,6 @@ router.get("/search/:bookname", async (req, res) => {
   }
 });
 router.put("/book-modify/:token", async (req, res) => {
-  console.log(req.params);
-  console.log(req.body);
   if (req.params.token !== "null") {
     let decode = jwt_decode(req.params.token);
     const client_exist = await user.findOne({ _id: decode.id });
@@ -113,33 +110,22 @@ router.put("/book-modify/:token", async (req, res) => {
   }
 });
 router.delete("/book-delete/:id/:token", async (req, res) => {
-  const z = await book.findOne({ _id: req.params.id });
   if (req.params.token !== "null") {
     console.log(req.params);
     let decode = jwt_decode(req.params.token);
-    console.log(decode.id, " ==== ", z.user_id);
-    if (z.user_id === decode.id) {
-      // await book.findByIdAndRemove(
-      //   req.params.id,
-      //   req.body,
-      //   function (err, data) {
-      //     if (!err) {
-      //       console.log("Deleted");
-      //       return res.json(data);
-      //     }
-      //   }
-      // );
-      await book.deleteOne({ _id: req.params.id },      
-          function (err) {
-            if (!err) {
-              console.log("Deleted");
-            }
-          })
-    } else {
-      return res.status(401).json({});
-    }
+    await book.deleteOne(
+      { _id: req.params.id, user_id: decode.id },
+      function (err) {
+        if (!err) {
+          console.log("Deleted");
+          return res.status(200).json({});
+        } else {
+          return res.status(400).json({});
+        }
+      }
+    );
   } else {
-    res.status(404).json({});
+    return res.status(401).json({});
   }
 });
 module.exports = router;

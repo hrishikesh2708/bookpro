@@ -1,15 +1,10 @@
 const initialState = {
   set: [],
   loading_status: true,
-  recently_added: [
-    {
-      author: "Adele Beahan",
-      date_added: "2021-04-30T12:02:36.424Z",
-      title: "ONE.' 'One.",
-      __v: 0,
-      _id: "608bf1dc89422c3ed8e8a683",
-    },
-  ],
+  bookAdded:"",
+  bookModified:"",
+  bookTobeDeleted: "",
+
 };
 export const set_reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -24,15 +19,13 @@ export const set_reducer = (state = initialState, action) => {
         ...state,
         set: action.payload.contents,
         loading_status: false,
-        recently_added: state.recently_added,
       };
 
     case "ADD_BOOK":
-      // console.log(action)
-      // return [...state,action.payload]
       return {
+        ...state,
         set: [...state.set, action.payload.contents],
-        recently_added: [action.payload.contents],
+        bookAdded: action.payload.contents
       };
 
     case "ADD_BOOK_COMMIT":
@@ -45,17 +38,33 @@ export const set_reducer = (state = initialState, action) => {
         arr[ind] = action.payload;
         console.log("commit: ", arr[ind]);
         return {
+          ...state,
           set: arr,
-          recently_added: [...state.recently_added],
         };
       } else
         return {
+          ...state,
           set: arr,
         };
 
     case "ADD_BOOK_ROLLBACK":
-      console.log("add book rollback");
-      return state;
+      console.log("rollback: ", action.payload);
+      let Arr = [...state.set];
+      let loc = Arr.findIndex(
+        (element) => element.title === state.bookAdded.title
+      );
+      console.log(loc,state.bookAdded.title)
+      if (loc > -1) {
+        Arr.splice(loc,1)
+        return {
+          ...state,
+          set: Arr,
+        };
+      } else
+        return {
+          ...state,
+          set: Arr,
+        };
 
     case "MODIFY_BOOK":
       let data = [...state.set];
@@ -68,6 +77,7 @@ export const set_reducer = (state = initialState, action) => {
         return {
           ...state,
           set: data,
+          bookModified: action.payload.oldData,
           modifyEffectCall: true,
           modifyCommitCall: false,
           modifyRollBackCall: false,
@@ -93,11 +103,11 @@ export const set_reducer = (state = initialState, action) => {
     case "MODIFY_BOOK_ROLLBACK":
       const modData = [...state.set];
       let modIndex = modData.findIndex(
-        (element) => element._id === action.payload.response._id
+        (element) => element._id === state.bookModified._id
       );
-      console.log("modify rollback ", action.payload, modIndex);
+      console.log("modify rollback ", action.payload, modIndex ,state.bookModified);
       if (modIndex > -1) {
-        modData[modIndex] = action.payload.response;
+        modData[modIndex] = state.bookModified;
         return {
           ...state,
           set: modData,
@@ -116,15 +126,9 @@ export const set_reducer = (state = initialState, action) => {
 
     case "DELETE_BOOK":
       console.log("DELETEBOOK", action.payload);
-      // let delData = [...state.set];
-
-      // let i = delData.findIndex(
-      //   (element) => element._id === action.payload._id
-      // );
-      // delData.splice(i, 1);
       return {
         ...state,
-        // set: delData,
+        bookTobeDeleted: action.payload.contents.book,
         deleteCommitCall: false,
         deleteEffectCall: true,
         deleteRollBackCall: false,
@@ -144,10 +148,10 @@ export const set_reducer = (state = initialState, action) => {
       };
 
     case "DELETE_BOOK_ROLLBACK":
-      console.log("DELETEBOOK rollback", action.payload.response);
+      console.log("DELETEBOOK rollback", action.payload.response, state.bookTobeDeleted);
       return {
         ...state,
-        set: [...state.set, { ...action.payload.response }],
+        set: [...state.set],
         deleteCommitCall: false,
         deleteEffectCall: false,
         deleteRollBackCall: true,

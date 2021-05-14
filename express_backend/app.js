@@ -1,5 +1,5 @@
 const express = require("express");
-const http = require("http")
+// const http = require("http")
 const mongoose = require("mongoose");
 const db = require("./config/default.json").mongoUri;
 const cors = require('cors');
@@ -7,14 +7,14 @@ const passport = require("passport");
 const users = require("./routes/api/users");
 const newbook = require("./routes/api/newbooks");
 const app = express();
-const server = http.createServer(app);
-const { Server } = require("socket.io");
-const io = new Server(server,{
-  cors: {
-    origin: "http://localhost:4200",
-    methods: ["GET", "POST","PUT","DELETE"]
-  }
-})
+// const server = http.createServer(app);
+// const { Server } = require("socket.io");
+// const io = new Server(server,{
+//   cors: {
+//     origin: "http://localhost:4200",
+//     methods: ["GET", "POST","PUT","DELETE"]
+//   }
+// })
 
 var winston = require('winston'),
     expressWinston = require('express-winston');
@@ -54,10 +54,10 @@ app.use((req, res, next) => {
 // io.on('connection', (socket) => {
 //   console.log('a user connected');
 // });
-app.set("io",io)
+// app.set("io",io)
 mongoose.connect(db,{ useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
-  server.listen(port, () => console.log(`server started on port: ${port}`));
+  app.listen(port, () => console.log(`server started on port: ${port}`));
   console.log("MongoDB successfully connected")})
   .catch(err => console.log(err));
 

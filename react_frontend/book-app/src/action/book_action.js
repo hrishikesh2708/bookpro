@@ -52,7 +52,7 @@ export const modify_book = (contents) => ({
   meta: {
     offline: {
       effect: {
-        url: `${process.env.REACT_APP_LOCALHOST}/api/book-modify/as${contents.token}`,
+        url: `${process.env.REACT_APP_LOCALHOST}/api/book-modify/${contents.token}`,
         method: "PUT",
         // json: { ...contents.data },
         json: { ...contents },
