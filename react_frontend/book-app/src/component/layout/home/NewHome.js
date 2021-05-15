@@ -146,8 +146,8 @@ import {
 } from "../../../action/book_action";
 import toasting from "../../../toast/toast";
 import PropTypes from "prop-types";
-import io from "socket.io-client";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+// import io from "socket.io-client";
+import { Formik } from "formik";
 import * as Yup from "yup";
 
 // material ui icon
@@ -174,6 +174,7 @@ import {
   DialogTitle,
   Slide,
   TableRow,
+  LinearProgress,
   TableBody,
   TableCell,
   TextField,
@@ -182,8 +183,7 @@ import {
   TableContainer,
   IconButton,
   TablePagination,
-  Fab,
-} from "@material-ui/core";
+  } from "@material-ui/core";
 
 // ------------------Pagination------------------//
 const useStyles1 = makeStyles((theme) => ({
@@ -359,6 +359,12 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
   },
+  load: {
+    width: "100%",
+    "& > * + *": {
+      marginTop: theme.spacing(2),
+    },
+  },
   table: {
     minWidth: 750,
   },
@@ -447,6 +453,20 @@ const StyledTableRow = withStyles((theme) => ({
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
+
+// const useEventSource = (url) => {
+//   const [data, updateData] = useState(null);
+
+//   useEffect(() => {
+//       const source = new EventSource(url);
+
+//       source.onmessage = function logEvents(event) {
+//           updateData(JSON.parse(event.data));
+//       }
+//   }, [])
+
+//   return data;
+// }
 export default function NewHome() {
   const classes = useStyles();
   // const socket = io(`${process.env.REACT_APP_LOCALHOST}`);
@@ -458,13 +478,10 @@ export default function NewHome() {
   const [bookStatus, setbookStatus] = useState();
   const [addBookCall, setaddBookCall] = useState(false);
   const [modifyBookcall, setmodifyBookcall] = useState(false);
+  const [deleteConfirm, setdeleteConfirm] = useState(false);
   const [selectedBookDetails, setselectedBookDetails] = useState();
-  // const classOfAdd =
-  const classOfModify = store.set.modifyEffectCall
-    ? classes.modifyEffect
-    : store.set.modifyCommitCall
-    ? classes.modifyCommit
-    : classes.modifyRollback;
+  const [deleteBook, setdeleteBook] = useState();
+  const [serResult, setserResult] = useState([]);
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -498,30 +515,32 @@ export default function NewHome() {
       // console.log(" postdata ", postData);
       if (postData.length === 0) {
         setbookStatus(false);
-        setData(postData);
         errormessage = "No book found!";
         toasting("error", errormessage);
       } else {
         setbookStatus(true);
-        setData(postData);
+        setserResult(postData);
       }
     }
     if (name.length <= 1) {
-      setData(state);
       setbookStatus(false);
     }
   };
   const deleteAction = (contents) => {
-    console.log(contents);
+    setdeleteBook(contents);
+  };
+  const onDelete = () => {
+    console.log(deleteBook);
+    setdeleteConfirm(false);
     dispatch(
       delete_book({
-        id: contents._id,
+        id: deleteBook._id,
         book: {
-          _id: contents._id,
-          title: contents.title,
-          author: contents.author,
-          date_added: contents.date_added,
-          user_id: contents.user_id,
+          _id: deleteBook._id,
+          title: deleteBook.title,
+          author: deleteBook.author,
+          date_added: deleteBook.date_added,
+          user_id: deleteBook.user_id,
         },
         token: localStorage.getItem("jwtToken"),
       })
@@ -529,12 +548,17 @@ export default function NewHome() {
   };
 
   useEffect(() => {
+    console.log("useeffect is called");
     setData(state);
+    if (bookStatus) {
+      setData(serResult);
+      console.log(serResult, "search result");
+    }
     // socket.emit("data from client", "hello from client");
     // socket.on("Book Added", (bookInfo) => {
-    //   // console.log("book added is called",bookInfo)
+    //   console.log("book added is called",bookInfo)
     //   setResponse(bookInfo);
-    //   setData([...state, bookInfo]);
+    //   setData([bookInfo]);
     // });
     // socket.on("Book Deleted", (bookInfo) => {
     //   console.log("book deleted is called", bookInfo);
@@ -544,9 +568,45 @@ export default function NewHome() {
     //   // setResponse(bookInfo)
     //   // setData(del)
     // });
-  }, [state, response, data]);
+  }, [state, response, data, bookStatus, serResult]);
+
+  // const d = useEventSource(`${process.env.REACT_APP_LOCALHOST}/stream-random-numbers`);
+  // if (d) {
+  //   return <div>The current temperature in my living room is {d.value}</div>;
+  // }
   return (
     <>
+      {store.set.loading_status ? (
+        <div className={classes.load}>
+          <LinearProgress />
+        </div>
+      ) : (
+        <></>
+      )}
+      <Dialog
+        open={deleteConfirm}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={() => setdeleteConfirm(false)}
+        aria-labelledby="alert-dialog-slide-title"
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogContent>
+          <Typography>Are You Sure ?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button type="button" className="outline" onClick={() => onDelete()}>
+            Yes
+          </Button>
+          <Button
+            type="button"
+            className="outline"
+            onClick={() => setdeleteConfirm(false)}
+          >
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Dialog
         open={modifyBookcall}
         TransitionComponent={Transition}
@@ -756,6 +816,7 @@ export default function NewHome() {
                 Book list
                 <IconButton
                   size="small"
+                  disabled ={store.user.USER_CURRENT_STATUS === false}
                   edge="end"
                   onClick={() => setaddBookCall(true)}
                 >
@@ -804,7 +865,8 @@ export default function NewHome() {
                       </StyledTableCell>
                       <StyledTableCell component="th" scope="row">
                         <IconButton
-                          onClick={() =>
+                          onClick={() => (
+                            setdeleteConfirm(true),
                             deleteAction({
                               _id,
                               title,
@@ -812,7 +874,7 @@ export default function NewHome() {
                               date_added,
                               user_id,
                             })
-                          }
+                          )}
                           size="small"
                           disabled={store.user.USER_ID !== user_id}
                         >

@@ -29,6 +29,7 @@ function App() {
     let token = localStorage.getItem("jwtToken");
     if(token !== null){
      dispatch(user_details());
+     dispatch(book_details());
     }else{
      dispatch(book_details());
     }

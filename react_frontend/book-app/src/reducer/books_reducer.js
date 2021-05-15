@@ -135,9 +135,10 @@ export const set_reducer = (state = initialState, action) => {
       };
 
     case "DELETE_BOOK_COMMIT":
-      console.log("DELETEBOOK commit", action.payload);
+      
       let del = [...state.set];
-      let j = del.findIndex((element) => element._id === action.payload._id);
+      let j = del.findIndex((element) => element._id === state.bookTobeDeleted._id);
+      console.log("DELETEBOOK commit", j ,state.bookTobeDeleted);
       del.splice(j, 1);
       return {
         ...state,

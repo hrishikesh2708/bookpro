@@ -56,7 +56,7 @@ router.get("/getbook", async (req, res, next) => {
 });
 router.post("/book-addition", async (req, res) => {
   console.log("request:", req.body);
-  let io = req.app.get("io");
+  // let io = req.app.get("io");
   const { errors, isValid } = validateBook(req.body);
   if (!isValid) {
     return res.status(422).json(errors);
@@ -72,7 +72,7 @@ router.post("/book-addition", async (req, res) => {
       newbook.save().then((x) => {
         return res.json(x);
       });
-      io.emit("Book Added", newbook);
+      // io.emit("Book Added", newbook);
     } else {
       return res.status(400).json({ message: "book is already present!" });
     }
