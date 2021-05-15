@@ -482,7 +482,7 @@ export default function NewHome() {
   const [selectedBookDetails, setselectedBookDetails] = useState();
   const [deleteBook, setdeleteBook] = useState();
   const [serResult, setserResult] = useState([]);
-
+const bookModify = state.modifyBookcall ? classes.modifyCommit : state.mod
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [order, setOrder] = useState("asc");
@@ -863,7 +863,9 @@ export default function NewHome() {
                         {date_added}
                         {/* {date_added.substr(0, 10)} & {date_added.substr(11, 12)} */}
                       </StyledTableCell>
-                      <StyledTableCell component="th" scope="row">
+                      <StyledTableCell 
+                      className={customElements}
+                      component="th" scope="row">
                         <IconButton
                           onClick={() => (
                             setdeleteConfirm(true),
