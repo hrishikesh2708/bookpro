@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import { Container } from "@material-ui/core";
-import { Switch, Route , HashRouter } from "react-router-dom";
+import { Switch, Route ,BrowserRouter} from "react-router-dom";
 import Navbar from "./component/layout/navbar";
 // import Home from "./component/layout/home/home";
 import Auth from "./component/layout/auth/auth";
@@ -11,31 +11,29 @@ import Login from "./component/layout/auth/login";
 import Ser from "./component/layout/ser";
 import Footer from "./component/layout/footer";
 import { user_details } from "./action/user_details";
-import { book_details } from "./action/book_action";
+import { book_details,
+  //  private_books
+   } from "./action/book_action";
 import { useDispatch } from "react-redux";
 import { main } from "./component/componentCSS";
 import NewHome from "./component/layout/home/NewHome";
-
+import MyBook from "./component/layout/mybook"
 
 function App() {
   const classes = main();
   const dispatch = useDispatch();
-  // dispatch(book_details());
-  // let token = localStorage.getItem("jwtToken");
-  // if(token !== null){
-  //  dispatch(user_details());
-  // }
   useEffect(() => {
     let token = localStorage.getItem("jwtToken");
     if(token !== null){
      dispatch(user_details());
      dispatch(book_details());
+    //  dispatch(private_books(token))
     }else{
      dispatch(book_details());
     }
   }, [dispatch])
   return (
-    <HashRouter>
+    <BrowserRouter>
       <Container maxWidth="lg" className={classes.root}>
         <Navbar />
          <Switch>
@@ -47,11 +45,12 @@ function App() {
         <Route excat path="/search" component={Search} />
         <Route excat path="/ser" component={Ser} />
         <Route excat path="/add" component={Add} />
+        <Route excat path="/mybooks" component={MyBook} />
         <Route excat path="/modify" component={Modify} />
         <Route excat path="/login" component={Login} />
       </Container>
       <Footer/>
-    </HashRouter>
+    </BrowserRouter>
   );
 }
 export default App;

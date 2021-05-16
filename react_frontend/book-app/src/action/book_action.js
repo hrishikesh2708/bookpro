@@ -4,9 +4,10 @@ import {
   MODIFY_BOOK,
   SET_STORE,
   DELETE_BOOK,
-  SEARCH_RESULT
+  SEARCH_RESULT,
+  MY_BOOKS
 } from "./type";
-import { get_books } from "../api routes/api";
+import { get_books, get_my_books } from "../api routes/api";
 
 export const get_book = (contents) => ({
   type: GET_BOOK,
@@ -72,4 +73,20 @@ export const delete_book = (contents) => ({
         rollback: { type: 'DELETE_BOOK_ROLLBACK'}
       }
     }
+});
+
+export const private_books = (contents) => {
+  return async (dispatch) => {
+    try {
+      let post = await get_my_books(contents);
+      console.log(post.data.docs)
+      dispatch(set_private_book(post.data.docs));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+};
+export const set_private_book = (contents) => ({
+  type: MY_BOOKS,
+  payload: { contents },
 });

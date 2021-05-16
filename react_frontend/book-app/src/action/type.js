@@ -5,4 +5,5 @@ export const ADD_BOOK = "ADD_BOOK";
 export const MODIFY_BOOK = "MODIFY_BOOK";
 export const GET_BOOK = "GET_BOOK";
 export const DELETE_BOOK = "DELETE_BOOK";
-export const SEARCH_RESULT = "SEARCH_RESULT"
+export const SEARCH_RESULT = "SEARCH_RESULT";
+export const MY_BOOKS ="MY_BOOKS";

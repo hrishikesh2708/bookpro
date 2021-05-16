@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.3",
-    "@material-ui/data-grid": "^4.0.0-alpha.26",
     "@material-ui/icons": "^4.11.2",
     "@redux-offline/redux-offline": "^2.6.0",
     "@testing-library/jest-dom": "^5.11.10",
@@ -15,7 +14,7 @@
     "is-empty": "^1.2.0",
     "jwt-decode": "^3.1.2",
     "localforage": "^1.9.0",
-    "material-table": "^1.69.3",
+    "moment": "^2.29.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-google-login": "^5.2.2",

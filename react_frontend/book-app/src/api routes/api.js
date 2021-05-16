@@ -5,6 +5,11 @@ export const get_books = async() => {
     // console.log(" api call", data)
     return data
 }
+export const get_my_books = async(token) => {
+    const data = await axios.get(`${process.env.REACT_APP_LOCALHOST}/api/privateBook` , { headers : {Authorization : token}})
+    // console.log(" api call", data)
+    return data
+}
 export const dbupdate = async(req) => {
     const data = await axios.get(`${process.env.REACT_APP_LOCALHOST}/api/boook`)
     return data 

@@ -128,4 +128,17 @@ router.delete("/book-delete/:id/:token", async (req, res) => {
     return res.status(401).json({});
   }
 });
+
+router.get("/privateBook", async (req,res) => {
+  console.log(req.header("Authorization"))
+  if( req.header("Authorization") !== "null"){
+    let decode = jwt_decode(req.header("Authorization"));
+    await book.find({user_id : decode.id } , function (err,docs) {
+      return res.json({message:"my books" , docs})
+    })
+  }
+  else{
+    res.status(404).json({message:"No Books"})
+  }  
+});
 module.exports = router;

@@ -4,6 +4,7 @@ const initialState = {
   bookAdded:"",
   bookModified:"",
   bookTobeDeleted: "",
+  privateBooks : "",
 
 };
 export const set_reducer = (state = initialState, action) => {
@@ -19,13 +20,38 @@ export const set_reducer = (state = initialState, action) => {
         ...state,
         set: action.payload.contents,
         loading_status: false,
+        // addEffectCall: false,
+        // addCommitCall: false,
+        // addRollBackCall: false,
+        // deleteCommitCall: false,
+        // deleteEffectCall: false,
+        // deleteRollBackCall: false,
+        // modifyEffectCall: false,
+        // modifyCommitCall: false,
+        // modifyRollBackCall: false,
       };
-
+    
+    case "MY_BOOKS":
+      console.log("mybooks",action.payload)
+      return{
+        ...state,
+        privateBooks : action.payload.contents,
+      }
+      
     case "ADD_BOOK":
       return {
         ...state,
         set: [...state.set, action.payload.contents],
-        bookAdded: action.payload.contents
+        bookAdded: action.payload.contents,
+        addEffectCall: true,
+        addCommitCall: false,
+        addRollBackCall: false,
+        deleteCommitCall: false,
+        deleteEffectCall: false,
+        deleteRollBackCall: false,
+        modifyEffectCall: false,
+        modifyCommitCall: false,
+        modifyRollBackCall: false,
       };
 
     case "ADD_BOOK_COMMIT":
@@ -40,11 +66,29 @@ export const set_reducer = (state = initialState, action) => {
         return {
           ...state,
           set: arr,
+          addEffectCall: false,
+          addCommitCall: true,
+          addRollBackCall: false,
+          deleteCommitCall: false,
+          deleteEffectCall: false,
+          deleteRollBackCall: false,
+          modifyEffectCall: false,
+          modifyCommitCall: false,
+          modifyRollBackCall: false,
         };
       } else
         return {
           ...state,
           set: arr,
+          addEffectCall: false,
+          addCommitCall: true,
+          addRollBackCall: false,
+          deleteCommitCall: false,
+          deleteEffectCall: false,
+          deleteRollBackCall: false,
+          modifyEffectCall: false,
+          modifyCommitCall: false,
+          modifyRollBackCall: false,
         };
 
     case "ADD_BOOK_ROLLBACK":
@@ -59,11 +103,29 @@ export const set_reducer = (state = initialState, action) => {
         return {
           ...state,
           set: Arr,
+          addEffectCall: false,
+          addCommitCall: false,
+          addRollBackCall: true,
+          deleteCommitCall: false,
+          deleteEffectCall: false,
+          deleteRollBackCall: false,
+          modifyEffectCall: false,
+          modifyCommitCall: false,
+          modifyRollBackCall: false,
         };
       } else
         return {
           ...state,
           set: Arr,
+          addEffectCall: false,
+          addCommitCall: false,
+          addRollBackCall: true,
+          deleteCommitCall: false,
+          deleteEffectCall: false,
+          deleteRollBackCall: false,
+          modifyEffectCall: false,
+          modifyCommitCall: false,
+          modifyRollBackCall: false,
         };
 
     case "MODIFY_BOOK":
@@ -81,6 +143,12 @@ export const set_reducer = (state = initialState, action) => {
           modifyEffectCall: true,
           modifyCommitCall: false,
           modifyRollBackCall: false,
+          deleteCommitCall: false,
+          deleteEffectCall: false,
+          deleteRollBackCall: false,
+          addEffectCall: false,
+          addCommitCall: false,
+          addRollBackCall: false,
         };
       } else
         return {
@@ -89,6 +157,12 @@ export const set_reducer = (state = initialState, action) => {
           modifyEffectCall: true,
           modifyCommitCall: false,
           modifyRollBackCall: false,
+          deleteCommitCall: false,
+          deleteEffectCall: false,
+          deleteRollBackCall: false,
+          addEffectCall: false,
+          addCommitCall: false,
+          addRollBackCall: false,
         };
 
     case "MODIFY_BOOK_COMMIT":
@@ -98,6 +172,12 @@ export const set_reducer = (state = initialState, action) => {
         modifyEffectCall: false,
         modifyCommitCall: true,
         modifyRollBackCall: false,
+        deleteCommitCall: false,
+        deleteEffectCall: false,
+        deleteRollBackCall: false,
+        addEffectCall: false,
+        addCommitCall: false,
+        addRollBackCall: false,
       };
 
     case "MODIFY_BOOK_ROLLBACK":
@@ -114,6 +194,12 @@ export const set_reducer = (state = initialState, action) => {
           modifyEffectCall: false,
           modifyCommitCall: false,
           modifyRollBackCall: true,
+          deleteCommitCall: false,
+          deleteEffectCall: false,
+          deleteRollBackCall: false,
+          addEffectCall: false,
+          addCommitCall: false,
+          addRollBackCall: false,
         };
       } else
         return {
@@ -122,6 +208,12 @@ export const set_reducer = (state = initialState, action) => {
           modifyEffectCall: false,
           modifyCommitCall: false,
           modifyRollBackCall: true,
+          deleteCommitCall: false,
+          deleteEffectCall: false,
+          deleteRollBackCall: false,
+          addEffectCall: false,
+          addCommitCall: false,
+          addRollBackCall: false,
         };
 
     case "DELETE_BOOK":
@@ -132,6 +224,12 @@ export const set_reducer = (state = initialState, action) => {
         deleteCommitCall: false,
         deleteEffectCall: true,
         deleteRollBackCall: false,
+        modifyEffectCall: false,
+        modifyCommitCall: false,
+        modifyRollBackCall: false,
+        addEffectCall: false,
+        addCommitCall: false,
+        addRollBackCall: false,
       };
 
     case "DELETE_BOOK_COMMIT":
@@ -146,6 +244,12 @@ export const set_reducer = (state = initialState, action) => {
         deleteCommitCall: true,
         deleteEffectCall: false,
         deleteRollBackCall: false,
+        modifyEffectCall: false,
+        modifyCommitCall: false,
+        modifyRollBackCall: false,
+        addEffectCall: false,
+        addCommitCall: false,
+        addRollBackCall: false,
       };
 
     case "DELETE_BOOK_ROLLBACK":
@@ -156,6 +260,12 @@ export const set_reducer = (state = initialState, action) => {
         deleteCommitCall: false,
         deleteEffectCall: false,
         deleteRollBackCall: true,
+        modifyEffectCall: false,
+        modifyCommitCall: false,
+        modifyRollBackCall: false,
+        addEffectCall: false,
+        addCommitCall: false,
+        addRollBackCall: false,
       };
 
     default:

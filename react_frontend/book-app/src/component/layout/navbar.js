@@ -88,6 +88,10 @@ function Navbar() {
                   {" "}
                   Add book{" "}
                 </Button>
+                <Button to="/myBooks" component={Link}>
+                  {" "}
+                  My Books{" "}
+                </Button>
                 {/* <Button to="/search" component={Link}>
                   {" "}
                   Search book{" "}

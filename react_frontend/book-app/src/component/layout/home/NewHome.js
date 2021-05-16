@@ -149,6 +149,7 @@ import PropTypes from "prop-types";
 // import io from "socket.io-client";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import  * as moment from "moment";
 
 // material ui icon
 import FirstPageIcon from "@material-ui/icons/FirstPage";
@@ -401,31 +402,31 @@ const useStyles = makeStyles((theme) => ({
     width: 1,
   },
   addEffect: {
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: "#c5cae9",
   },
   addCommit: {
-    backgroundColor: theme.palette.action.disabledBackground,
+    backgroundColor: "#7986cb",
   },
   addRollback: {
-    backgroundColor: theme.palette.action.disabledBackground,
+    backgroundColor: "#3f51b5",
   },
   modifyEffect: {
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: "#e1bee7",
   },
   modifyCommit: {
-    backgroundColor: theme.palette.action.disabledBackground,
+    backgroundColor: "#ce93d8",
   },
   modifyRollback: {
-    backgroundColor: theme.palette.action.disabledBackground,
+    backgroundColor: "#9c27b0",
   },
   deleteEffect: {
-    backgroundColor: theme.palette.action.disabledBackground,
+    backgroundColor: "#f44336",
   },
   deleteCommit: {
-    backgroundColor: theme.palette.action.disabledBackground,
+    backgroundColor: "#ef9a9a",
   },
   deleteRollback: {
-    backgroundColor: theme.palette.action.disabledBackground,
+    backgroundColor: "#ffcdd2",
   },
 }));
 
@@ -444,9 +445,9 @@ const StyledTableCell = withStyles((theme) => ({
 
 const StyledTableRow = withStyles((theme) => ({
   root: {
-    "&:nth-of-type(odd)": {
-      backgroundColor: theme.palette.action.disabledBackground,
-    },
+    // "&:nth-of-type(odd)": {
+    //   backgroundColor: theme.palette.action.disabledBackground,
+    // },
   },
 }))(TableRow);
 
@@ -482,12 +483,16 @@ export default function NewHome() {
   const [selectedBookDetails, setselectedBookDetails] = useState();
   const [deleteBook, setdeleteBook] = useState();
   const [serResult, setserResult] = useState([]);
-const bookModify = state.modifyBookcall ? classes.modifyCommit : state.mod
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("title");
   const dense = false;
+
+  const customModify = store.set.modifyEffectCall ? classes.modifyEffect : store.set.modifyCommitCall ? classes.modifyCommit : classes.modifyRollback
+  const customAdd =store.set.addEffectCall ? classes.addEffect : store.set.addCommitCall ? classes.addCommit : classes.addRollback
+  const customDel = store.set.deleteEffectCall ? classes.deleteEffect : store.set.deleteCommitCall ? classes.deleteCommit : classes.deleteRollback
+  const customColor = store.set.addEffectCall ? customAdd : store.set.modifyEffectCall ? customModify : store.set.deleteEffectCall ? customDel : null
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
@@ -855,13 +860,12 @@ const bookModify = state.modifyBookcall ? classes.modifyCommit : state.mod
                 {stableSort(data, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map(({ _id, title, author, date_added, user_id }) => (
-                    <StyledTableRow hover key={_id}>
+                    <StyledTableRow hover key={_id} className = {_id === store.set.bookModified._id ?  customColor : null}>
                       <StyledTableCell>{_id}</StyledTableCell>
                       <StyledTableCell>{title}</StyledTableCell>
                       <StyledTableCell>{author}</StyledTableCell>
                       <StyledTableCell>
-                        {date_added}
-                        {/* {date_added.substr(0, 10)} & {date_added.substr(11, 12)} */}
+                        {moment(date_added).format('MMMM Do YYYY, h:mm:ss a')}
                       </StyledTableCell>
                       <StyledTableCell 
                       className={customElements}
