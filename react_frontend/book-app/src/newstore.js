@@ -42,7 +42,7 @@ const persistedReducer = persistReducer(
     persistedReducer,
     composeWithDevTools(
       offlineEnhanceStore,
-      applyMiddleware(thunk, offlineMiddleware,logger)
+      applyMiddleware(thunk, offlineMiddleware)
     )
   );
   export const persistor = persistStore(store);

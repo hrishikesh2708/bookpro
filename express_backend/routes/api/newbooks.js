@@ -7,6 +7,11 @@ const { request, response } = require("express");
 const axios = require("axios");
 const { findOne } = require("../../model/newbooks");
 const user = require("../../model/user");
+// let  clients = [];
+// router.get("/fdsa" , async(req,res)=>{
+//   console.log(router , "app inside router")
+//   return res.status(200).json({router})
+// })
 
 router.get("/boook", async (req, res) => {
   try {
@@ -57,6 +62,16 @@ router.get("/getbook", async (req, res, next) => {
 router.post("/book-addition", async (req, res) => {
   console.log("request:", req.body);
   // let io = req.app.get("io");
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.flushHeaders();
+
+  // const sendEventStreamData = (data) => {
+  //   const sseFormattedResponse = `data: ${JSON.stringify(data)}\n\n`;
+  //   // clients.forEach(client => client.res.write(sseFormattedResponse))
+  //   res.write(sseFormattedResponse);
+  // };
   const { errors, isValid } = validateBook(req.body);
   if (!isValid) {
     return res.status(422).json(errors);
@@ -70,9 +85,11 @@ router.post("/book-addition", async (req, res) => {
         user_id: req.body.id,
       });
       newbook.save().then((x) => {
-        return res.json(x);
+        const sseFormattedResponse = `data: ${JSON.stringify(x)}\n\n`;
+        return res.json(x).write(sseFormattedResponse);;
       });
       // io.emit("Book Added", newbook);
+
     } else {
       return res.status(400).json({ message: "book is already present!" });
     }

@@ -489,6 +489,17 @@ export default function NewHome() {
   const [orderBy, setOrderBy] = useState("title");
   const dense = false;
 
+const sse = () => {
+  const eventSource = new EventSource(`${process.env.REACT_APP_LOCALHOST}/api/book-addition`)
+  eventSource.onopen = e => {
+    console.log("client name ",e)
+  }
+  eventSource.onmessage = e => {
+    console.log("data sent by server",e)
+    setResponse(e.data.value)
+  }
+}
+
   const customModify = store.set.modifyEffectCall ? classes.modifyEffect : store.set.modifyCommitCall ? classes.modifyCommit : classes.modifyRollback
   const customAdd =store.set.addEffectCall ? classes.addEffect : store.set.addCommitCall ? classes.addCommit : classes.addRollback
   const customDel = store.set.deleteEffectCall ? classes.deleteEffect : store.set.deleteCommitCall ? classes.deleteCommit : classes.deleteRollback
@@ -551,7 +562,17 @@ export default function NewHome() {
       })
     );
   };
-
+  useEffect(() => {
+    console.log("sse diff")
+    // const eventSource = new EventSource("http://localhost:4201/stream-random-numbers")
+    // eventSource.onopen = e => {
+    //   console.log("client name ",e)
+    // }
+    // eventSource.onmessage = e => {
+    //   console.log("data sent by server",e)
+    //   setResponse(e.data.value)
+    // }
+  })
   useEffect(() => {
     console.log("useeffect is called");
     setData(state);
@@ -559,6 +580,7 @@ export default function NewHome() {
       setData(serResult);
       console.log(serResult, "search result");
     }
+
     // socket.emit("data from client", "hello from client");
     // socket.on("Book Added", (bookInfo) => {
     //   console.log("book added is called",bookInfo)
@@ -581,6 +603,8 @@ export default function NewHome() {
   // }
   return (
     <>
+    <Button onClick={sse}>start</Button>
+    <p>response from server{response}</p>
       {store.set.loading_status ? (
         <div className={classes.load}>
           <LinearProgress />
