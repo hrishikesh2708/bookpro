@@ -32,7 +32,7 @@ export const set_reducer = (state = initialState, action) => {
       };
     
     case "MY_BOOKS":
-      console.log("mybooks",action.payload)
+      // console.log("mybooks",action.payload)
       return{
         ...state,
         privateBooks : action.payload.contents,
@@ -127,6 +127,23 @@ export const set_reducer = (state = initialState, action) => {
           modifyCommitCall: false,
           modifyRollBackCall: false,
         };
+
+    case "ADD_BOOK_SSE_COMMIT":
+        // console.log("sse addition" ,action.payload)
+        let array = [...state.set];
+      let location = array.findIndex(
+        (element) => element.title === action.payload.title
+      );
+      if (location > -1) {
+        return{
+          ...state
+        }
+      }else{
+        return{
+          ...state,
+          set: [...state.set,action.payload.book_added]
+        }
+      }
 
     case "MODIFY_BOOK":
       let data = [...state.set];

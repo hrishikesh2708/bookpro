@@ -64,7 +64,7 @@ const StyledTableRow = withStyles((theme) => ({
 }))(TableRow);
 export default function Mybook() {
   const classes = useStyles();
-  const state = useSelector(state => state.set.privateBooks)
+  const state = useSelector((state) => state.set.privateBooks);
   return (
     <>
       <Container>
@@ -75,20 +75,22 @@ export default function Mybook() {
           <TableContainer className={classes.container}>
             <Table stickyHeader={true}>
               <TableHead>
-                <StyledTableCell>Book Name</StyledTableCell>
-                <StyledTableCell>Author</StyledTableCell>
-                <StyledTableCell>Date & Time</StyledTableCell>
+                <StyledTableRow>
+                  <StyledTableCell>Book Name</StyledTableCell>
+                  <StyledTableCell>Author</StyledTableCell>
+                  <StyledTableCell>Date & Time</StyledTableCell>
+                </StyledTableRow>
               </TableHead>
               <TableBody>
-              {state.map(({title,author,date_added}) => (
-
-                <StyledTableRow>
-                  <StyledTableCell>{title}</StyledTableCell>
-                  <StyledTableCell>{author}</StyledTableCell>
-                  <StyledTableCell>{moment(date_added).format('MMMM Do YYYY, h:mm:ss a')}</StyledTableCell>
-                </StyledTableRow>
-              ))}
-
+                {state.map(({ title, author, date_added, _id }) => (
+                  <StyledTableRow key={_id}>
+                    <StyledTableCell>{title}</StyledTableCell>
+                    <StyledTableCell>{author}</StyledTableCell>
+                    <StyledTableCell>
+                      {moment(date_added).format("MMMM Do YYYY, h:mm:ss a")}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
               </TableBody>
             </Table>
           </TableContainer>

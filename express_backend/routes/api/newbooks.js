@@ -7,11 +7,61 @@ const { request, response } = require("express");
 const axios = require("axios");
 const { findOne } = require("../../model/newbooks");
 const user = require("../../model/user");
-// let  clients = [];
-// router.get("/fdsa" , async(req,res)=>{
-//   console.log(router , "app inside router")
-//   return res.status(200).json({router})
-// })
+let  clients = [];
+
+global.bookAdded = ""
+global.bookEdited = ""
+
+router.get("/sse-add", async (req, res) => {
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.flushHeaders();
+
+  const clientId = Date.now();
+  const newClient = {
+    id: clientId,
+    res
+  };
+  clients.push(newClient);
+  if(bookAdded !==""){
+    res.write(`data: ${JSON.stringify({book_added:bookAdded})}\n\n`);
+    bookAdded = ""
+  }
+
+
+  res.on("close", () => {
+    console.log(`${clientId} Connection closed`);
+    clients = clients.filter(client => client.id !== clientId);
+    res.end();
+  });
+});
+
+router.get("/sse-modify", async (req, res) => {
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.flushHeaders();
+
+  const clientId = Date.now();
+  const newClient = {
+    id: clientId,
+    res
+  };
+  clients.push(newClient);
+  if(bookEdited !== ""){
+    res.write(`data: ${JSON.stringify({book_edited:bookEdited})}\n\n`);
+    bookEdited = ""
+  }
+
+
+  res.on("close", () => {
+    console.log(`${clientId} Connection closed`);
+    clients = clients.filter(client => client.id !== clientId);
+    res.end();
+  });
+});
+
 
 router.get("/boook", async (req, res) => {
   try {
@@ -62,16 +112,7 @@ router.get("/getbook", async (req, res, next) => {
 router.post("/book-addition", async (req, res) => {
   console.log("request:", req.body);
   // let io = req.app.get("io");
-  res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.flushHeaders();
 
-  // const sendEventStreamData = (data) => {
-  //   const sseFormattedResponse = `data: ${JSON.stringify(data)}\n\n`;
-  //   // clients.forEach(client => client.res.write(sseFormattedResponse))
-  //   res.write(sseFormattedResponse);
-  // };
   const { errors, isValid } = validateBook(req.body);
   if (!isValid) {
     return res.status(422).json(errors);
@@ -85,11 +126,31 @@ router.post("/book-addition", async (req, res) => {
         user_id: req.body.id,
       });
       newbook.save().then((x) => {
-        const sseFormattedResponse = `data: ${JSON.stringify(x)}\n\n`;
-        return res.json(x).write(sseFormattedResponse);;
+        // router.get("/book-addition-event", async (req, res) => {
+        //   res.setHeader("Content-Type", "text/event-stream");
+        //   res.setHeader("Cache-Control", "no-cache");
+        //   res.setHeader("Access-Control-Allow-Origin", "*");
+        //   res.flushHeaders();
+
+        //   const clientId = Date.now();
+        //   const newClient = {
+        //     id: clientId,
+        //     res
+        //   };
+        //   clients.push(newClient);
+          
+        //   res.write(`data: ${JSON.stringify(x)}\n\n`);
+        //   res.emit('close')
+        //   res.on("close", () => {
+        //     console.log(`${clientId} Connection closed`);
+        //     clients = clients.filter(client => client.id !== clientId);
+        //     res.end();
+        //   });
+        // });
+        global.bookAdded = x
+        return res.json(x);
       });
       // io.emit("Book Added", newbook);
-
     } else {
       return res.status(400).json({ message: "book is already present!" });
     }
@@ -116,6 +177,7 @@ router.put("/book-modify/:token", async (req, res) => {
       } else {
         x.author = req.body.newData.author;
         x.save().then((x) => {
+          global.bookEdited = x
           res.json(x);
         });
       }
@@ -146,16 +208,15 @@ router.delete("/book-delete/:id/:token", async (req, res) => {
   }
 });
 
-router.get("/privateBook", async (req,res) => {
-  console.log(req.header("Authorization"))
-  if( req.header("Authorization") !== "null"){
+router.get("/privateBook", async (req, res) => {
+  console.log(req.header("Authorization"));
+  if (req.header("Authorization") !== "null") {
     let decode = jwt_decode(req.header("Authorization"));
-    await book.find({user_id : decode.id } , function (err,docs) {
-      return res.json({message:"my books" , docs})
-    })
+    await book.find({ user_id: decode.id }, function (err, docs) {
+      return res.json({ message: "my books", docs });
+    });
+  } else {
+    res.status(404).json({ message: "No Books" });
   }
-  else{
-    res.status(404).json({message:"No Books"})
-  }  
 });
 module.exports = router;

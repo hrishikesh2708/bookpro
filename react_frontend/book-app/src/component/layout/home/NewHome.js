@@ -143,6 +143,7 @@ import {
   delete_book,
   modify_book,
   add_book,
+  add_book_commit,
 } from "../../../action/book_action";
 import toasting from "../../../toast/toast";
 import PropTypes from "prop-types";
@@ -488,18 +489,29 @@ export default function NewHome() {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("title");
   const dense = false;
-
+  const [listen,setListen] =useState(false)
+  let eventSource = ""
 const sse = () => {
-  const eventSource = new EventSource(`${process.env.REACT_APP_LOCALHOST}/api/book-addition`)
+  eventSource = new EventSource(`${process.env.REACT_APP_LOCALHOST}/api/sse-add`)
   eventSource.onopen = e => {
     console.log("client name ",e)
   }
   eventSource.onmessage = e => {
-    console.log("data sent by server",e)
-    setResponse(e.data.value)
+    console.log("data sent by server [ADDITION]",e)
+    console.log("data sent by server [ADDITION]", JSON.parse(e.data))
+    dispatch(add_book_commit(JSON.parse(e.data)))
+    toasting("success" , " New book added by different user!!")
+    // setResponse(e.data.value)
   }
+  
 }
 
+const sseclose = () => {
+  // eventSource.close()
+}
+const updateresponse = (e) => {
+  setResponse(e)
+}
   const customModify = store.set.modifyEffectCall ? classes.modifyEffect : store.set.modifyCommitCall ? classes.modifyCommit : classes.modifyRollback
   const customAdd =store.set.addEffectCall ? classes.addEffect : store.set.addCommitCall ? classes.addCommit : classes.addRollback
   const customDel = store.set.deleteEffectCall ? classes.deleteEffect : store.set.deleteCommitCall ? classes.deleteCommit : classes.deleteRollback
@@ -562,20 +574,30 @@ const sse = () => {
       })
     );
   };
-  useEffect(() => {
-    console.log("sse diff")
-    // const eventSource = new EventSource("http://localhost:4201/stream-random-numbers")
-    // eventSource.onopen = e => {
-    //   console.log("client name ",e)
-    // }
-    // eventSource.onmessage = e => {
-    //   console.log("data sent by server",e)
-    //   setResponse(e.data.value)
-    // }
-  })
+  // const eventSource = new EventSource(`${process.env.REACT_APP_LOCALHOST}/api/book-addition-event`)
+  // useEffect(() => {
+  //   console.log("sse diff")
+
+  // const eventSource = new EventSource(`${process.env.REACT_APP_LOCALHOST}/api/book-addition-event`)
+  // eventSource.onopen = e => {
+  //   console.log("client name ",e)
+  //   // setListen(true)
+  // }
+  // eventSource.onmessage = e => {
+  //   console.log("data sent by server [ADDITION]", JSON.parse(e.data))
+  //   dispatch(add_book_commit(JSON.parse(e.data)))
+  //   updateresponse(JSON.parse(e.data))
+  // }
+  // eventSource.onerror = e => {
+  //   console.log("err in sse" , e)
+  //   // setListen(false)
+  // }
+  // },[])
+
   useEffect(() => {
     console.log("useeffect is called");
     setData(state);
+    console.log("useeffect" ,data);
     if (bookStatus) {
       setData(serResult);
       console.log(serResult, "search result");
@@ -595,7 +617,7 @@ const sse = () => {
     //   // setResponse(bookInfo)
     //   // setData(del)
     // });
-  }, [state, response, data, bookStatus, serResult]);
+  }, [store , data]);
 
   // const d = useEventSource(`${process.env.REACT_APP_LOCALHOST}/stream-random-numbers`);
   // if (d) {
@@ -604,7 +626,8 @@ const sse = () => {
   return (
     <>
     <Button onClick={sse}>start</Button>
-    <p>response from server{response}</p>
+    <Button onClick={sseclose}>stop</Button>
+    {/* <p>response from server{response}</p> */}
       {store.set.loading_status ? (
         <div className={classes.load}>
           <LinearProgress />

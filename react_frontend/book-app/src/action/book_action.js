@@ -5,7 +5,8 @@ import {
   SET_STORE,
   DELETE_BOOK,
   SEARCH_RESULT,
-  MY_BOOKS
+  MY_BOOKS,
+  ADD_BOOK_SSE_COMMIT,
 } from "./type";
 import { get_books, get_my_books } from "../api routes/api";
 
@@ -79,7 +80,7 @@ export const private_books = (contents) => {
   return async (dispatch) => {
     try {
       let post = await get_my_books(contents);
-      console.log(post.data.docs)
+      // console.log(post.data.docs)
       dispatch(set_private_book(post.data.docs));
     } catch (e) {
       console.log(e);
@@ -89,4 +90,9 @@ export const private_books = (contents) => {
 export const set_private_book = (contents) => ({
   type: MY_BOOKS,
   payload: { contents },
+});
+
+export const add_book_commit = (contents) => ({
+  type: ADD_BOOK_SSE_COMMIT,
+  payload: { ...contents },
 });
