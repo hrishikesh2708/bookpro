@@ -1,6 +1,6 @@
 import { SET_CURRENT_USER, SET_CURRENT_USER_LOGOUT } from "./type"
 import jwt_decode from "jwt-decode";
-import {book_details, private_books} from "./book_action"
+import { private_books} from "./book_action"
 
 export const user_details_success = (contents) => ({
     type: SET_CURRENT_USER,

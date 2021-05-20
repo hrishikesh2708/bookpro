@@ -313,7 +313,7 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-  const { classes, order, orderBy, rowCount, onRequestSort } = props;
+  const { classes, order, orderBy,  onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -475,7 +475,7 @@ export default function NewHome() {
   const state = useSelector((state) => state.set.set);
   const store = useSelector((state) => state);
   const dispatch = useDispatch();
-  const [response, setResponse] = useState("");
+  // const [response, setResponse] = useState("");
   const [data, setData] = useState(state);
   const [bookStatus, setbookStatus] = useState();
   const [addBookCall, setaddBookCall] = useState(false);
@@ -489,7 +489,7 @@ export default function NewHome() {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("title");
   const dense = false;
-  const [listen,setListen] =useState(false)
+  // const [listen,setListen] =useState(false)
   let eventSource = ""
 const sse = () => {
   eventSource = new EventSource(`${process.env.REACT_APP_LOCALHOST}/api/sse-add`)
@@ -509,13 +509,14 @@ const sse = () => {
 const sseclose = () => {
   // eventSource.close()
 }
-const updateresponse = (e) => {
-  setResponse(e)
-}
+// const updateresponse = (e) => {
+//   // setResponse(e)
+// }
   const customModify = store.set.modifyEffectCall ? classes.modifyEffect : store.set.modifyCommitCall ? classes.modifyCommit : classes.modifyRollback
   const customAdd =store.set.addEffectCall ? classes.addEffect : store.set.addCommitCall ? classes.addCommit : classes.addRollback
   const customDel = store.set.deleteEffectCall ? classes.deleteEffect : store.set.deleteCommitCall ? classes.deleteCommit : classes.deleteRollback
   const customColor = store.set.addEffectCall ? customAdd : store.set.modifyEffectCall ? customModify : store.set.deleteEffectCall ? customDel : null
+  const customId = customColor === customAdd ? store.set.bookAdded._id : customColor === customModify  ? store.set.bookModified._id : customColor === customDel  ? store.set.bookTobeDeleted._id : null
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
@@ -574,55 +575,17 @@ const updateresponse = (e) => {
       })
     );
   };
-  // const eventSource = new EventSource(`${process.env.REACT_APP_LOCALHOST}/api/book-addition-event`)
-  // useEffect(() => {
-  //   console.log("sse diff")
-
-  // const eventSource = new EventSource(`${process.env.REACT_APP_LOCALHOST}/api/book-addition-event`)
-  // eventSource.onopen = e => {
-  //   console.log("client name ",e)
-  //   // setListen(true)
-  // }
-  // eventSource.onmessage = e => {
-  //   console.log("data sent by server [ADDITION]", JSON.parse(e.data))
-  //   dispatch(add_book_commit(JSON.parse(e.data)))
-  //   updateresponse(JSON.parse(e.data))
-  // }
-  // eventSource.onerror = e => {
-  //   console.log("err in sse" , e)
-  //   // setListen(false)
-  // }
-  // },[])
 
   useEffect(() => {
     console.log("useeffect is called");
     setData(state);
-    console.log("useeffect" ,data);
+    // console.log("useeffect" ,data);
     if (bookStatus) {
       setData(serResult);
       console.log(serResult, "search result");
     }
+  }, [store]);
 
-    // socket.emit("data from client", "hello from client");
-    // socket.on("Book Added", (bookInfo) => {
-    //   console.log("book added is called",bookInfo)
-    //   setResponse(bookInfo);
-    //   setData([bookInfo]);
-    // });
-    // socket.on("Book Deleted", (bookInfo) => {
-    //   console.log("book deleted is called", bookInfo);
-    //   // let del = data;
-    //   // let j = del.findIndex((element) => element._id === bookInfo._id);
-    //   // del.splice(j, 1);
-    //   // setResponse(bookInfo)
-    //   // setData(del)
-    // });
-  }, [store , data]);
-
-  // const d = useEventSource(`${process.env.REACT_APP_LOCALHOST}/stream-random-numbers`);
-  // if (d) {
-  //   return <div>The current temperature in my living room is {d.value}</div>;
-  // }
   return (
     <>
     <Button onClick={sse}>start</Button>
@@ -907,7 +870,7 @@ const updateresponse = (e) => {
                 {stableSort(data, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map(({ _id, title, author, date_added, user_id }) => (
-                    <StyledTableRow hover key={_id} className = {_id === store.set.bookModified._id ?  customColor : null}>
+                    <StyledTableRow hover key={_id} className = {_id === customId ?  customColor : null}>
                       <StyledTableCell>{_id}</StyledTableCell>
                       <StyledTableCell>{title}</StyledTableCell>
                       <StyledTableCell>{author}</StyledTableCell>

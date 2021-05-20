@@ -84,10 +84,10 @@ function Navbar() {
                   {" "}
                   Update book{" "}
                 </Button> */}
-                <Button to="/add" component={Link}>
+                {/* <Button to="/add" component={Link}>
                   {" "}
                   Add book{" "}
-                </Button>
+                </Button> */}
                 <Button to="/myBooks" component={Link}>
                   {" "}
                   My Books{" "}

@@ -26,6 +26,7 @@ router.get("/sse-add", async (req, res) => {
   clients.push(newClient);
   if(bookAdded !==""){
     res.write(`data: ${JSON.stringify({book_added:bookAdded})}\n\n`);
+    // res.write(`data: ${JSON.stringify({book_edited:bookEdited})}\n\n`);
     bookAdded = ""
   }
 
