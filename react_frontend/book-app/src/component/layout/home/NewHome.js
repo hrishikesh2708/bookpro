@@ -1,139 +1,3 @@
-// import React, { useEffect, useState } from "react";
-// import MaterialTable from "material-table";
-// import {
-//   LinearProgress,
-//   Container,
-//   Grid,
-// } from "@material-ui/core";
-// import { homejsx } from "../../componentCSS";
-// import { ToastContainer } from "react-toastify";
-// import { useSelector, useDispatch } from "react-redux";
-// import { delete_book, modify_book , add_book} from "../../../action/book_action";
-// import io from "socket.io-client"
-// import toasting from "../../../toast/toast";
-// export default function NewHome() {
-//   const classes = homejsx();
-//   const socket = io(`${process.env.REACT_APP_LOCALHOST}`)
-//   const state = useSelector((state) => state.set.set);
-//   const store = useSelector((state) => state);
-//   const dispatch = useDispatch();
-//   const [response, setResponse] = useState("");
-
-//   const [data, setData] = useState(state);
-//   const columns = [
-//     {
-//       field: "_id",
-//       title: "ID",
-//       editable: false,
-//       hidden: true,
-//       sorting: false,
-//     },
-//     { field: "title", title: "Book Name", editable: false, sorting: false },
-//     { field: "author", title: "Author", sorting: false },
-//     {
-//       field: "date_added",
-//       title: "Date Added",
-//       editable: false,
-//       hidden: true,
-//       defaultSort: "desc",
-//     },
-//   ];
-//   useEffect(() => {
-//     // setData([...state,response]);
-//     socket.emit('data from client',"hello from client");
-//     socket.on("Book Added", (bookInfo) => {
-//       console.log("book added is called",bookInfo)
-//       if(bookInfo){
-//         toasting("success", "New Book Added")
-//       }
-//       setResponse(bookInfo)
-//       setData([...state,bookInfo])
-//     })
-//     // socket.on("Book Deleted", (bookInfo) => {
-//     //   console.log("book deleted is called",bookInfo)
-//     //   // let del = data;
-//     //   // let j = del.findIndex((element) => element._id === bookInfo._id);
-//     //   // del.splice(j, 1);
-//     //   // setResponse(bookInfo)
-//     //   // setData(del)
-//     // })
-
-//   }, [state,socket,response,data]);
-//   return (
-//     <>
-//     <p>response from socket {response.title} </p>
-//       {store.set.loading_status ? (
-//         <div className={classes.load}>
-//           <LinearProgress />
-//         </div>
-//       ) : (
-//         <></>
-//       )}
-
-//       <Container className={classes.margin}>
-//         <Grid
-//           container
-//           spacing={2}
-//           direction="row"
-//           justify="space-around"
-//           alignItems="flex-start"
-//         >
-//           <Grid item xs>
-//             <MaterialTable
-//               title={"Book List"}
-//               data={data}
-//               columns={columns}
-//               editable={{
-//                 isEditable: (rowData) =>
-//                   store.user.USER_CURRENT_STATUS === true,
-//                 isDeletable: (rowData) =>
-//                   rowData.user_id === store.user.USER_ID,
-//                 onRowUpdate: (newData, oldData) =>
-//                   new Promise((resolve, reject) => {
-//                     console.log(newData, oldData);
-//                     dispatch(
-//                         modify_book({
-//                           newData: newData,
-//                           oldData: oldData,
-//                           token: localStorage.getItem("jwtToken"),
-//                         })
-//                       );
-//                       resolve();
-//                   }),
-//                 onRowDelete: (selectedRow) =>
-//                   new Promise((resolve, reject) => {
-//                     console.log(selectedRow);
-//                       const index = selectedRow._id;
-//                       dispatch(
-//                         delete_book({
-//                           id: index,
-//                           token: localStorage.getItem("jwtToken"),
-//                         })
-//                       );
-//                       resolve();
-//                   }),
-//               }}
-//               options={{
-//                 actionsColumnIndex: -1,
-//                 loadingType: "linear",
-//                 sorting: true,
-//               }}
-//             />
-//           </Grid>
-//           {/* {store.user.USER_CURRENT_STATUS ? (
-//             <Grid item xs={4}>
-//               <Recent />
-//             </Grid>
-//           ) : (
-//             <></>
-//           )} */}
-//         </Grid>
-//       </Container>
-//       <ToastContainer/>
-//     </>
-//   );
-// }
-
 //hooks and action
 import React, { useEffect, useState } from "react";
 import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
@@ -144,13 +8,14 @@ import {
   modify_book,
   add_book,
   add_book_commit,
+  modify_book_commit,
+  delete_book_commit,
 } from "../../../action/book_action";
 import toasting from "../../../toast/toast";
 import PropTypes from "prop-types";
-// import io from "socket.io-client";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import  * as moment from "moment";
+import * as moment from "moment";
 
 // material ui icon
 import FirstPageIcon from "@material-ui/icons/FirstPage";
@@ -185,7 +50,7 @@ import {
   TableContainer,
   IconButton,
   TablePagination,
-  } from "@material-ui/core";
+} from "@material-ui/core";
 
 // ------------------Pagination------------------//
 const useStyles1 = makeStyles((theme) => ({
@@ -313,7 +178,7 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-  const { classes, order, orderBy,  onRequestSort } = props;
+  const { classes, order, orderBy, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -456,26 +321,11 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-// const useEventSource = (url) => {
-//   const [data, updateData] = useState(null);
-
-//   useEffect(() => {
-//       const source = new EventSource(url);
-
-//       source.onmessage = function logEvents(event) {
-//           updateData(JSON.parse(event.data));
-//       }
-//   }, [])
-
-//   return data;
-// }
 export default function NewHome() {
   const classes = useStyles();
-  // const socket = io(`${process.env.REACT_APP_LOCALHOST}`);
   const state = useSelector((state) => state.set.set);
   const store = useSelector((state) => state);
   const dispatch = useDispatch();
-  // const [response, setResponse] = useState("");
   const [data, setData] = useState(state);
   const [bookStatus, setbookStatus] = useState();
   const [addBookCall, setaddBookCall] = useState(false);
@@ -489,34 +339,37 @@ export default function NewHome() {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("title");
   const dense = false;
-  // const [listen,setListen] =useState(false)
-  let eventSource = ""
-const sse = () => {
-  eventSource = new EventSource(`${process.env.REACT_APP_LOCALHOST}/api/sse-add`)
-  eventSource.onopen = e => {
-    console.log("client name ",e)
-  }
-  eventSource.onmessage = e => {
-    console.log("data sent by server [ADDITION]",e)
-    console.log("data sent by server [ADDITION]", JSON.parse(e.data))
-    dispatch(add_book_commit(JSON.parse(e.data)))
-    toasting("success" , " New book added by different user!!")
-    // setResponse(e.data.value)
-  }
-  
-}
 
-const sseclose = () => {
-  // eventSource.close()
-}
-// const updateresponse = (e) => {
-//   // setResponse(e)
-// }
-  const customModify = store.set.modifyEffectCall ? classes.modifyEffect : store.set.modifyCommitCall ? classes.modifyCommit : classes.modifyRollback
-  const customAdd =store.set.addEffectCall ? classes.addEffect : store.set.addCommitCall ? classes.addCommit : classes.addRollback
-  const customDel = store.set.deleteEffectCall ? classes.deleteEffect : store.set.deleteCommitCall ? classes.deleteCommit : classes.deleteRollback
-  const customColor = store.set.addEffectCall ? customAdd : store.set.modifyEffectCall ? customModify : store.set.deleteEffectCall ? customDel : null
-  const customId = customColor === customAdd ? store.set.bookAdded._id : customColor === customModify  ? store.set.bookModified._id : customColor === customDel  ? store.set.bookTobeDeleted._id : null
+  const customModify = store.set.modifyEffectCall
+    ? classes.modifyEffect
+    : store.set.modifyCommitCall
+    ? classes.modifyCommit
+    : classes.modifyRollback;
+  const customAdd = store.set.addEffectCall
+    ? classes.addEffect
+    : store.set.addCommitCall
+    ? classes.addCommit
+    : classes.addRollback;
+  const customDel = store.set.deleteEffectCall
+    ? classes.deleteEffect
+    : store.set.deleteCommitCall
+    ? classes.deleteCommit
+    : classes.deleteRollback;
+  const customColor = store.set.addEffectCall
+    ? customAdd
+    : store.set.modifyEffectCall
+    ? customModify
+    : store.set.deleteEffectCall
+    ? customDel
+    : null;
+  const customId =
+    customColor === customAdd
+      ? store.set.bookAdded._id
+      : customColor === customModify
+      ? store.set.bookModified._id
+      : customColor === customDel
+      ? store.set.bookTobeDeleted._id
+      : null;
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
@@ -575,11 +428,43 @@ const sseclose = () => {
       })
     );
   };
-
+  useEffect(() => {
+    let eventSource = new EventSource(
+      `${process.env.REACT_APP_LOCALHOST}/api/stream`
+    );
+    eventSource.onopen = (e) => {
+      console.log("client name ", e);
+    };
+    eventSource.onmessage = (e) => {
+      let res = JSON.parse(e.data);
+      console.log("data sent by server p", Object.keys(res)[0]);
+      switch (Object.keys(res)[0]) {
+        case "book_added":
+          console.log(res.book_added, "book_added");
+          dispatch(add_book_commit(res.book_added));
+          toasting("success", " New book added by different user!!");
+          break;
+        case "book_edited":
+          console.log(res.book_edited, "book_edited");
+          dispatch(modify_book_commit(res.book_edited));
+          toasting("success", "Book was recently updated by different user");
+          break;
+        case "book_deleted":
+          console.log(res.book_deleted, "book_deleted");
+          dispatch(delete_book_commit(res.book_deleted));
+          toasting("success", "Book was deleted by different user");
+          break;
+        case "private_book":
+          console.log(res.private_book, "private_book");
+          break;
+        default:
+          break;
+      }
+    };
+  }, []);
   useEffect(() => {
     console.log("useeffect is called");
     setData(state);
-    // console.log("useeffect" ,data);
     if (bookStatus) {
       setData(serResult);
       console.log(serResult, "search result");
@@ -588,9 +473,6 @@ const sseclose = () => {
 
   return (
     <>
-    <Button onClick={sse}>start</Button>
-    <Button onClick={sseclose}>stop</Button>
-    {/* <p>response from server{response}</p> */}
       {store.set.loading_status ? (
         <div className={classes.load}>
           <LinearProgress />
@@ -743,9 +625,12 @@ const sseclose = () => {
               if (postData.length === 0) {
                 dispatch(
                   add_book({
-                    title: values.title,
-                    author: values.author,
-                    id: store.user.USER_ID || "",
+                    token: localStorage.getItem("jwtToken"),
+                    data: {
+                      title: values.title,
+                      author: values.author,
+                      id: store.user.USER_ID || "",
+                    },
                   })
                 );
                 toasting("success", "Book Added!!");
@@ -831,7 +716,7 @@ const sseclose = () => {
                 Book list
                 <IconButton
                   size="small"
-                  disabled ={store.user.USER_CURRENT_STATUS === false}
+                  disabled={store.user.USER_CURRENT_STATUS === false}
                   edge="end"
                   onClick={() => setaddBookCall(true)}
                 >
@@ -870,16 +755,22 @@ const sseclose = () => {
                 {stableSort(data, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map(({ _id, title, author, date_added, user_id }) => (
-                    <StyledTableRow hover key={_id} className = {_id === customId ?  customColor : null}>
+                    <StyledTableRow
+                      hover
+                      key={_id}
+                      className={_id === customId ? customColor : null}
+                    >
                       <StyledTableCell>{_id}</StyledTableCell>
                       <StyledTableCell>{title}</StyledTableCell>
                       <StyledTableCell>{author}</StyledTableCell>
                       <StyledTableCell>
-                        {moment(date_added).format('MMMM Do YYYY, h:mm:ss a')}
+                        {moment(date_added).format("MMMM Do YYYY, h:mm:ss a")}
                       </StyledTableCell>
-                      <StyledTableCell 
-                      className={customElements}
-                      component="th" scope="row">
+                      <StyledTableCell
+                        className={customElements}
+                        component="th"
+                        scope="row"
+                      >
                         <IconButton
                           onClick={() => (
                             setdeleteConfirm(true),

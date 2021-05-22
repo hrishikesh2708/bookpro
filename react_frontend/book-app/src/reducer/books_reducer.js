@@ -1,11 +1,10 @@
 const initialState = {
   set: [],
   loading_status: true,
-  bookAdded:"",
-  bookModified:"",
+  bookAdded: "",
+  bookModified: "",
   bookTobeDeleted: "",
-  privateBooks : "",
-
+  privateBooks: [],
 };
 export const set_reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -30,19 +29,19 @@ export const set_reducer = (state = initialState, action) => {
         // modifyCommitCall: false,
         // modifyRollBackCall: false,
       };
-    
+
     case "MY_BOOKS":
       // console.log("mybooks",action.payload)
-      return{
+      return {
         ...state,
-        privateBooks : action.payload.contents,
-      }
-      
+        privateBooks: action.payload.contents,
+      };
+
     case "ADD_BOOK":
       return {
         ...state,
-        set: [...state.set, action.payload.contents],
-        bookAdded: action.payload.contents,
+        set: [...state.set, action.payload.contents.data],
+        bookAdded: action.payload.contents.data,
         addEffectCall: true,
         addCommitCall: false,
         addRollBackCall: false,
@@ -97,9 +96,9 @@ export const set_reducer = (state = initialState, action) => {
       let loc = Arr.findIndex(
         (element) => element.title === state.bookAdded.title
       );
-      console.log(loc,state.bookAdded.title)
+      console.log(loc, state.bookAdded.title);
       if (loc > -1) {
-        Arr.splice(loc,1)
+        Arr.splice(loc, 1);
         return {
           ...state,
           set: Arr,
@@ -129,20 +128,21 @@ export const set_reducer = (state = initialState, action) => {
         };
 
     case "ADD_BOOK_SSE_COMMIT":
-        // console.log("sse addition" ,action.payload)
-        let array = [...state.set];
+      // console.log("sse addition" ,action.payload)
+      let array = [...state.set];
       let location = array.findIndex(
         (element) => element.title === action.payload.title
       );
+      console.log("sse addition", action.payload, location);
       if (location > -1) {
-        return{
-          ...state
-        }
-      }else{
-        return{
+        return {
           ...state,
-          set: [...state.set,action.payload.book_added]
-        }
+        };
+      } else {
+        return {
+          ...state,
+          set: [...state.set, action.payload],
+        };
       }
 
     case "MODIFY_BOOK":
@@ -202,7 +202,12 @@ export const set_reducer = (state = initialState, action) => {
       let modIndex = modData.findIndex(
         (element) => element._id === state.bookModified._id
       );
-      console.log("modify rollback ", action.payload, modIndex ,state.bookModified);
+      console.log(
+        "modify rollback ",
+        action.payload,
+        modIndex,
+        state.bookModified
+      );
       if (modIndex > -1) {
         modData[modIndex] = state.bookModified;
         return {
@@ -233,6 +238,24 @@ export const set_reducer = (state = initialState, action) => {
           addRollBackCall: false,
         };
 
+    case "MODIFY_BOOK_SSE_COMMIT":
+      let modsse = [...state.set];
+      let modloc = modsse.findIndex(
+        (element) => element._id === action.payload._id
+      );
+      console.log("modify sse commit", action.payload, modloc);
+      if (modloc > -1 && modsse[modloc].author !== action.payload._author) {
+        modsse[modloc] = action.payload;
+        return {
+          ...state,
+          set: modsse,
+        };
+      } else {
+        return {
+          ...state,
+        };
+      }
+
     case "DELETE_BOOK":
       console.log("DELETEBOOK", action.payload);
       return {
@@ -250,10 +273,11 @@ export const set_reducer = (state = initialState, action) => {
       };
 
     case "DELETE_BOOK_COMMIT":
-      
       let del = [...state.set];
-      let j = del.findIndex((element) => element._id === state.bookTobeDeleted._id);
-      console.log("DELETEBOOK commit", j ,state.bookTobeDeleted);
+      let j = del.findIndex(
+        (element) => element._id === state.bookTobeDeleted._id
+      );
+      console.log("DELETEBOOK commit", j, action.payload);
       del.splice(j, 1);
       return {
         ...state,
@@ -270,7 +294,11 @@ export const set_reducer = (state = initialState, action) => {
       };
 
     case "DELETE_BOOK_ROLLBACK":
-      console.log("DELETEBOOK rollback", action.payload.response, state.bookTobeDeleted);
+      console.log(
+        "DELETEBOOK rollback",
+        action.payload.response,
+        state.bookTobeDeleted
+      );
       return {
         ...state,
         set: [...state.set],
@@ -284,6 +312,24 @@ export const set_reducer = (state = initialState, action) => {
         addCommitCall: false,
         addRollBackCall: false,
       };
+
+    case "DELETE_BOOK_SSE_COMMIT":
+      let delSse = [...state.set];
+      let delLoc = delSse.findIndex(
+        (element) => element._id === action.payload._id
+      );
+      console.log("delete sse commit ", action.payload, delLoc);
+      if (delLoc > -1) {
+        delSse.splice(delLoc, 1);
+        return {
+          ...state,
+          set: delSse,
+        };
+      } else {
+        return {
+          ...state,
+        };
+      }
 
     default:
       return state;

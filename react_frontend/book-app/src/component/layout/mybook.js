@@ -7,12 +7,14 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Button,
   Typography,
 } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import React from "react";
 import { useSelector } from "react-redux";
 import * as moment from "moment";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -65,8 +67,23 @@ const StyledTableRow = withStyles((theme) => ({
 export default function Mybook() {
   const classes = useStyles();
   const state = useSelector((state) => state.set.privateBooks);
+  let eventSource = ""
+  const sse = () => {
+    eventSource = new EventSource(`${process.env.REACT_APP_LOCALHOST}/api/privateBook`)
+    eventSource.onopen = e => {
+      console.log("client name ",e)
+    }
+    eventSource.onmessage = e => {
+      console.log("data sent by server [ADDITION]",e)
+      // console.log("data sent by server [ADDITION]", JSON.parse(e.data))
+      // dispatch(add_book_commit(JSON.parse(e.data)))
+      // toasting("success" , " New book added by different user!!")
+      // setResponse(e.data.value)
+    }
+  }  
   return (
-    <>
+    <><Button onClick={sse}>start</Button>
+
       <Container>
         <Paper elevation={8} className={classes.paper}>
           <Typography variant="h4" className={classes.title}>

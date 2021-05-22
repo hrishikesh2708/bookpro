@@ -7,6 +7,8 @@ import {
   SEARCH_RESULT,
   MY_BOOKS,
   ADD_BOOK_SSE_COMMIT,
+  MODIFY_BOOK_SSE_COMMIT,
+  DELETE_BOOK_SSE_COMMIT,
 } from "./type";
 import { get_books, get_my_books } from "../api routes/api";
 
@@ -41,7 +43,8 @@ export const add_book = (contents) => ({
       effect: {
         url: `${process.env.REACT_APP_LOCALHOST}/api/book-addition`,
         method: "POST",
-        json: { ...contents },
+        json: { ...contents.data },
+        headers: { 'token': contents.token }
       },
       commit: { type: "ADD_BOOK_COMMIT" },
       rollback: { type: "ADD_BOOK_ROLLBACK", meta: {} },
@@ -95,4 +98,12 @@ export const set_private_book = (contents) => ({
 export const add_book_commit = (contents) => ({
   type: ADD_BOOK_SSE_COMMIT,
   payload: { ...contents },
+});
+export const modify_book_commit = (contents) => ({
+  type: MODIFY_BOOK_SSE_COMMIT,
+  payload: { ...contents },
+});
+export const delete_book_commit = (_id) => ({
+  type: DELETE_BOOK_SSE_COMMIT,
+  payload: { _id },
 });
