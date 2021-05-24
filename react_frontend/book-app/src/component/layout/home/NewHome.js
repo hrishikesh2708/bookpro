@@ -16,6 +16,7 @@ import PropTypes from "prop-types";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import * as moment from "moment";
+import { EventSourcePolyfill } from 'event-source-polyfill';
 
 // material ui icon
 import FirstPageIcon from "@material-ui/icons/FirstPage";
@@ -429,15 +430,15 @@ export default function NewHome() {
     );
   };
   useEffect(() => {
-    let eventSource = new EventSource(
-      `${process.env.REACT_APP_LOCALHOST}/api/stream`
-    );
+    let eventSource = new EventSourcePolyfill(
+      `${process.env.REACT_APP_LOCALHOST}/api/stream`,{headers : {'Authorization': localStorage.getItem("jwtToken")}}
+    );  
     eventSource.onopen = (e) => {
       console.log("client name ", e);
     };
     eventSource.onmessage = (e) => {
       let res = JSON.parse(e.data);
-      console.log("data sent by server p", Object.keys(res)[0]);
+      console.log("data sent by server  ", Object.keys(res)[0]);
       switch (Object.keys(res)[0]) {
         case "book_added":
           console.log(res.book_added, "book_added");
@@ -461,6 +462,9 @@ export default function NewHome() {
           break;
       }
     };
+    eventSource.onerror = (e) => {
+      console.log("no response from server")
+    }
   }, []);
   useEffect(() => {
     console.log("useeffect is called");

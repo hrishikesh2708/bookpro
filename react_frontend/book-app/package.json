@@ -10,6 +10,7 @@
     "@testing-library/react": "^11.2.6",
     "@testing-library/user-event": "^12.8.3",
     "axios": "^0.21.1",
+    "event-source-polyfill": "^1.0.24",
     "formik": "^2.2.6",
     "is-empty": "^1.2.0",
     "jwt-decode": "^3.1.2",

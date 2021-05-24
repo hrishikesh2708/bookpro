@@ -63,3 +63,12 @@ mongoose
     console.log("MongoDB successfully connected");
   })
   .catch((err) => console.log(err));
+
+
+  // const client = mongoose.connection.client
+  // const database = client.db("myFirstDatabase")
+  // const collection = db.collection("books(2.0)")
+  // const changeStream = collection.watch()
+  // changeStream.on("change", (event) =>{ 
+  //   console.log("changeStream is called", event)
+  // })

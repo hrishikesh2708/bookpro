@@ -7,6 +7,7 @@ const { request, response } = require("express");
 const axios = require("axios");
 const { findOne } = require("../../model/newbooks");
 const user = require("../../model/user");
+let authorizedClients = []
 let  clients = [];
 let changeStream = []
 
@@ -14,17 +15,30 @@ function streamHandler (request, response) {
   response.setHeader("Content-Type", "text/event-stream");
   response.setHeader("Cache-Control", "no-cache");
   response.setHeader("Access-Control-Allow-Origin", "*");
+  // response.setHeader("Access-Control-Allow-Credentials", "true");
+  // response.setHeader("Access-Control-Allow-Methods", ["POST", "GET", "PUT", "DELETE", "OPTIONS"]);
+  // response.setHeader("Access-Control-Allow-Headers", ["X-Requested-With", "X-HTTP-Method-Override", "Content-Type", "Accept"]);
   response.flushHeaders();
-  // console.log("client connection request:", request.rawHeaders)
+  console.log("client connection request:", request.headers["authorization"])
   const data = `data: ${JSON.stringify(changeStream)}\n\n`;
-
   response.write(data);
   const clientId = Date.now();
-  const newClient = {
-    id: clientId,
-    response
-  };
-  clients.push(newClient);
+  if( request.headers["authorization"] !== "null"){
+    let decode = jwt_decode(request.headers["authorization"])
+    const newAuthorizedClient = {
+      id: decode.id,
+      response
+    }
+    authorizedClients.push(newAuthorizedClient)
+  }
+  else{
+    const newClient = {
+      id: clientId,
+      response
+    };
+    clients.push(newClient);
+  }
+
   request.on('close', () => {
     console.log(`${clientId} Connection closed`);
     clients = clients.filter(client => client.id !== clientId);
@@ -32,12 +46,25 @@ function streamHandler (request, response) {
 }
 
 function sendChangeStream(newEvent) {
-  clients.forEach(client => client.response.write(`data: ${JSON.stringify(newEvent)}\n\n`))
+
+
+  if(Object.keys(newEvent)[0] === "private_book"){
+    authorizedClients.filter(client => {
+      if(client.id == newEvent.id)
+      return client.response.write(`data: ${JSON.stringify(newEvent)}\n\n`)
+    })
+  }else{
+    clients.forEach(client => client.response.write(`data: ${JSON.stringify(newEvent)}\n\n`))
+    authorizedClients.forEach(client => {
+      if(client.id !== newEvent.id)
+      return client.response.write(`data: ${JSON.stringify(newEvent)}\n\n`)
+    })
+  }
 }
 
-function sendChangeStreamPrivate( event ) {
-
-}
+// function sendChangeStreamPrivate( event ) {
+//   authorizedClients.forEach((client) => client.response.write(`data: ${JSON.stringify(event.private_book)}\n\n`))
+// }
 
 router.get("/stream",streamHandler)
 
@@ -100,7 +127,7 @@ router.post("/book-addition", async (req, res) => {
         });
         newbook.save().then((x) => {
           res.json(x);
-          return sendChangeStream({book_added : x})
+          return sendChangeStream({book_added : x,id: decode.id})
         });
       } else {
         return res.status(400).json({ message: "book is already present!" });
@@ -133,7 +160,7 @@ router.put("/book-modify/:token", async (req, res) => {
         x.save().then((x) => {
           global.bookEdited = x
           res.json(x);
-          return sendChangeStream({book_edited : x})
+          return sendChangeStream({book_edited : x , id : decode.id})
         });
       }
     } else {
@@ -154,7 +181,7 @@ router.delete("/book-delete/:id/:token", async (req, res) => {
           console.log("Deleted");
           global.bookDeleted = req.params.id
           res.status(200).json({ _id: req.params.id });
-          return sendChangeStream({ book_deleted : req.params.id })
+          return sendChangeStream({ book_deleted : req.params.id , id: decode.id})
         } else {
           return res.status(400).json({ });
         }
@@ -166,7 +193,7 @@ router.delete("/book-delete/:id/:token", async (req, res) => {
 });
 
 router.get("/privateBook", async (req, res) => {
-  console.log(req.header("Authorization"));
+  // console.log(req.header("Authorization"));
   if (req.header("Authorization") !== "null") {
     let decode = jwt_decode(req.header("Authorization"));
     await book.find({ user_id: decode.id }, function (err, docs) {
@@ -174,7 +201,7 @@ router.get("/privateBook", async (req, res) => {
         res.status(404).json({ message: "No Books" });
       }
      res.json({ message: "my books", docs });
-     return sendChangeStream({private_book : docs})
+     return sendChangeStream({private_book : docs, id : decode.id})
     });
   } else {
     res.status(404).json({ message: "No Books" });
