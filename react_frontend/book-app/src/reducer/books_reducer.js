@@ -245,7 +245,8 @@ export const set_reducer = (state = initialState, action) => {
       );
       console.log("modify sse commit", action.payload, modloc);
       if (modloc > -1 && modsse[modloc].author !== action.payload._author) {
-        modsse[modloc] = action.payload;
+        console.log("change in contents payload",action.payload,modsse[modloc])
+        modsse[modloc].author = action.payload.author;
         return {
           ...state,
           set: modsse,

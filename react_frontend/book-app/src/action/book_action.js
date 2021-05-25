@@ -44,7 +44,7 @@ export const add_book = (contents) => ({
         url: `${process.env.REACT_APP_LOCALHOST}/api/book-addition`,
         method: "POST",
         json: { ...contents.data },
-        headers: { 'token': contents.token }
+        headers: { token: contents.token },
       },
       commit: { type: "ADD_BOOK_COMMIT" },
       rollback: { type: "ADD_BOOK_ROLLBACK", meta: {} },
@@ -57,10 +57,10 @@ export const modify_book = (contents) => ({
   meta: {
     offline: {
       effect: {
-        url: `${process.env.REACT_APP_LOCALHOST}/api/book-modify/${contents.token}`,
+        url: `${process.env.REACT_APP_LOCALHOST}/api/book-modify`,
         method: "PUT",
-        // json: { ...contents.data },
         json: { ...contents },
+        headers: { token: contents.token },
       },
       commit: { type: "MODIFY_BOOK_COMMIT" },
       rollback: { type: "MODIFY_BOOK_ROLLBACK" },
@@ -71,12 +71,16 @@ export const delete_book = (contents) => ({
   type: DELETE_BOOK,
   payload: { contents },
   meta: {
-      offline: {
-        effect: { url: `${process.env.REACT_APP_LOCALHOST}/api/book-delete/${contents.id}/${contents.token}`, method: 'DELETE' },
-        commit: { type: 'DELETE_BOOK_COMMIT' },
-        rollback: { type: 'DELETE_BOOK_ROLLBACK'}
-      }
-    }
+    offline: {
+      effect: {
+        url: `${process.env.REACT_APP_LOCALHOST}/api/book-delete/${contents.id}`,
+        method: "DELETE",
+        headers: { token: contents.token },
+      },
+      commit: { type: "DELETE_BOOK_COMMIT" },
+      rollback: { type: "DELETE_BOOK_ROLLBACK" },
+    },
+  },
 });
 
 export const private_books = (contents) => {
