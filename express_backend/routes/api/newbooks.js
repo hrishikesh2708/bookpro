@@ -18,6 +18,7 @@ function streamHandler(request, response) {
   response.setHeader("Content-Type", "text/event-stream");
   response.setHeader("Cache-Control", "no-cache");
   response.setHeader("Access-Control-Allow-Origin", "*");
+  response.setHeader('Connection', 'keep-alive');
   response.flushHeaders();
   console.log("client connection request:", request.headers["authorization"]);
   const data = `data: ${JSON.stringify(changeStream)}\n\n`;
@@ -38,17 +39,42 @@ function streamHandler(request, response) {
     clients.push(newClient);
   }
 
-  request.on("close", () => {
-    console.log(`${clientId} Connection closed`);
-    clients = clients.filter((client) => client.id !== clientId);
+  let aliveTimer = 40 * 1000;
+  function keepAlive() {
+    console.log("keepalive")
+    response.write(':\n\n');
+    setTimeout(keepAlive, aliveTimer);
+  } 
+
+  setTimeout(keepAlive, aliveTimer);
+  request.on("close", (e) => {
+    if(request.headers.authorization){
+      let decode = jwt_decode(request.headers.authorization)
+      authorizedClients = authorizedClients.filter((client) => client.id !== decode.id)
+      console.log(`${decode.id} Connection closed [auth]`);
+    }
+    else{
+      console.log(`${clientId} Connection closed`);
+      clients = clients.filter((client) => client.id !== clientId);
+    }
+
   });
 }
 
 async function sendChangeStream(newEvent) {
-  // run()
-  await book.watch().on("change", (data) => {
-    console.log(data);
-    // console.log(data.updateDescription.updatedFields)
+  let data = "";
+
+  await book.watch().on("change", (d) => {
+    console.log(d);
+    data = d;
+  });
+
+  if (Object.keys(newEvent)[0] === "private_book") {
+    authorizedClients.filter((client) => {
+      if (client.id == newEvent.id)
+        return client.response.write(`data: ${JSON.stringify(newEvent)}\n\n`);
+    });
+  } else {
     switch (data.operationType) {
       case "insert":
         clients.forEach((client) =>
@@ -56,11 +82,12 @@ async function sendChangeStream(newEvent) {
             `data: ${JSON.stringify({ book_added: data.fullDocument })}\n\n`
           )
         );
-        authorizedClients.forEach((client) =>
-          client.response.write(
-            `data: ${JSON.stringify({ book_added: data.fullDocument })}\n\n`
-          )
-        );
+        authorizedClients.forEach((client) => {
+          if (client.id !== newEvent.id)
+            client.response.write(
+              `data: ${JSON.stringify({ book_added: data.fullDocument })}\n\n`
+            );
+        });
         break;
       case "update":
         clients.forEach((client) =>
@@ -73,56 +100,52 @@ async function sendChangeStream(newEvent) {
             })}\n\n`
           )
         );
-        authorizedClients.forEach((client) =>
-          client.response.write(
-            `data: ${JSON.stringify({
-              book_edited: {
-                _id: data.documentKey._id,
-                author: data.updateDescription.updatedFields.author,
-              },
-            })}\n\n`
-          )
-        );
+        authorizedClients.forEach((client) => {
+          if (client.id !== newEvent.id)
+            client.response.write(
+              `data: ${JSON.stringify({
+                book_edited: {
+                  _id: data.documentKey._id,
+                  author: data.updateDescription.updatedFields.author,
+                },
+              })}\n\n`
+            );
+        });
         break;
       case "delete":
         clients.forEach((client) =>
           client.response.write(
             `data: ${JSON.stringify({
-              book_edited: {
+              book_deleted: {
                 _id: data.documentKey._id,
                 author: data.updateDiscription.updatedFields.author,
               },
             })}\n\n`
           )
         );
-        authorizedClients.forEach((client) =>
-          client.response.write(
-            `data: ${JSON.stringify({
-              book_edited: { _id: data.documentKey._id },
-            })}\n\n`
-          )
-        );
+        authorizedClients.forEach((client) => {
+          if (client.id !== newEvent.id)
+            client.response.write(
+              `data: ${JSON.stringify({
+                book_deleted: { _id: data.documentKey._id },
+              })}\n\n`
+            );
+        });
         break;
       default:
         break;
     }
-  });
-
-  // if(Object.keys(newEvent)[0] === "private_book"){
-  //   authorizedClients.filter(client => {
-  //     if(client.id == newEvent.id)
-  //     return client.response.write(`data: ${JSON.stringify(newEvent)}\n\n`)
-  //   })
-  // }else{
-  //   clients.forEach(client => client.response.write(`data: ${JSON.stringify(newEvent)}\n\n`))
-  //   authorizedClients.forEach(client => {
-  //     if(client.id !== newEvent.id)
-  //     return client.response.write(`data: ${JSON.stringify(newEvent)}\n\n`)
-  //   })
-  // }
+    clients.forEach((client) =>
+      client.response.write(`data: ${JSON.stringify(newEvent)}\n\n`)
+    );
+    authorizedClients.forEach((client) => {
+      if (client.id !== newEvent.id)
+        return client.response.write(`data: ${JSON.stringify(newEvent)}\n\n`);
+    });
+  }
 }
 
-router.get("/stream", streamHandler, sendChangeStream);
+router.get("/stream", streamHandler);
 
 router.get("/boook", async (req, res) => {
   try {
@@ -183,7 +206,7 @@ router.post("/book-addition", async (req, res) => {
         });
         newbook.save().then((x) => {
           res.json(x);
-          // return sendChangeStream({book_added : x,id: decode.id})
+          return sendChangeStream({ book_added: x, id: decode.id });
         });
       } else {
         return res.status(400).json({ message: "book is already present!" });
@@ -215,7 +238,7 @@ router.put("/book-modify", async (req, res) => {
         x.save().then((x) => {
           global.bookEdited = x;
           res.json(x);
-          // return sendChangeStream({book_edited : x , id : decode.id})
+          return sendChangeStream({ book_edited: x, id: decode.id });
         });
       }
     } else {
@@ -236,7 +259,10 @@ router.delete("/book-delete/:id", async (req, res) => {
           console.log("Deleted");
           global.bookDeleted = req.params.id;
           res.status(200).json({ _id: req.params.id });
-          // return sendChangeStream({ book_deleted : req.params.id , id: decode.id})
+          return sendChangeStream({
+            book_deleted: req.params.id,
+            id: decode.id,
+          });
         } else {
           return res.status(400).json({});
         }
