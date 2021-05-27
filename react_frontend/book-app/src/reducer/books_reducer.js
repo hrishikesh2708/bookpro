@@ -279,20 +279,27 @@ export const set_reducer = (state = initialState, action) => {
         (element) => element._id === state.bookTobeDeleted._id
       );
       console.log("DELETEBOOK commit", j, action.payload);
-      del.splice(j, 1);
-      return {
-        ...state,
-        set: del,
-        deleteCommitCall: true,
-        deleteEffectCall: false,
-        deleteRollBackCall: false,
-        modifyEffectCall: false,
-        modifyCommitCall: false,
-        modifyRollBackCall: false,
-        addEffectCall: false,
-        addCommitCall: false,
-        addRollBackCall: false,
-      };
+      if(j > -1){
+        del.splice(j, 1);
+        return {
+          ...state,
+          set: del,
+          deleteCommitCall: true,
+          deleteEffectCall: false,
+          deleteRollBackCall: false,
+          modifyEffectCall: false,
+          modifyCommitCall: false,
+          modifyRollBackCall: false,
+          addEffectCall: false,
+          addCommitCall: false,
+          addRollBackCall: false,
+        };
+      }else{
+        return {
+          ...state,
+        }
+      }
+
 
     case "DELETE_BOOK_ROLLBACK":
       console.log(

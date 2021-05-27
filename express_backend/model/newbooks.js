@@ -14,7 +14,14 @@ const Books = new Schema({
     user_id: {
         type: String,
     },
+    user_edit: {
+        type: [String],
+    },
     date_added: {
+        type: Date,
+        default: Date.now
+    },
+    date_edited: {
         type: Date,
         default: Date.now
     }

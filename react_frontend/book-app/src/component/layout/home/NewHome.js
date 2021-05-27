@@ -431,7 +431,7 @@ export default function NewHome() {
   };
   useEffect(() => {
     let eventSource = new EventSourcePolyfill(
-      `${process.env.REACT_APP_LOCALHOST}/api/stream`,{headers : {'Authorization': localStorage.getItem("jwtToken")}}
+      `${process.env.REACT_APP_LOCALHOST}/api/stream`,{headers : {'Authorization': localStorage.getItem("jwtToken"), 'tabHash':  Math.random().toString(36).substring(2, 15) }}
     );  
     eventSource.onopen = (e) => {
       console.log("client name ", e);
