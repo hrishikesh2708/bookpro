@@ -34,7 +34,7 @@ function App() {
   }, [dispatch])
   return (
     <BrowserRouter>
-      <Container maxWidth="lg" className={classes.root}>
+      {/* <Container maxWidth="lg" className={classes.root}> */}
         <Navbar />
          <Switch>
         {/* <Route path="/" exact component={Navbar} /> */}
@@ -48,7 +48,7 @@ function App() {
         <Route excat path="/mybooks" component={MyBook} />
         <Route excat path="/modify" component={Modify} />
         <Route excat path="/login" component={Login} />
-      </Container>
+      {/* </Container> */}
       <Footer/>
     </BrowserRouter>
   );

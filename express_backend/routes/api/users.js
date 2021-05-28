@@ -99,14 +99,16 @@ router.post("/googleLogin", (req, res) => {
     idToken: token,
     audience: keys.googleClientid,
   }).then((response) => {
-    const { email_verified, name, email } = response.payload;
+    const { email_verified, name, email, picture } = response.payload;
     console.log(response.payload);
     if (email_verified === true) {
       User.findOne({ email }).then((user) => {
         if (user) {
           const loginDetails = {
             id : user.id,
-            name : user.name 
+            name : user.name,
+            email : user.email,
+            profile : picture,
           }
           console.log("login details exist" ,loginDetails)
           jwt.sign(

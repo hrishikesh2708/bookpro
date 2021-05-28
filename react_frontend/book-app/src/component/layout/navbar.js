@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { withRouter, useHistory } from "react-router-dom";
 // import { useSelector} from "react-redux";
-import { useSelector,useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { nav } from "../componentCSS";
 import { user_logout } from "../../action/user_details";
 import LocalLibraryRoundedIcon from "@material-ui/icons/LocalLibraryRounded";
@@ -16,7 +16,18 @@ import {
   Toolbar,
   AppBar,
   Box,
+  Drawer,
+  CssBaseline,
+  List,
+  Divider,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
 } from "@material-ui/core";
+
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import PersonAddIcon from "@material-ui/icons/PersonAdd";
+import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 
 function Navbar() {
   const dispatch = useDispatch();
@@ -36,25 +47,26 @@ function Navbar() {
   };
   const handleClick = () => {
     var DBOpenRequest = window.indexedDB.open("localforage", 2);
-    DBOpenRequest.onsuccess = function(event) {
-     var db = DBOpenRequest.result;
-     deleteData(db);
+    DBOpenRequest.onsuccess = function (event) {
+      var db = DBOpenRequest.result;
+      deleteData(db);
     };
     localStorage.clear();
-    dispatch(user_logout())
+    dispatch(user_logout());
     history.push("/home");
   };
   function deleteData(db) {
-        var transaction = db.transaction(["keyvaluepairs"], "readwrite");
+    var transaction = db.transaction(["keyvaluepairs"], "readwrite");
     var objectStore = transaction.objectStore("keyvaluepairs");
-    var objectStoreRequest = objectStore.delete("persist:user");  
-    objectStoreRequest.onsuccess = function(event) {
-      console.log("logout from persist")
+    var objectStoreRequest = objectStore.delete("persist:user");
+    objectStoreRequest.onsuccess = function (event) {
+      console.log("logout from persist");
     };
-  };
+  }
   return (
-    <>
-      <AppBar position="static" color="default">
+    <div className={classes.root}>
+      <CssBaseline />
+      <AppBar position="fixed" color="default" className={classes.appBar}>
         <Toolbar className={classes.root}>
           <Box className={classes.tool}>
             <IconButton
@@ -143,7 +155,56 @@ function Navbar() {
           )}
         </Toolbar>
       </AppBar>
-    </>
+      <Drawer
+        className={classes.drawer}
+        variant="permanent"
+        classes={{
+          paper: classes.drawerPaper,
+        }}
+        anchor="left"
+      >
+        <div className={classes.toolbar} />
+        <List>
+          <ListItem>
+            <Avatar alt={state.user.USER_NAME} src={state.user.USER_PROFILE} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={state.user.USER_NAME} />
+          </ListItem>
+          <ListItem>
+            <ListItemText secondary={state.user.USER_EMAIL} />
+          </ListItem>
+        </List>
+
+        <Divider />
+        <List>
+          <ListItem button>
+            <ListItemIcon>
+              <LibraryBooksIcon />
+            </ListItemIcon>
+            <ListItemText primary="My Books" secondary={state.set.privateBooks.length}/>
+          </ListItem>
+          <ListItem button>
+            <ListItemIcon>
+              <LibraryBooksIcon />
+            </ListItemIcon>
+            <ListItemText primary="All Books" secondary={state.set.set.length}/>
+          </ListItem>
+          <ListItem button>
+            <ListItemIcon>
+              <ExitToAppIcon />
+            </ListItemIcon>
+            <ListItemText primary="Logout" />
+          </ListItem>
+          <ListItem button>
+            <ListItemIcon>
+              <PersonAddIcon />
+            </ListItemIcon>
+            <ListItemText primary="Signup" />
+          </ListItem>
+        </List>
+      </Drawer>
+    </div>
   );
 }
 export default withRouter(Navbar);

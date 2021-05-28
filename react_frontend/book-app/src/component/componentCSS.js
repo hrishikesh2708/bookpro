@@ -1,11 +1,25 @@
 import { makeStyles } from "@material-ui/core/styles";
 import { deepOrange } from "@material-ui/core/colors";
 
+export const foot = makeStyles((theme)=>({
+  root: {
+    width:"100%",
+    bottom: 0,
+    position: "absolute",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: theme.spacing(1),
+    backgroundColor:"#f5f5f5"
+  },
+}));
+
+const drawerWidth = 240;
 export const nav = makeStyles((theme) => ({
   root: {
     display:"flex",
-    flexDirection: "row",
-    alignItems: "center",
+    // flexDirection: "row",
+    // alignItems: "center",
   },
   tool:{
     flexGrow: 1,
@@ -21,6 +35,24 @@ export const nav = makeStyles((theme) => ({
     flexGrow: 1, 
     padding: theme.spacing(1),
     textDecoration: "none",
+  },
+  appBar: {
+    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: drawerWidth,
+  },
+  drawer: {
+    width: drawerWidth,
+    flexShrink: 0,
+  },
+  drawerPaper: {
+    width: drawerWidth,
+  },
+  // necessary for content to be below app bar
+  toolbar: theme.mixins.toolbar,
+  content: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.default,
+    padding: theme.spacing(3),
   },
 }));
 
@@ -221,18 +253,7 @@ export const recent = makeStyles((theme) => ({
   },
 }));
 
-export const foot = makeStyles((theme)=>({
-  root: {
-    width:"100%",
-    bottom: 0,
-    marginTop: theme.spacing(1),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    padding: theme.spacing(1),
-    backgroundColor:"#f5f5f5"
-  },
-}));
+
 
 export const main = makeStyles((theme)=>({
   root: {

@@ -8,8 +8,6 @@ const axios = require("axios");
 const { findOne } = require("../../model/newbooks");
 const user = require("../../model/user");
 
-// const run = require("../../model/replicaSet")
-
 let authorizedClients = [];
 let clients = [];
 let changeStream = [];
@@ -25,34 +23,57 @@ function streamHandler(request, response) {
   const data = `data: ${JSON.stringify(changeStream)}\n\n`;
   response.write(data);
   const clientId = Date.now();
+  // const timeHash = Math.random().toString(36).substring(2, 15)
   if (request.headers["authorization"] !== "null") {
     let decode = jwt_decode(request.headers["authorization"]);
     const newAuthorizedClient = {
       hash: request.headers["tabhash"],
       id: decode.id,
+      // timeHash:setInterval(() => {
+      //     console.log("keepalive")
+      //     response.write(':\n\n');
+      //   }, 4000),
       response,
     };
     authorizedClients.push(newAuthorizedClient);
   } else {
     const newClient = {
       id: clientId,
+      // timeHash:setInterval(() => {
+      //   console.log("keepalive")
+      //   response.write(':\n\n');
+      // }, 40000),
       response,
     };
     clients.push(newClient);
   }
-
-  let aliveTimer = 40 * 1000;
-  function keepAlive() {
+  // function keepAlive(name) {
+  //   console.log("keepalive",name)
+  //   response.write(':\n\n');
+  //   setTimeout(keepAlive, name);
+  // } 
+  const timeHash = setInterval(() => {
     console.log("keepalive")
     response.write(':\n\n');
-    setTimeout(keepAlive, aliveTimer);
-  } 
+  }, 4000);
+  // var i = 0;
+  // eval("var " + "timeHash" + i++ + " = " + setInterval(() => {
+  //       console.log("keepalive")
+  //   response.write(':\n\n');
+  // }, 4000) )
 
-  setTimeout(keepAlive, aliveTimer);
+
   request.on("close", (e) => {
     if(request.headers.authorization){
       let decode = jwt_decode(request.headers.authorization)
-      authorizedClients = authorizedClients.filter((client) => client.id !== decode.id)
+      authorizedClients = authorizedClients.filter((client) => {
+        // if(client.id !== decode.id){
+          console.log("timehas", timeHash)
+          clearInterval(timeHash)
+        // }
+        return client.id !== decode.id
+      })
+   
       console.log(`${decode.id} Connection closed [auth]`);
     }
     else{

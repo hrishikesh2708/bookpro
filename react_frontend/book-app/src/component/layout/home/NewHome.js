@@ -223,6 +223,7 @@ EnhancedTableHead.propTypes = {
 //--------------------------------------------------------//
 
 //-----------------Main Component-------------------------//
+const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -248,7 +249,8 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     marginTop: theme.spacing(2),
-    width: "100%",
+    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: drawerWidth,
     marginBottom: theme.spacing(2),
     borderRadius: "16px",
     padding: theme.spacing(1),
@@ -600,7 +602,6 @@ export default function NewHome() {
           </Formik>
         </DialogContent>
       </Dialog>
-
       <Dialog
         open={addBookCall}
         TransitionComponent={Transition}
@@ -712,7 +713,7 @@ export default function NewHome() {
           </Formik>
         </DialogContent>
       </Dialog>
-      <Container>
+      <>
         <Paper elevation={5} className={classes.paper}>
           <Grid container alignItems="flex-end">
             <Grid item xs={5}>
@@ -836,7 +837,7 @@ export default function NewHome() {
             ActionsComponent={TablePaginationActions}
           />
         </Paper>
-      </Container>
+      </>
       <ToastContainer />
     </>
   );
