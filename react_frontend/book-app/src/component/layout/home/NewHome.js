@@ -1,6 +1,5 @@
 //hooks and action
 import React, { useEffect, useState } from "react";
-import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import {
@@ -12,320 +11,50 @@ import {
   delete_book_commit,
 } from "../../../action/book_action";
 import toasting from "../../../toast/toast";
-import PropTypes from "prop-types";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import * as moment from "moment";
-import { EventSourcePolyfill } from 'event-source-polyfill';
+import { EventSourcePolyfill } from "event-source-polyfill";
+import { TablePaginationActions } from "./pagination";
+import { EnhancedTableHead, stableSort, getComparator } from "./sorting";
+import { StyledTableRow, StyledTableCell, home } from "../../componentCSS";
 
 // material ui icon
-import FirstPageIcon from "@material-ui/icons/FirstPage";
 import SearchIcon from "@material-ui/icons/Search";
-import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
-import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
-import LastPageIcon from "@material-ui/icons/LastPage";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 
 //material ui components
 import {
-  Container,
   Paper,
   Typography,
   Table,
-  TableHead,
   Dialog,
   DialogActions,
   DialogContent,
   Button,
   DialogTitle,
   Slide,
-  TableRow,
   LinearProgress,
   TableBody,
-  TableCell,
+  Divider,
+  Fab,
   TextField,
   Grid,
-  TableSortLabel,
   TableContainer,
   IconButton,
   TablePagination,
 } from "@material-ui/core";
 
-// ------------------Pagination------------------//
-const useStyles1 = makeStyles((theme) => ({
-  root: {
-    align: "right",
-    flexShrink: 0,
-    marginLeft: theme.spacing(2.5),
-  },
-}));
-
-function TablePaginationActions(props) {
-  const classes = useStyles1();
-  const theme = useTheme();
-  const { count, page, rowsPerPage, onChangePage } = props;
-
-  const handleFirstPageButtonClick = (event) => {
-    onChangePage(event, 0);
-  };
-
-  const handleBackButtonClick = (event) => {
-    onChangePage(event, page - 1);
-  };
-
-  const handleNextButtonClick = (event) => {
-    onChangePage(event, page + 1);
-  };
-
-  const handleLastPageButtonClick = (event) => {
-    onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
-  };
-
-  return (
-    <div className={classes.root}>
-      <IconButton
-        onClick={handleFirstPageButtonClick}
-        disabled={page === 0}
-        aria-label="first page"
-      >
-        {theme.direction === "rtl" ? <LastPageIcon /> : <FirstPageIcon />}
-      </IconButton>
-      <IconButton
-        onClick={handleBackButtonClick}
-        disabled={page === 0}
-        aria-label="previous page"
-      >
-        {theme.direction === "rtl" ? (
-          <KeyboardArrowRight />
-        ) : (
-          <KeyboardArrowLeft />
-        )}
-      </IconButton>
-      <IconButton
-        onClick={handleNextButtonClick}
-        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label="next page"
-      >
-        {theme.direction === "rtl" ? (
-          <KeyboardArrowLeft />
-        ) : (
-          <KeyboardArrowRight />
-        )}
-      </IconButton>
-      <IconButton
-        onClick={handleLastPageButtonClick}
-        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label="last page"
-      >
-        {theme.direction === "rtl" ? <FirstPageIcon /> : <LastPageIcon />}
-      </IconButton>
-    </div>
-  );
-}
-TablePaginationActions.propTypes = {
-  count: PropTypes.number.isRequired,
-  onChangePage: PropTypes.func.isRequired,
-  page: PropTypes.number.isRequired,
-  rowsPerPage: PropTypes.number.isRequired,
-};
-
-// -------------------------------------------------------------//
-
-//-------------------Sorting------------------------------------//
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === "desc"
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
-
-const headCells = [
-  { id: "_id", numeric: false, disablePadding: false, label: "Id" },
-  {
-    id: "title",
-    numeric: false,
-    disablePadding: false,
-    label: "Book Name",
-  },
-  { id: "author", numeric: false, disablePadding: false, label: "Author" },
-  {
-    id: "date_added",
-    numeric: false,
-    disablePadding: false,
-    label: "Date & Time",
-  },
-  { id: "action", numeric: false, disablePadding: false, label: "Action" },
-];
-
-function EnhancedTableHead(props) {
-  const { classes, order, orderBy, onRequestSort } = props;
-  const createSortHandler = (property) => (event) => {
-    onRequestSort(event, property);
-  };
-
-  return (
-    <TableHead>
-      <TableRow>
-        {headCells.map((headCell) => (
-          <StyledTableCell
-            key={headCell.id}
-            align={headCell.numeric ? "right" : "left"}
-            padding={headCell.disablePadding ? "none" : "default"}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : "asc"}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <span className={classes.visuallyHidden}>
-                  {order === "desc" ? "sorted descending" : "sorted ascending"}
-                </span>
-              ) : null}
-            </TableSortLabel>
-          </StyledTableCell>
-        ))}
-      </TableRow>
-    </TableHead>
-  );
-}
-
-EnhancedTableHead.propTypes = {
-  classes: PropTypes.object.isRequired,
-  onRequestSort: PropTypes.func.isRequired,
-  order: PropTypes.oneOf(["asc", "desc"]).isRequired,
-  orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired,
-};
-//--------------------------------------------------------//
-
 //-----------------Main Component-------------------------//
-const drawerWidth = 240;
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "100%",
-  },
-  load: {
-    width: "100%",
-    "& > * + *": {
-      marginTop: theme.spacing(2),
-    },
-  },
-  table: {
-    minWidth: 750,
-  },
-  container: {
-    maxHeight: "75vh",
-  },
-  box: {
-    margin: theme.spacing(2, 0, 2),
-    width: "40%",
-    backgroundColor: "#f5f5f5",
-    borderRadius: "16px",
-    padding: theme.spacing(1),
-  },
-  paper: {
-    marginTop: theme.spacing(2),
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
-    marginBottom: theme.spacing(2),
-    borderRadius: "16px",
-    padding: theme.spacing(1),
-  },
-  title: {
-    margin: theme.spacing(2, 0, 2),
-    padding: theme.spacing(1),
-  },
-  visuallyHidden: {
-    border: 0,
-    clip: "rect(0 0 0 0)",
-    height: 1,
-    margin: -1,
-    overflow: "hidden",
-    padding: 0,
-    position: "absolute",
-    top: 20,
-    width: 1,
-  },
-  addEffect: {
-    backgroundColor: "#c5cae9",
-  },
-  addCommit: {
-    backgroundColor: "#7986cb",
-  },
-  addRollback: {
-    backgroundColor: "#3f51b5",
-  },
-  modifyEffect: {
-    backgroundColor: "#e1bee7",
-  },
-  modifyCommit: {
-    backgroundColor: "#ce93d8",
-  },
-  modifyRollback: {
-    backgroundColor: "#9c27b0",
-  },
-  deleteEffect: {
-    backgroundColor: "#f44336",
-  },
-  deleteCommit: {
-    backgroundColor: "#ef9a9a",
-  },
-  deleteRollback: {
-    backgroundColor: "#ffcdd2",
-  },
-}));
-
-const StyledTableCell = withStyles((theme) => ({
-  head: {
-    backgroundColor: "#424242",
-    color: theme.palette.common.white,
-    "&:active": {
-      color: theme.palette.common.white,
-    },
-  },
-  body: {
-    fontSize: 14,
-  },
-}))(TableCell);
-
-const StyledTableRow = withStyles((theme) => ({
-  root: {
-    // "&:nth-of-type(odd)": {
-    //   backgroundColor: theme.palette.action.disabledBackground,
-    // },
-  },
-}))(TableRow);
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 export default function NewHome() {
-  const classes = useStyles();
+  const classes = home();
   const state = useSelector((state) => state.set.set);
   const store = useSelector((state) => state);
   const dispatch = useDispatch();
@@ -339,8 +68,8 @@ export default function NewHome() {
   const [serResult, setserResult] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("title");
+  const [order, setOrder] = useState("desc");
+  const [orderBy, setOrderBy] = useState("date_added");
   const dense = false;
 
   const customModify = store.set.modifyEffectCall
@@ -432,9 +161,15 @@ export default function NewHome() {
     );
   };
   useEffect(() => {
+    // console.log("props" , props.event)
     let eventSource = new EventSourcePolyfill(
-      `${process.env.REACT_APP_LOCALHOST}/api/stream`,{headers : {'Authorization': localStorage.getItem("jwtToken"), 'tabHash':  Math.random().toString(36).substring(2, 15) }}
-    );  
+      `${process.env.REACT_APP_LOCALHOST}/api/stream`,
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      }
+    );
     eventSource.onopen = (e) => {
       console.log("client name ", e);
     };
@@ -465,8 +200,8 @@ export default function NewHome() {
       }
     };
     eventSource.onerror = (e) => {
-      console.log("no response from server")
-    }
+      console.log("no response from server");
+    };
   }, []);
   useEffect(() => {
     console.log("useeffect is called");
@@ -475,10 +210,10 @@ export default function NewHome() {
       setData(serResult);
       console.log(serResult, "search result");
     }
-  }, [store]);
+  }, [store,serResult]);
 
   return (
-    <>
+    <div className={classes.root}>
       {store.set.loading_status ? (
         <div className={classes.load}>
           <LinearProgress />
@@ -486,6 +221,148 @@ export default function NewHome() {
       ) : (
         <></>
       )}
+      <div className={classes.head}>
+        <Typography variant="h4" noWrap className={classes.title}>
+          Books List
+        </Typography>
+        <Fab
+          size="small"
+          disabled={store.user.USER_CURRENT_STATUS === false}
+          edge="end"
+          onClick={() => setaddBookCall(true)}
+          variant="extended"
+        >
+          <AddIcon className={classes.extendedIcon} />
+          Add Book
+        </Fab>
+      </div>
+      <Divider />
+
+      <Paper elevation={5} className={classes.paper}>
+        <Grid container alignItems="flex-end">
+          {/* <Grid item xs={5}>
+            <Typography variant="h4" className={classes.title}>
+              Book list
+              <IconButton
+                size="small"
+                disabled={store.user.USER_CURRENT_STATUS === false}
+                edge="end"
+                onClick={() => setaddBookCall(true)}
+              >
+                <AddIcon />
+              </IconButton>
+            </Typography>
+          </Grid> */}
+          <Grid item xs={7} className={classes.box}>
+            <Grid container alignItems="flex-end">
+              <Grid item>
+                <SearchIcon />
+              </Grid>
+              <Grid item xs={11}>
+                <TextField
+                  id="search"
+                  placeholder="Search Books...."
+                  variant="standard"
+                  type="string"
+                  fullWidth
+                  onChange={handleSearch}
+                />
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+        <TableContainer className={classes.container}>
+          <Table stickyHeader={true} className={classes.table}>
+            <EnhancedTableHead
+              classes={classes}
+              order={order}
+              orderBy={orderBy}
+              onRequestSort={handleRequestSort}
+              rowCount={data.length}
+            />
+            <TableBody>
+              {stableSort(data, getComparator(order, orderBy))
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map(({ _id, title, author, date_added, user_id }) => (
+                  <StyledTableRow
+                    hover
+                    key={_id}
+                    className={_id === customId ? customColor : null}
+                  >
+                    <StyledTableCell>{_id}</StyledTableCell>
+                    <StyledTableCell>{title}</StyledTableCell>
+                    <StyledTableCell>{author}</StyledTableCell>
+                    <StyledTableCell>
+                      {moment(date_added).format("MMMM Do YYYY, h:mm:ss a")}
+                    </StyledTableCell>
+                    <StyledTableCell
+                      className={customElements}
+                      component="th"
+                      scope="row"
+                    >
+                      <IconButton
+                        onClick={() => (
+                          setdeleteConfirm(true),
+                          deleteAction({
+                            _id,
+                            title,
+                            author,
+                            date_added,
+                            user_id,
+                          })
+                        )}
+                        size="small"
+                        disabled={store.user.USER_ID !== user_id}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => (
+                          setmodifyBookcall(true),
+                          setselectedBookDetails({
+                            _id,
+                            title,
+                            author,
+                            date_added,
+                            user_id,
+                          })
+                        )}
+                        size="small"
+                        disabled={store.user.USER_CURRENT_STATUS !== true}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
+              {emptyRows > 0 && (
+                <StyledTableRow
+                  style={{ height: (dense ? 33 : 53) * emptyRows }}
+                >
+                  <StyledTableCell colSpan={6} />
+                </StyledTableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+          colSpan={3}
+          component="div"
+          count={data.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          SelectProps={{
+            inputProps: { "aria-label": "rows per page" },
+            native: true,
+          }}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+          ActionsComponent={TablePaginationActions}
+        />
+      </Paper>
+      <ToastContainer />
+
       <Dialog
         open={deleteConfirm}
         TransitionComponent={Transition}
@@ -713,133 +590,7 @@ export default function NewHome() {
           </Formik>
         </DialogContent>
       </Dialog>
-      <>
-        <Paper elevation={5} className={classes.paper}>
-          <Grid container alignItems="flex-end">
-            <Grid item xs={5}>
-              <Typography variant="h4" className={classes.title}>
-                Book list
-                <IconButton
-                  size="small"
-                  disabled={store.user.USER_CURRENT_STATUS === false}
-                  edge="end"
-                  onClick={() => setaddBookCall(true)}
-                >
-                  <AddIcon />
-                </IconButton>
-              </Typography>
-            </Grid>
-            <Grid item xs={7} className={classes.box}>
-              <Grid container alignItems="flex-end">
-                <Grid item>
-                  <SearchIcon />
-                </Grid>
-                <Grid item xs={11}>
-                  <TextField
-                    id="search"
-                    placeholder="Search Books...."
-                    variant="standard"
-                    type="string"
-                    fullWidth
-                    onChange={handleSearch}
-                  />
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
-          <TableContainer className={classes.container}>
-            <Table stickyHeader={true} className={classes.table}>
-              <EnhancedTableHead
-                classes={classes}
-                order={order}
-                orderBy={orderBy}
-                onRequestSort={handleRequestSort}
-                rowCount={data.length}
-              />
-              <TableBody>
-                {stableSort(data, getComparator(order, orderBy))
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map(({ _id, title, author, date_added, user_id }) => (
-                    <StyledTableRow
-                      hover
-                      key={_id}
-                      className={_id === customId ? customColor : null}
-                    >
-                      <StyledTableCell>{_id}</StyledTableCell>
-                      <StyledTableCell>{title}</StyledTableCell>
-                      <StyledTableCell>{author}</StyledTableCell>
-                      <StyledTableCell>
-                        {moment(date_added).format("MMMM Do YYYY, h:mm:ss a")}
-                      </StyledTableCell>
-                      <StyledTableCell
-                        className={customElements}
-                        component="th"
-                        scope="row"
-                      >
-                        <IconButton
-                          onClick={() => (
-                            setdeleteConfirm(true),
-                            deleteAction({
-                              _id,
-                              title,
-                              author,
-                              date_added,
-                              user_id,
-                            })
-                          )}
-                          size="small"
-                          disabled={store.user.USER_ID !== user_id}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                        <IconButton
-                          onClick={() => (
-                            setmodifyBookcall(true),
-                            setselectedBookDetails({
-                              _id,
-                              title,
-                              author,
-                              date_added,
-                              user_id,
-                            })
-                          )}
-                          size="small"
-                          disabled={store.user.USER_CURRENT_STATUS !== true}
-                        >
-                          <EditIcon />
-                        </IconButton>
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  ))}
-                {emptyRows > 0 && (
-                  <StyledTableRow
-                    style={{ height: (dense ? 33 : 53) * emptyRows }}
-                  >
-                    <StyledTableCell colSpan={6} />
-                  </StyledTableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-            colSpan={3}
-            component="div"
-            count={data.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            SelectProps={{
-              inputProps: { "aria-label": "rows per page" },
-              native: true,
-            }}
-            onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
-            ActionsComponent={TablePaginationActions}
-          />
-        </Paper>
-      </>
-      <ToastContainer />
-    </>
+    </div>
   );
 }
 //------------------------------------------------------------//

@@ -18,59 +18,37 @@ function streamHandler(request, response) {
   response.setHeader("Access-Control-Allow-Origin", "*");
   response.setHeader('Connection', 'keep-alive');
   response.flushHeaders();
-  console.log("client connection request:", request.headers["authorization"],
-  "tahash:",request.headers["tabhash"]);
+  console.log("client connection request:", request.headers["authorization"]);
   const data = `data: ${JSON.stringify(changeStream)}\n\n`;
   response.write(data);
   const clientId = Date.now();
-  // const timeHash = Math.random().toString(36).substring(2, 15)
   if (request.headers["authorization"] !== "null") {
     let decode = jwt_decode(request.headers["authorization"]);
     const newAuthorizedClient = {
       hash: request.headers["tabhash"],
       id: decode.id,
-      // timeHash:setInterval(() => {
-      //     console.log("keepalive")
-      //     response.write(':\n\n');
-      //   }, 4000),
       response,
     };
     authorizedClients.push(newAuthorizedClient);
   } else {
     const newClient = {
       id: clientId,
-      // timeHash:setInterval(() => {
-      //   console.log("keepalive")
-      //   response.write(':\n\n');
-      // }, 40000),
       response,
     };
     clients.push(newClient);
   }
-  // function keepAlive(name) {
-  //   console.log("keepalive",name)
-  //   response.write(':\n\n');
-  //   setTimeout(keepAlive, name);
-  // } 
+
   const timeHash = setInterval(() => {
     console.log("keepalive")
     response.write(':\n\n');
-  }, 4000);
-  // var i = 0;
-  // eval("var " + "timeHash" + i++ + " = " + setInterval(() => {
-  //       console.log("keepalive")
-  //   response.write(':\n\n');
-  // }, 4000) )
+  }, 40000);
 
 
   request.on("close", (e) => {
     if(request.headers.authorization){
       let decode = jwt_decode(request.headers.authorization)
       authorizedClients = authorizedClients.filter((client) => {
-        // if(client.id !== decode.id){
-          console.log("timehas", timeHash)
           clearInterval(timeHash)
-        // }
         return client.id !== decode.id
       })
    
@@ -177,6 +155,9 @@ router.get("/boook", async (req, res) => {
               const new_book = new book({
                 title: response.data.data[i].title,
                 author: response.data.data[i].author,
+                genre: response.data.data[i].genre,
+                description: response.data.data[i].description,
+                image: response.data.data[i].image,
               });
               data.push(new_book);
             }

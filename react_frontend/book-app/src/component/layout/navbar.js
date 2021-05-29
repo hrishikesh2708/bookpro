@@ -1,21 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
+import clsx from "clsx";
 import { Link } from "react-router-dom";
 import { withRouter, useHistory } from "react-router-dom";
-// import { useSelector} from "react-redux";
 import { useSelector, useDispatch } from "react-redux";
 import { nav } from "../componentCSS";
 import { user_logout } from "../../action/user_details";
-import LocalLibraryRoundedIcon from "@material-ui/icons/LocalLibraryRounded";
 import {
-  MenuItem,
-  Menu,
   Avatar,
+  Tooltip,
   IconButton,
-  Button,
   Typography,
   Toolbar,
   AppBar,
-  Box,
   Drawer,
   CssBaseline,
   List,
@@ -27,24 +23,17 @@ import {
 
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
-import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
+import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
+import MenuIcon from "@material-ui/icons/Menu";
+import CloseIcon from "@material-ui/icons/Close";
 
 function Navbar() {
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = nav();
-  const [menu, setmenu] = useState(null);
-  const [Open, setOpen] = useState(false);
+  const [open, setopen] = React.useState(false);
   const state = useSelector((state) => state);
 
-  const handleMenu = (event) => {
-    setmenu(event.currentTarget);
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setmenu(null);
-    setOpen(false);
-  };
   const handleClick = () => {
     var DBOpenRequest = window.indexedDB.open("localforage", 2);
     DBOpenRequest.onsuccess = function (event) {
@@ -63,145 +52,155 @@ function Navbar() {
       console.log("logout from persist");
     };
   }
+
+  const handleDrawerOpen = () => {
+    setopen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setopen(false);
+  };
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar position="fixed" color="default" className={classes.appBar}>
-        <Toolbar className={classes.root}>
-          <Box className={classes.tool}>
-            <IconButton
-              edge="start"
-              className={classes.menuButton}
-              color="inherit"
-              aria-label="menu"
-              component={Link}
-              to="/home"
-            >
-              <LocalLibraryRoundedIcon />
-            </IconButton>
-            <Typography
-              variant="h6"
-              className={classes.title}
-              to="/home"
-              component={Link}
-              color="inherit"
-            >
-              BookPro
-            </Typography>
-          </Box>
-          {state.user.USER_CURRENT_STATUS ? (
-            <>
-              <Box>
-                {/* <Button to="/modify" component={Link}>
-                  {" "}
-                  Update book{" "}
-                </Button> */}
-                {/* <Button to="/add" component={Link}>
-                  {" "}
-                  Add book{" "}
-                </Button> */}
-                <Button to="/myBooks" component={Link}>
-                  {" "}
-                  My Books{" "}
-                </Button>
-                {/* <Button to="/search" component={Link}>
-                  {" "}
-                  Search book{" "}
-                </Button> */}
-                {/* <Button to="/page" component={Link}>
-                  {" "}
-                  home{" "}
-                </Button> */}
-              </Box>
-              <Box>
-                <IconButton
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={handleMenu}
-                  color="inherit"
-                >
-                  <Avatar className={classes.orange}>
-                    {state.user.USER_NAME.charAt(0)}
-                  </Avatar>
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={menu}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={Open}
-                  onClose={handleClose}
-                >
-                  <MenuItem>{state.user.USER_NAME}</MenuItem>
-                  <MenuItem>{state.set.set.length}, books present</MenuItem>
-                  <MenuItem onClick={handleClick}>Logout</MenuItem>
-                </Menu>
-              </Box>
-            </>
-          ) : (
-            <>
-              <Button to="/auth" component={Link} color="inherit">
-                Sign up
-              </Button>
-            </>
-          )}
+      <AppBar
+        position="fixed"
+        color="default"
+        className={clsx(classes.appBar, {
+          [classes.appBarShift]: open,
+        })}
+      >
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            className={clsx(classes.menuButton, {
+              [classes.hide]: open,
+            })}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography
+            variant="h6"
+            className={classes.title}
+            noWrap
+            to="/home"
+            component={Link}
+            color="inherit"
+          >
+            BookPro
+          </Typography>
         </Toolbar>
       </AppBar>
       <Drawer
-        className={classes.drawer}
         variant="permanent"
+        className={clsx(classes.drawer, {
+          [classes.drawerOpen]: open,
+          [classes.drawerClose]: !open,
+        })}
         classes={{
-          paper: classes.drawerPaper,
+          paper: clsx({
+            [classes.drawerOpen]: open,
+            [classes.drawerClose]: !open,
+          }),
         }}
-        anchor="left"
       >
-        <div className={classes.toolbar} />
-        <List>
-          <ListItem>
-            <Avatar alt={state.user.USER_NAME} src={state.user.USER_PROFILE} />
-          </ListItem>
-          <ListItem>
-            <ListItemText primary={state.user.USER_NAME} />
-          </ListItem>
-          <ListItem>
-            <ListItemText secondary={state.user.USER_EMAIL} />
-          </ListItem>
-        </List>
+        <div className={classes.toolbar}>
+          <IconButton onClick={handleDrawerClose}>
+            <CloseIcon />
+          </IconButton>
+        </div>
+        <Divider />
+
+        <Tooltip title="Profile" placement="right">
+          <List>
+            <ListItem className={classes.profile}>
+              <Avatar
+                alt={state.user.USER_NAME}
+                src={state.user.USER_PROFILE}
+                className={clsx({
+                  [classes.profileAvatar]: open,
+                })}
+              />
+            </ListItem>
+            <ListItem
+              className={clsx({
+                [classes.profile]: open,
+                [classes.hide]: !open,
+              })}
+            >
+              <Typography variant="h6">{state.user.USER_NAME}</Typography>
+            </ListItem>
+            <ListItem
+              className={clsx({
+                [classes.profile]: open,
+                [classes.hide]: !open,
+              })}
+            >
+              <Typography color="textSecondary">
+                {state.user.USER_EMAIL}
+              </Typography>
+            </ListItem>
+          </List>
+        </Tooltip>
 
         <Divider />
         <List>
-          <ListItem button>
-            <ListItemIcon>
-              <LibraryBooksIcon />
-            </ListItemIcon>
-            <ListItemText primary="My Books" secondary={state.set.privateBooks.length}/>
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon>
-              <LibraryBooksIcon />
-            </ListItemIcon>
-            <ListItemText primary="All Books" secondary={state.set.set.length}/>
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon>
-              <ExitToAppIcon />
-            </ListItemIcon>
-            <ListItemText primary="Logout" />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon>
-              <PersonAddIcon />
-            </ListItemIcon>
-            <ListItemText primary="Signup" />
-          </ListItem>
+          <Tooltip title="My Books" placement="right">
+            <ListItem button to="/myBooks" component={Link}>
+              <ListItemIcon>
+                <LibraryBooksIcon />
+              </ListItemIcon>
+
+              <ListItemText
+                primary="My Books"
+                secondary={state.set.privateBooks.length}
+              />
+            </ListItem>
+          </Tooltip>
+          <Tooltip title="All Books" placement="right">
+            <ListItem button to="/home" component={Link}>
+              <ListItemIcon>
+                <LibraryBooksIcon />
+              </ListItemIcon>
+
+              <ListItemText
+                primary="All Books"
+                secondary={state.set.set.length}
+              />
+            </ListItem>
+          </Tooltip>
+
+          <Tooltip
+            title="Logout"
+            placement="right"
+            className={clsx({
+              [classes.hide]: !state.user.USER_CURRENT_STATUS,
+            })}
+          >
+            <ListItem button onClick={handleClick}>
+              <ListItemIcon>
+                <ExitToAppIcon />
+              </ListItemIcon>
+              <ListItemText primary="Logout" />
+            </ListItem>
+          </Tooltip>
+
+          <Tooltip
+            title="Signup"
+            placement="right"
+            className={clsx({ [classes.hide]: state.user.USER_CURRENT_STATUS })}
+          >
+            <ListItem button to="/auth" component={Link}>
+              <ListItemIcon>
+                <PersonAddIcon />
+              </ListItemIcon>
+
+              <ListItemText primary="Signup" />
+            </ListItem>
+          </Tooltip>
         </List>
       </Drawer>
     </div>

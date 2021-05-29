@@ -1,5 +1,4 @@
 import {
-  Container,
   Paper,
   Table,
   TableBody,
@@ -7,8 +6,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Button,
   Typography,
+  Divider,
 } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import React from "react";
@@ -18,6 +17,7 @@ import * as moment from "moment";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
+    padding: theme.spacing(0, 0, 0 , 2),
   },
   table: {
     minWidth: 750,
@@ -25,22 +25,12 @@ const useStyles = makeStyles((theme) => ({
   container: {
     maxHeight: "75vh",
   },
-  box: {
-    margin: theme.spacing(2, 0, 2),
-    width: "40%",
-    backgroundColor: "#f5f5f5",
-    borderRadius: "16px",
-    padding: theme.spacing(1),
-  },
   paper: {
-    marginTop: theme.spacing(2),
-    width: "100%",
-    marginBottom: theme.spacing(2),
-    borderRadius: "16px",
-    padding: theme.spacing(1),
+    margin: theme.spacing(2, 2, 2, 4),
+    padding: theme.spacing(0.5),
   },
   title: {
-    margin: theme.spacing(2, 0, 2),
+    margin: theme.spacing(2, 0, 0 , 2),
     padding: theme.spacing(1),
   },
 }));
@@ -67,25 +57,38 @@ const StyledTableRow = withStyles((theme) => ({
 export default function Mybook() {
   const classes = useStyles();
   const state = useSelector((state) => state.set.privateBooks);
-  let eventSource = ""
-  const sse = () => {
-    eventSource = new EventSource(`${process.env.REACT_APP_LOCALHOST}/api/privateBook`)
-    eventSource.onopen = e => {
-      console.log("client name ",e)
-    }
-    eventSource.onmessage = e => {
-      console.log("data sent by server [ADDITION]",e)
-      // console.log("data sent by server [ADDITION]", JSON.parse(e.data))
-      // dispatch(add_book_commit(JSON.parse(e.data)))
-      // toasting("success" , " New book added by different user!!")
-      // setResponse(e.data.value)
-    }
-  }  
   return (
-    <><Button onClick={sse}>start</Button>
-
-      <Container>
-        <Paper elevation={8} className={classes.paper}>
+    <div className={classes.root}>
+    <Typography variant="h4" noWrap className={classes.title}>
+    My Books
+    <Divider/>
+    </Typography>
+   
+    <Paper elevation={8} className={classes.paper}>
+    <TableContainer className={classes.container}>
+            <Table stickyHeader={true}>
+              <TableHead>
+                <StyledTableRow>
+                  <StyledTableCell>Book Name</StyledTableCell>
+                  <StyledTableCell>Author</StyledTableCell>
+                  <StyledTableCell>Date & Time</StyledTableCell>
+                </StyledTableRow>
+              </TableHead>
+              <TableBody>
+                {state.map(({ title, author, date_added, _id }) => (
+                  <StyledTableRow key={_id}>
+                    <StyledTableCell>{title}</StyledTableCell>
+                    <StyledTableCell>{author}</StyledTableCell>
+                    <StyledTableCell>
+                      {moment(date_added).format("MMMM Do YYYY, h:mm:ss a")}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          </Paper>
+       {/* <Paper elevation={8} className={classes.paper}>
           <Typography variant="h4" className={classes.title}>
             My Books
           </Typography>
@@ -111,8 +114,7 @@ export default function Mybook() {
               </TableBody>
             </Table>
           </TableContainer>
-        </Paper>
-      </Container>
-    </>
+        </Paper> */}
+    </div>
   );
 }
