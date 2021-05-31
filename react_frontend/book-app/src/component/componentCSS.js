@@ -11,7 +11,11 @@ export const StyledTableCell = withStyles((theme) => ({
   },
   body: {
     fontSize: 14,
+    color:theme.palette.text.primary,
   },
+  root:{
+    borderColor:theme.palette.divider,
+  }
 }))(TableCell);
 
 export const StyledTableRow = withStyles((theme) => ({
@@ -19,6 +23,7 @@ export const StyledTableRow = withStyles((theme) => ({
     // "&:nth-of-type(odd)": {
     //   backgroundColor: theme.palette.action.disabledBackground,
     // },
+    color:theme.palette.text.primary,
   },
 }))(TableRow);
 
@@ -27,6 +32,7 @@ export const main = makeStyles((theme) => ({
     display: "flex",
     minHeight: "100vh",
     flexDirection: "column",
+    backgroundColor : theme.palette.background.paper
   },
   content: {
     flexGrow: 1,
@@ -62,9 +68,11 @@ export const nav = makeStyles((theme) => ({
     display: "flex",
   },
   title: {
+    color: theme.palette.text.primary,
     textDecoration: "none",
   },
   appBar: {
+    backgroundColor : theme.palette.background.default,
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
@@ -73,6 +81,7 @@ export const nav = makeStyles((theme) => ({
   },
   appBarShift: {
     marginLeft: drawerWidth,
+    backgroundColor : theme.palette.background.default,
     width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
@@ -81,6 +90,7 @@ export const nav = makeStyles((theme) => ({
   },
   menuButton: {
     marginRight: 36,
+    color: theme.palette.text.primary,
   },
   hide: {
     display: "none",
@@ -89,9 +99,13 @@ export const nav = makeStyles((theme) => ({
     width: drawerWidth,
     flexShrink: 0,
     whiteSpace: "nowrap",
+    borderColor : theme.palette.divider,
+    backgroundColor : theme.palette.background.paper,
   },
   drawerOpen: {
     width: drawerWidth,
+    borderColor : theme.palette.divider,
+    backgroundColor : theme.palette.background.paper,
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -103,6 +117,8 @@ export const nav = makeStyles((theme) => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     overflowX: "hidden",
+    borderColor : theme.palette.divider,
+    backgroundColor : theme.palette.background.paper,
     width: theme.spacing(7) + 1,
     [theme.breakpoints.up("sm")]: {
       width: theme.spacing(9) + 1,
@@ -122,12 +138,34 @@ export const nav = makeStyles((theme) => ({
     height: 100,
     width: 100,
   },
+  divider: {
+    background: theme.palette.divider,
+  },
+  icon : {
+    color : theme.palette.text.secondary,
+  },
+  listItemTextPrimary: {
+    color : theme.palette.text.primary,
+  },
+  listItemTextSecondary: {
+    color : theme.palette.text.secondary,
+  },
 }));
 
 export const home = makeStyles((theme) => ({
   root: {
     width: "100%",
     padding: theme.spacing(0, 0, 0 , 2),
+  },
+  divider: {
+    background: theme.palette.divider,
+  },
+  icon : {
+    color : theme.palette.text.secondary,
+  },
+  input:{
+    color : theme.palette.text.primary,
+    multilineColor : theme.palette.text.primary,
   },
   head : {
     display:"flex",
@@ -152,19 +190,21 @@ export const home = makeStyles((theme) => ({
   },
   box: {
     margin: theme.spacing(2, 0, 2),
-    width: "40%",
-    backgroundColor: "#f5f5f5",
+    width: "100%",
+    // backgroundColor: "#f5f5f5",
     borderRadius: "16px",
     padding: theme.spacing(1),
   },
   paper: {
     marginTop: theme.spacing(5),
+    backgroundColor : theme.palette.background.paper,
     // width: `calc(100% - ${drawerWidth}px)`,
     marginBottom: theme.spacing(2),
     borderRadius: "16px",
     padding: theme.spacing(1),
   },
   title: {
+    color : theme.palette.text.primary,
     margin: theme.spacing(2, 0, 2),
     padding: theme.spacing(1),
   },
@@ -205,6 +245,32 @@ export const home = makeStyles((theme) => ({
   },
   deleteRollback: {
     backgroundColor: "#ffcdd2",
+  },
+}));
+
+export const mybooks = makeStyles((theme) => ({
+  root: {
+    width: "100%",
+    padding: theme.spacing(0, 0, 0 , 2),
+  },
+  table: {
+    minWidth: 750,
+  },
+  container: {
+    maxHeight: "75vh",
+  },
+  paper: {
+    margin: theme.spacing(2, 2, 2, 4),
+    padding: theme.spacing(0.5),
+    backgroundColor : theme.palette.background.paper,
+  },
+  title: {
+    margin: theme.spacing(2, 0, 0 , 2),
+    padding: theme.spacing(1),
+    color: theme.palette.text.primary,
+  },
+  divider:{
+    background: theme.palette.divider,
   },
 }));
 

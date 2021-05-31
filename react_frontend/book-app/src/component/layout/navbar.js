@@ -26,8 +26,10 @@ import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
 import MenuIcon from "@material-ui/icons/Menu";
 import CloseIcon from "@material-ui/icons/Close";
+import Brightness6Icon from '@material-ui/icons/Brightness6';
 
-function Navbar() {
+function Navbar( props ) {
+  const {darkmode,setDarkmode} = props
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = nav();
@@ -65,14 +67,12 @@ function Navbar() {
       <CssBaseline />
       <AppBar
         position="fixed"
-        color="default"
         className={clsx(classes.appBar, {
           [classes.appBarShift]: open,
         })}
       >
         <Toolbar>
           <IconButton
-            color="inherit"
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"
@@ -108,11 +108,11 @@ function Navbar() {
         }}
       >
         <div className={classes.toolbar}>
-          <IconButton onClick={handleDrawerClose}>
-            <CloseIcon />
+          <IconButton  onClick={handleDrawerClose}>
+            <CloseIcon classes={{root:classes.icon}}/>
           </IconButton>
         </div>
-        <Divider />
+        <Divider  classes={{root:classes.divider}}/>
 
         <Tooltip title="Profile" placement="right">
           <List>
@@ -131,7 +131,7 @@ function Navbar() {
                 [classes.hide]: !open,
               })}
             >
-              <Typography variant="h6">{state.user.USER_NAME}</Typography>
+              <Typography variant="h6" classes={{root:classes.listItemTextPrimary}}>{state.user.USER_NAME}</Typography>
             </ListItem>
             <ListItem
               className={clsx({
@@ -139,22 +139,23 @@ function Navbar() {
                 [classes.hide]: !open,
               })}
             >
-              <Typography color="textSecondary">
+              <Typography classes={{root:classes.listItemTextSecondary}}>
                 {state.user.USER_EMAIL}
               </Typography>
             </ListItem>
           </List>
         </Tooltip>
 
-        <Divider />
-        <List>
+        <Divider classes={{root:classes.divider}}/>
+        <List >
           <Tooltip title="My Books" placement="right">
             <ListItem button to="/myBooks" component={Link}>
               <ListItemIcon>
-                <LibraryBooksIcon />
+                <LibraryBooksIcon classes={{root:classes.icon}}/>
               </ListItemIcon>
 
               <ListItemText
+              classes={{primary:classes.listItemTextPrimary,secondary:classes.listItemTextSecondary}}
                 primary="My Books"
                 secondary={state.set.privateBooks.length}
               />
@@ -163,13 +164,30 @@ function Navbar() {
           <Tooltip title="All Books" placement="right">
             <ListItem button to="/home" component={Link}>
               <ListItemIcon>
-                <LibraryBooksIcon />
+                <LibraryBooksIcon classes={{root:classes.icon}} />
               </ListItemIcon>
 
               <ListItemText
+               classes={{primary:classes.listItemTextPrimary,secondary:classes.listItemTextSecondary}}
                 primary="All Books"
                 secondary={state.set.set.length}
               />
+            </ListItem>
+          </Tooltip>
+
+          <Tooltip
+            title="Theme"
+            placement="right"
+          >
+            <ListItem button 
+            onClick={() => setDarkmode(!darkmode)}
+            >
+              <ListItemIcon>
+                <Brightness6Icon classes={{root:classes.icon}}/>
+              </ListItemIcon>
+              <ListItemText
+               classes={{primary:classes.listItemTextPrimary,secondary:classes.listItemTextSecondary}}
+                primary="Dark mode" />
             </ListItem>
           </Tooltip>
 
@@ -182,9 +200,11 @@ function Navbar() {
           >
             <ListItem button onClick={handleClick}>
               <ListItemIcon>
-                <ExitToAppIcon />
+                <ExitToAppIcon classes={{root:classes.icon}}/>
               </ListItemIcon>
-              <ListItemText primary="Logout" />
+              <ListItemText 
+               classes={{primary:classes.listItemTextPrimary,secondary:classes.listItemTextSecondary}}
+              primary="Logout" />
             </ListItem>
           </Tooltip>
 
@@ -195,13 +215,16 @@ function Navbar() {
           >
             <ListItem button to="/auth" component={Link}>
               <ListItemIcon>
-                <PersonAddIcon />
+                <PersonAddIcon classes={{root:classes.icon}}/>
               </ListItemIcon>
 
-              <ListItemText primary="Signup" />
+              <ListItemText
+               classes={{primary:classes.listItemTextPrimary,secondary:classes.listItemTextSecondary}}
+               primary="Signup" />
             </ListItem>
           </Tooltip>
         </List>
+        <Divider classes={{root:classes.divider}}/>
       </Drawer>
     </div>
   );

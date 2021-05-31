@@ -19,8 +19,10 @@ import { useDispatch } from "react-redux";
 import { main } from "./component/componentCSS";
 import NewHome from "./component/layout/home/NewHome";
 import MyBook from "./component/layout/mybook";
+import { withTheme } from "./component/Theme/theme";
 
-function App() {
+function App(props) {
+  const { darkmode, setDarkmode } = props;
   const classes = main();
   const dispatch = useDispatch();
   useEffect(() => {
@@ -35,17 +37,19 @@ function App() {
   }, [dispatch]);
   return (
     <BrowserRouter>
-      <Navbar />
-      <div className={classes.content}>
-        <div className={classes.toolbar}>
-          <Switch>
-            <Route path="/home" excat component={NewHome} />
-            <Route path="/auth" excat component={Auth} />
-          </Switch>
-          <Route excat path="/mybooks" component={MyBook} />
-          <Route excat path="/login" component={Login} />
+      <div className={classes.root}>
+        <Navbar darkmode={darkmode} setDarkmode={setDarkmode} />
+        <div className={classes.content}>
+          <div className={classes.toolbar}>
+            <Switch>
+              <Route path="/home" excat component={NewHome} />
+              <Route path="/auth" excat component={Auth} />
+            </Switch>
+            <Route excat path="/mybooks" component={MyBook} />
+            <Route excat path="/login" component={Login} />
+          </div>
+          <Footer />
         </div>
-        <Footer />
       </div>
 
       {/* <Route excat path="/search" component={Search} />
@@ -53,8 +57,7 @@ function App() {
       <Route excat path="/add" component={Add} /> */}
       {/* <Route excat path="/mybooks" component={MyBook} /> */}
       {/* <Route excat path="/modify" component={Modify} /> */}
-      
     </BrowserRouter>
   );
 }
-export default App;
+export default withTheme(App);

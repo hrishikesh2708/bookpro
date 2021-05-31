@@ -41,7 +41,7 @@ function streamHandler(request, response) {
   const timeHash = setInterval(() => {
     console.log("keepalive")
     response.write(':\n\n');
-  }, 40000);
+  }, 43000);
 
 
   request.on("close", (e) => {

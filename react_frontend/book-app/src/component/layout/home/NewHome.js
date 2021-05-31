@@ -129,6 +129,7 @@ export default function NewHome() {
       // console.log(" postdata ", postData);
       if (postData.length === 0) {
         setbookStatus(false);
+        setData(state)
         errormessage = "No book found!";
         toasting("error", errormessage);
       } else {
@@ -138,6 +139,7 @@ export default function NewHome() {
     }
     if (name.length <= 1) {
       setbookStatus(false);
+      setData(state)
     }
   };
   const deleteAction = (contents) => {
@@ -210,7 +212,7 @@ export default function NewHome() {
       setData(serResult);
       console.log(serResult, "search result");
     }
-  }, [store,serResult]);
+  }, [store, serResult]);
 
   return (
     <div className={classes.root}>
@@ -236,41 +238,42 @@ export default function NewHome() {
           Add Book
         </Fab>
       </div>
-      <Divider />
+      <Divider classes={{ root: classes.divider }} />
 
       <Paper elevation={5} className={classes.paper}>
-        <Grid container alignItems="flex-end">
-          {/* <Grid item xs={5}>
-            <Typography variant="h4" className={classes.title}>
-              Book list
-              <IconButton
-                size="small"
-                disabled={store.user.USER_CURRENT_STATUS === false}
-                edge="end"
-                onClick={() => setaddBookCall(true)}
-              >
-                <AddIcon />
-              </IconButton>
-            </Typography>
-          </Grid> */}
-          <Grid item xs={7} className={classes.box}>
-            <Grid container alignItems="flex-end">
-              <Grid item>
-                <SearchIcon />
-              </Grid>
-              <Grid item xs={11}>
-                <TextField
-                  id="search"
-                  placeholder="Search Books...."
-                  variant="standard"
-                  type="string"
-                  fullWidth
-                  onChange={handleSearch}
-                />
-              </Grid>
+        <div className={classes.box}>
+          {/* <Grid container alignItems="flex-end">
+            <Grid item>
+              <SearchIcon classes={{ root: classes.icon }} />
             </Grid>
-          </Grid>
-        </Grid>
+            <Grid item xs>
+              <TextField
+                // classes={{root:classes.textField}}
+                InputProps={{
+                  className: classes.input,
+                }}
+                id="search"
+                placeholder="Search Books...."
+                variant="standard"
+                type="string"
+                fullWidth
+                onChange={handleSearch}
+              />
+            </Grid>
+          </Grid> */}
+          <TextField
+                // classes={{root:classes.textField}}
+                InputProps={{
+                  className: classes.input,
+                }}
+                id="search"
+                placeholder="Search Books...."
+                variant="outlined"
+                type="string"
+                fullWidth
+                onChange={handleSearch}
+              />
+        </div>
         <TableContainer className={classes.container}>
           <Table stickyHeader={true} className={classes.table}>
             <EnhancedTableHead
@@ -301,6 +304,7 @@ export default function NewHome() {
                       scope="row"
                     >
                       <IconButton
+                      classes={{ root: classes.icon }}
                         onClick={() => (
                           setdeleteConfirm(true),
                           deleteAction({
@@ -317,6 +321,7 @@ export default function NewHome() {
                         <DeleteIcon />
                       </IconButton>
                       <IconButton
+                      classes={{ root: classes.icon }}
                         onClick={() => (
                           setmodifyBookcall(true),
                           setselectedBookDetails({
