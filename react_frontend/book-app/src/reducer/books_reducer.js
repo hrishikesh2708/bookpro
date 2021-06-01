@@ -42,6 +42,9 @@ export const set_reducer = (state = initialState, action) => {
         ...state,
         set: [...state.set, action.payload.contents.data],
         bookAdded: action.payload.contents.data,
+        add:true,
+        modify:false,
+        delete:false,
         addEffectCall: true,
         addCommitCall: false,
         addRollBackCall: false,
@@ -65,6 +68,8 @@ export const set_reducer = (state = initialState, action) => {
         return {
           ...state,
           set: arr,
+          bookAdded: action.payload,
+          add:true,
           addEffectCall: false,
           addCommitCall: true,
           addRollBackCall: false,
@@ -79,6 +84,7 @@ export const set_reducer = (state = initialState, action) => {
         return {
           ...state,
           set: arr,
+          add:true,
           addEffectCall: false,
           addCommitCall: true,
           addRollBackCall: false,
@@ -102,9 +108,10 @@ export const set_reducer = (state = initialState, action) => {
         return {
           ...state,
           set: Arr,
+          add:false,
           addEffectCall: false,
           addCommitCall: false,
-          addRollBackCall: true,
+          // addRollBackCall: true,
           deleteCommitCall: false,
           deleteEffectCall: false,
           deleteRollBackCall: false,
@@ -118,7 +125,7 @@ export const set_reducer = (state = initialState, action) => {
           set: Arr,
           addEffectCall: false,
           addCommitCall: false,
-          addRollBackCall: true,
+          // addRollBackCall: true,
           deleteCommitCall: false,
           deleteEffectCall: false,
           deleteRollBackCall: false,
@@ -156,6 +163,9 @@ export const set_reducer = (state = initialState, action) => {
         return {
           ...state,
           set: data,
+          modify:true,
+          delete:false,
+          add:false,
           bookModified: action.payload.oldData,
           modifyEffectCall: true,
           modifyCommitCall: false,
@@ -171,6 +181,9 @@ export const set_reducer = (state = initialState, action) => {
         return {
           ...state,
           set: data,
+          modify:true,
+          delete:false,
+          add:false,
           modifyEffectCall: true,
           modifyCommitCall: false,
           modifyRollBackCall: false,
@@ -186,6 +199,7 @@ export const set_reducer = (state = initialState, action) => {
       console.log("modify commit ", action.payload);
       return {
         ...state,
+        modify:true,
         modifyEffectCall: false,
         modifyCommitCall: true,
         modifyRollBackCall: false,
@@ -213,6 +227,7 @@ export const set_reducer = (state = initialState, action) => {
         return {
           ...state,
           set: modData,
+          modify:true,
           modifyEffectCall: false,
           modifyCommitCall: false,
           modifyRollBackCall: true,
@@ -227,6 +242,7 @@ export const set_reducer = (state = initialState, action) => {
         return {
           ...state,
           set: modData,
+          modify:true,
           modifyEffectCall: false,
           modifyCommitCall: false,
           modifyRollBackCall: true,
@@ -261,6 +277,9 @@ export const set_reducer = (state = initialState, action) => {
       console.log("DELETEBOOK", action.payload);
       return {
         ...state,
+        delete:true,
+        add:false,
+        modify:false,
         bookTobeDeleted: action.payload.contents.book,
         deleteCommitCall: false,
         deleteEffectCall: true,
@@ -284,6 +303,7 @@ export const set_reducer = (state = initialState, action) => {
         return {
           ...state,
           set: del,
+          delete:false,
           deleteCommitCall: true,
           deleteEffectCall: false,
           deleteRollBackCall: false,
@@ -310,6 +330,7 @@ export const set_reducer = (state = initialState, action) => {
       return {
         ...state,
         set: [...state.set],
+        delete:true,
         deleteCommitCall: false,
         deleteEffectCall: false,
         deleteRollBackCall: true,

@@ -29,7 +29,7 @@ export function stableSort(array, comparator) {
 }
 
 const headCells = [
-  { id: "_id", numeric: false, disablePadding: false, label: "Id" },
+  // { id: "_id", numeric: false, disablePadding: false, label: "Id" },
   {
     id: "title",
     numeric: false,

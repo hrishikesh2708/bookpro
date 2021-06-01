@@ -81,26 +81,26 @@ export default function NewHome() {
     ? classes.addEffect
     : store.set.addCommitCall
     ? classes.addCommit
-    : classes.addRollback;
+    : null;
   const customDel = store.set.deleteEffectCall
     ? classes.deleteEffect
     : store.set.deleteCommitCall
-    ? classes.deleteCommit
+    ? null
     : classes.deleteRollback;
-  const customColor = store.set.addEffectCall
+  const customColor = store.set.add
     ? customAdd
-    : store.set.modifyEffectCall
+    : store.set.modify
     ? customModify
-    : store.set.deleteEffectCall
+    : store.set.delete
     ? customDel
     : null;
   const customId =
     customColor === customAdd
-      ? store.set.bookAdded._id
+      ? store.set.bookAdded.title
       : customColor === customModify
-      ? store.set.bookModified._id
+      ? store.set.bookModified.title
       : customColor === customDel
-      ? store.set.bookTobeDeleted._id
+      ? store.set.bookTobeDeleted.title
       : null;
 
   const emptyRows =
@@ -129,7 +129,7 @@ export default function NewHome() {
       // console.log(" postdata ", postData);
       if (postData.length === 0) {
         setbookStatus(false);
-        setData(state)
+        setData(state);
         errormessage = "No book found!";
         toasting("error", errormessage);
       } else {
@@ -139,7 +139,7 @@ export default function NewHome() {
     }
     if (name.length <= 1) {
       setbookStatus(false);
-      setData(state)
+      setData(state);
     }
   };
   const deleteAction = (contents) => {
@@ -204,6 +204,9 @@ export default function NewHome() {
     eventSource.onerror = (e) => {
       console.log("no response from server");
     };
+    return() => {
+      eventSource.close()
+    }
   }, []);
   useEffect(() => {
     console.log("useeffect is called");
@@ -233,8 +236,9 @@ export default function NewHome() {
           edge="end"
           onClick={() => setaddBookCall(true)}
           variant="extended"
+          classes={{ root: classes.button }}
         >
-          <AddIcon className={classes.extendedIcon} />
+          <AddIcon />
           Add Book
         </Fab>
       </div>
@@ -242,37 +246,23 @@ export default function NewHome() {
 
       <Paper elevation={5} className={classes.paper}>
         <div className={classes.box}>
-          {/* <Grid container alignItems="flex-end">
-            <Grid item>
-              <SearchIcon classes={{ root: classes.icon }} />
-            </Grid>
-            <Grid item xs>
-              <TextField
-                // classes={{root:classes.textField}}
-                InputProps={{
-                  className: classes.input,
-                }}
-                id="search"
-                placeholder="Search Books...."
-                variant="standard"
-                type="string"
-                fullWidth
-                onChange={handleSearch}
-              />
-            </Grid>
-          </Grid> */}
           <TextField
-                // classes={{root:classes.textField}}
-                InputProps={{
-                  className: classes.input,
-                }}
-                id="search"
-                placeholder="Search Books...."
-                variant="outlined"
-                type="string"
-                fullWidth
-                onChange={handleSearch}
-              />
+            // classes={{root:classes.textField}}
+            InputProps={{
+              className: classes.input,
+            }}
+            InputLabelProps={{
+              classes : {
+                root: classes.hover,
+              }
+            }}
+            id="search"
+            placeholder="Search Books...."
+            variant="outlined"
+            type="string"
+            fullWidth
+            onChange={handleSearch}
+          />
         </div>
         <TableContainer className={classes.container}>
           <Table stickyHeader={true} className={classes.table}>
@@ -289,10 +279,10 @@ export default function NewHome() {
                 .map(({ _id, title, author, date_added, user_id }) => (
                   <StyledTableRow
                     hover
-                    key={_id}
-                    className={_id === customId ? customColor : null}
+                    key={title}
+                    className={title === customId ? customColor : null}
                   >
-                    <StyledTableCell>{_id}</StyledTableCell>
+                    {/* <StyledTableCell>{_id}</StyledTableCell> */}
                     <StyledTableCell>{title}</StyledTableCell>
                     <StyledTableCell>{author}</StyledTableCell>
                     <StyledTableCell>
@@ -304,7 +294,7 @@ export default function NewHome() {
                       scope="row"
                     >
                       <IconButton
-                      classes={{ root: classes.icon }}
+                        classes={{ root: classes.delete }}
                         onClick={() => (
                           setdeleteConfirm(true),
                           deleteAction({
@@ -321,7 +311,7 @@ export default function NewHome() {
                         <DeleteIcon />
                       </IconButton>
                       <IconButton
-                      classes={{ root: classes.icon }}
+                        classes={{ root: classes.edit }}
                         onClick={() => (
                           setmodifyBookcall(true),
                           setselectedBookDetails({
@@ -351,6 +341,7 @@ export default function NewHome() {
           </Table>
         </TableContainer>
         <TablePagination
+          classes={{ menuItem: classes.menuItem ,root:classes.pagination}}
           rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
           colSpan={3}
           component="div"
@@ -358,6 +349,7 @@ export default function NewHome() {
           rowsPerPage={rowsPerPage}
           page={page}
           SelectProps={{
+            MenuProps: { classes: { paper: classes.selectDropdown } },
             inputProps: { "aria-label": "rows per page" },
             native: true,
           }}

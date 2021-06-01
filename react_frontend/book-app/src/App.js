@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { Container } from "@material-ui/core";
+import { Container, CssBaseline } from "@material-ui/core";
+import { ToastContainer } from "react-toastify";
 import { Switch, Route, BrowserRouter } from "react-router-dom";
 import Navbar from "./component/layout/navbar";
 // import Home from "./component/layout/home/home";
@@ -20,6 +21,13 @@ import { main } from "./component/componentCSS";
 import NewHome from "./component/layout/home/NewHome";
 import MyBook from "./component/layout/mybook";
 import { withTheme } from "./component/Theme/theme";
+import {
+  add_book_commit,
+  modify_book_commit,
+  delete_book_commit,
+} from "./action/book_action";
+import toasting from "./toast/toast";
+import { EventSourcePolyfill } from "event-source-polyfill";
 
 function App(props) {
   const { darkmode, setDarkmode } = props;
@@ -35,7 +43,54 @@ function App(props) {
       dispatch(book_details());
     }
   }, [dispatch]);
+  // useEffect(() => {
+  //   // console.log("props" , props.event)
+  //   let eventSource = new EventSourcePolyfill(
+  //     `${process.env.REACT_APP_LOCALHOST}/api/stream`,
+  //     {
+  //       headers: {
+  //         Authorization: localStorage.getItem("jwtToken"),
+  //       },
+  //     }
+  //   );
+  //   eventSource.onopen = (e) => {
+  //     console.log("client name ", e);
+  //   };
+  //   eventSource.onmessage = (e) => {
+  //     let res = JSON.parse(e.data);
+  //     console.log("data sent by server  ", Object.keys(res)[0]);
+  //     switch (Object.keys(res)[0]) {
+  //       case "book_added":
+  //         console.log(res.book_added, "book_added");
+  //         dispatch(add_book_commit(res.book_added));
+  //         toasting("success", " New book added by different user!!");
+  //         break;
+  //       case "book_edited":
+  //         console.log(res.book_edited, "book_edited");
+  //         dispatch(modify_book_commit(res.book_edited));
+  //         toasting("success", "Book was recently updated by different user");
+  //         break;
+  //       case "book_deleted":
+  //         console.log(res.book_deleted, "book_deleted");
+  //         dispatch(delete_book_commit(res.book_deleted));
+  //         toasting("success", "Book was deleted by different user");
+  //         break;
+  //       case "private_book":
+  //         console.log(res.private_book, "private_book");
+  //         break;
+  //       default:
+  //         break;
+  //     }
+  //   };
+  //   eventSource.onerror = (e) => {
+  //     console.log("no response from server");
+  //   };
+  //   return() => {
+  //     eventSource.close()
+  //   }
+  // }, []);
   return (
+    <>
     <BrowserRouter>
       <div className={classes.root}>
         <Navbar darkmode={darkmode} setDarkmode={setDarkmode} />
@@ -58,6 +113,8 @@ function App(props) {
       {/* <Route excat path="/mybooks" component={MyBook} /> */}
       {/* <Route excat path="/modify" component={Modify} /> */}
     </BrowserRouter>
+    <ToastContainer/>
+    </>
   );
 }
 export default withTheme(App);

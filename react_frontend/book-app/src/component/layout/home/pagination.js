@@ -5,16 +5,9 @@ import FirstPageIcon from "@material-ui/icons/FirstPage";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { IconButton } from "@material-ui/core";
 import PropTypes from "prop-types";
-const useStyles1 = makeStyles((theme) => ({
-  root: {
-    align: "right",
-    flexShrink: 0,
-    marginLeft: theme.spacing(2.5),
-  },
-}));
-
+import { home } from "../../componentCSS";
 export function TablePaginationActions(props) {
-  const classes = useStyles1();
+  const classes = home()
   const theme = useTheme();
   const { count, page, rowsPerPage, onChangePage } = props;
 
@@ -41,7 +34,7 @@ export function TablePaginationActions(props) {
         disabled={page === 0}
         aria-label="first page"
       >
-        {theme.direction === "rtl" ? <LastPageIcon /> : <FirstPageIcon />}
+        {theme.direction === "rtl" ? <LastPageIcon classes={{ root: classes.icon }}/> : <FirstPageIcon classes={{root:classes.icon}}/>}
       </IconButton>
       <IconButton
         onClick={handleBackButtonClick}
@@ -49,9 +42,9 @@ export function TablePaginationActions(props) {
         aria-label="previous page"
       >
         {theme.direction === "rtl" ? (
-          <KeyboardArrowRight />
+          <KeyboardArrowRight classes={{root:classes.icon}}/>
         ) : (
-          <KeyboardArrowLeft />
+          <KeyboardArrowLeft classes={{root:classes.icon}}/>
         )}
       </IconButton>
       <IconButton
@@ -60,9 +53,9 @@ export function TablePaginationActions(props) {
         aria-label="next page"
       >
         {theme.direction === "rtl" ? (
-          <KeyboardArrowLeft />
+          <KeyboardArrowLeft classes={{root:classes.icon}}/>
         ) : (
-          <KeyboardArrowRight />
+          <KeyboardArrowRight classes={{root:classes.icon}}/>
         )}
       </IconButton>
       <IconButton
@@ -70,7 +63,7 @@ export function TablePaginationActions(props) {
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="last page"
       >
-        {theme.direction === "rtl" ? <FirstPageIcon /> : <LastPageIcon />}
+        {theme.direction === "rtl" ? <FirstPageIcon classes={{root:classes.icon}}/> : <LastPageIcon classes={{root:classes.icon}}/>}
       </IconButton>
     </div>
   );

@@ -27,6 +27,7 @@ import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
 import MenuIcon from "@material-ui/icons/Menu";
 import CloseIcon from "@material-ui/icons/Close";
 import Brightness6Icon from '@material-ui/icons/Brightness6';
+import MenuBookIcon from '@material-ui/icons/MenuBook';
 
 function Navbar( props ) {
   const {darkmode,setDarkmode} = props
@@ -151,7 +152,7 @@ function Navbar( props ) {
           <Tooltip title="My Books" placement="right">
             <ListItem button to="/myBooks" component={Link}>
               <ListItemIcon>
-                <LibraryBooksIcon classes={{root:classes.icon}}/>
+                <MenuBookIcon classes={{root:classes.icon}}/>
               </ListItemIcon>
 
               <ListItemText

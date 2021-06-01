@@ -23,6 +23,7 @@ import {
   Avatar,
   Grid,
   Paper,
+  CssBaseline,
 } from "@material-ui/core";
 
 function Copyright() {
@@ -113,7 +114,9 @@ function Auth() {
   return (
     <Container component="main" maxWidth="xs">
       <Paper className={classes.paper}>
+      
         <Container className={classes.content}>
+        {/* <CssBaseline/> */}
           <Avatar className={classes.avatar}>
             <LockOutlinedIcon />
           </Avatar>

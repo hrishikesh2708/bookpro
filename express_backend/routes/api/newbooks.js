@@ -41,7 +41,7 @@ function streamHandler(request, response) {
   const timeHash = setInterval(() => {
     console.log("keepalive")
     response.write(':\n\n');
-  }, 43000);
+  }, 4000);
 
 
   request.on("close", (e) => {
@@ -121,8 +121,8 @@ async function sendChangeStream(newEvent) {
           if (client.id !== newEvent.id)
             client.response.write(
               `data: ${JSON.stringify({
-                book_deleted: { _id: data.documentKey._id },
-              })}\n\n`
+                book_deleted:data.documentKey._id },
+              )}\n\n`
             );
         });
         break;

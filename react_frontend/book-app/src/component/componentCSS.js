@@ -3,19 +3,19 @@ import { TableRow, TableCell } from "@material-ui/core";
 const drawerWidth = 240;
 export const StyledTableCell = withStyles((theme) => ({
   head: {
-    backgroundColor: "#424242",
-    color: theme.palette.common.white,
-    "&:active": {
-      color: theme.palette.common.white,
-    },
+    backgroundColor: theme.palette.primary.light,
+    color: theme.palette.secondary.contrastText,
+    // "&:active": {
+    //   color: theme.palette.common.white,
+    // },
   },
   body: {
     fontSize: 14,
-    color:theme.palette.text.primary,
+    color: theme.palette.text.primary,
   },
-  root:{
-    borderColor:theme.palette.divider,
-  }
+  root: {
+    borderColor: theme.palette.divider,
+  },
 }))(TableCell);
 
 export const StyledTableRow = withStyles((theme) => ({
@@ -23,7 +23,7 @@ export const StyledTableRow = withStyles((theme) => ({
     // "&:nth-of-type(odd)": {
     //   backgroundColor: theme.palette.action.disabledBackground,
     // },
-    color:theme.palette.text.primary,
+    color: theme.palette.text.primary,
   },
 }))(TableRow);
 
@@ -32,7 +32,7 @@ export const main = makeStyles((theme) => ({
     display: "flex",
     minHeight: "100vh",
     flexDirection: "column",
-    backgroundColor : theme.palette.background.paper
+    backgroundColor: theme.palette.background.default,
   },
   content: {
     flexGrow: 1,
@@ -59,7 +59,8 @@ export const foot = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
     padding: theme.spacing(1),
-    backgroundColor: "#f5f5f5",
+    color: theme.palette.text.secondary,
+    backgroundColor: theme.palette.background.paper,
   },
 }));
 
@@ -68,11 +69,11 @@ export const nav = makeStyles((theme) => ({
     display: "flex",
   },
   title: {
-    color: theme.palette.text.primary,
+    color: theme.palette.primary.contrastText,
     textDecoration: "none",
   },
   appBar: {
-    backgroundColor : theme.palette.background.default,
+    backgroundColor: theme.palette.primary.dark,
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
@@ -81,7 +82,7 @@ export const nav = makeStyles((theme) => ({
   },
   appBarShift: {
     marginLeft: drawerWidth,
-    backgroundColor : theme.palette.background.default,
+    backgroundColor: theme.palette.primary.dark,
     width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
@@ -90,7 +91,7 @@ export const nav = makeStyles((theme) => ({
   },
   menuButton: {
     marginRight: 36,
-    color: theme.palette.text.primary,
+    color: theme.palette.primary.contrastText,
   },
   hide: {
     display: "none",
@@ -99,13 +100,13 @@ export const nav = makeStyles((theme) => ({
     width: drawerWidth,
     flexShrink: 0,
     whiteSpace: "nowrap",
-    borderColor : theme.palette.divider,
-    backgroundColor : theme.palette.background.paper,
+    borderColor: theme.palette.divider,
+    backgroundColor: theme.palette.background.paper,
   },
   drawerOpen: {
     width: drawerWidth,
-    borderColor : theme.palette.divider,
-    backgroundColor : theme.palette.background.paper,
+    borderColor: theme.palette.divider,
+    backgroundColor: theme.palette.background.paper,
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -117,8 +118,8 @@ export const nav = makeStyles((theme) => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     overflowX: "hidden",
-    borderColor : theme.palette.divider,
-    backgroundColor : theme.palette.background.paper,
+    borderColor: theme.palette.divider,
+    backgroundColor: theme.palette.background.paper,
     width: theme.spacing(7) + 1,
     [theme.breakpoints.up("sm")]: {
       width: theme.spacing(9) + 1,
@@ -141,40 +142,37 @@ export const nav = makeStyles((theme) => ({
   divider: {
     background: theme.palette.divider,
   },
-  icon : {
-    color : theme.palette.text.secondary,
+  icon: {
+    color: theme.palette.text.secondary,
   },
   listItemTextPrimary: {
-    color : theme.palette.text.primary,
+    color: theme.palette.text.primary,
   },
   listItemTextSecondary: {
-    color : theme.palette.text.secondary,
+    color: theme.palette.text.secondary,
   },
 }));
 
 export const home = makeStyles((theme) => ({
   root: {
     width: "100%",
-    padding: theme.spacing(0, 0, 0 , 2),
+    padding: theme.spacing(0, 0, 0, 2),
   },
   divider: {
     background: theme.palette.divider,
   },
-  icon : {
-    color : theme.palette.text.secondary,
+  icon: {
+    color: theme.palette.text.secondary,
   },
-  input:{
-    color : theme.palette.text.primary,
-    multilineColor : theme.palette.text.primary,
+  input: {
+    color: theme.palette.text.primary,
+    multilineColor: theme.palette.text.primary,
   },
-  head : {
-    display:"flex",
+  head: {
+    display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
     height: 60,
-  },
-  extendedIcon: {
-    marginRight: theme.spacing(1),
   },
   load: {
     width: "100%",
@@ -182,8 +180,24 @@ export const home = makeStyles((theme) => ({
       marginTop: theme.spacing(2),
     },
   },
+  pagination: {
+    color: theme.palette.text.primary,
+  },
+  selectDropdown: {
+    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.background.paper,
+  },
+  menuItem: {
+    background: theme.palette.background.paper,
+    "&:hover": {
+      backgroundColor: "#3b3f58",
+    },
+  },
   table: {
     minWidth: 750,
+  },
+  csshover: {
+    color: "green"
   },
   container: {
     maxHeight: "70vh",
@@ -197,14 +211,14 @@ export const home = makeStyles((theme) => ({
   },
   paper: {
     marginTop: theme.spacing(5),
-    backgroundColor : theme.palette.background.paper,
+    backgroundColor: theme.palette.background.paper,
     // width: `calc(100% - ${drawerWidth}px)`,
     marginBottom: theme.spacing(2),
     borderRadius: "16px",
     padding: theme.spacing(1),
   },
   title: {
-    color : theme.palette.text.primary,
+    color: theme.palette.text.primary,
     margin: theme.spacing(2, 0, 2),
     padding: theme.spacing(1),
   },
@@ -219,39 +233,63 @@ export const home = makeStyles((theme) => ({
     top: 20,
     width: 1,
   },
+  delete: {
+    color: theme.palette.error.main,
+  },
+  edit: {
+    color: theme.palette.primary.main,
+  },
+  pagination: {
+    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.background.paper,
+  },
+  tablepage: {
+    align: "right",
+    flexShrink: 0,
+    marginLeft: theme.spacing(2.5),
+  },
+  button: {
+    color: theme.palette.secondary.contrastText,
+    background: theme.palette.secondary.main,
+  },
+  hover: {
+    "&:hover": {
+      backgroundColor: theme.palette.secondary.main,
+    }
+  },
   addEffect: {
-    backgroundColor: "#c5cae9",
+    backgroundColor: theme.palette.success.light,
   },
   addCommit: {
-    backgroundColor: "#7986cb",
+    backgroundColor: theme.palette.success.main,
   },
-  addRollback: {
-    backgroundColor: "#3f51b5",
-  },
+  // addRollback: {
+  //   backgroundColor: theme.palette.success.dark,
+  // },
   modifyEffect: {
-    backgroundColor: "#e1bee7",
+    backgroundColor: theme.palette.warning.light,
   },
   modifyCommit: {
-    backgroundColor: "#ce93d8",
+    backgroundColor: theme.palette.warning.main,
   },
   modifyRollback: {
-    backgroundColor: "#9c27b0",
+    backgroundColor: theme.palette.warning.dark,
   },
   deleteEffect: {
-    backgroundColor: "#f44336",
+    backgroundColor: theme.palette.error.light,
   },
-  deleteCommit: {
-    backgroundColor: "#ef9a9a",
-  },
+  // deleteCommit: {
+  //   backgroundColor: theme.palette.error.main,
+  // },
   deleteRollback: {
-    backgroundColor: "#ffcdd2",
+    backgroundColor: theme.palette.error.main,
   },
 }));
 
 export const mybooks = makeStyles((theme) => ({
   root: {
     width: "100%",
-    padding: theme.spacing(0, 0, 0 , 2),
+    padding: theme.spacing(0, 0, 0, 2),
   },
   table: {
     minWidth: 750,
@@ -262,14 +300,14 @@ export const mybooks = makeStyles((theme) => ({
   paper: {
     margin: theme.spacing(2, 2, 2, 4),
     padding: theme.spacing(0.5),
-    backgroundColor : theme.palette.background.paper,
+    backgroundColor: theme.palette.background.paper,
   },
   title: {
-    margin: theme.spacing(2, 0, 0 , 2),
+    margin: theme.spacing(2, 0, 0, 2),
     padding: theme.spacing(1),
     color: theme.palette.text.primary,
   },
-  divider:{
+  divider: {
     background: theme.palette.divider,
   },
 }));
@@ -399,13 +437,20 @@ export const auth_css = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    borderRadius: "6%",
+    borderRadius: "20px",
+    backgroundColor : theme.palette.background.paper,
+    color: theme.palette.text.primary,
+    
+  },
+  title:{
+    color: theme.palette.text.primary,
   },
   content: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     borderRadius: "10%",
+    color: theme.palette.text.primary,
   },
   avatar: {
     margin: theme.spacing(4, 0, 1),
@@ -414,8 +459,10 @@ export const auth_css = makeStyles((theme) => ({
   form: {
     width: "100%",
     marginTop: theme.spacing(2),
+    color: theme.palette.text.primary,
   },
   typo: {
+    color: theme.palette.text.primary,
     margin: theme.spacing(1, 0, 0),
   },
   submit: {
