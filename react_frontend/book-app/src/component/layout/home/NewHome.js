@@ -17,10 +17,9 @@ import * as moment from "moment";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import { TablePaginationActions } from "./pagination";
 import { EnhancedTableHead, stableSort, getComparator } from "./sorting";
-import { StyledTableRow, StyledTableCell, home } from "../../componentCSS";
-
+import { StyledTableRow, StyledTableCell, home, CssTextField} from "../../componentCSS";
 // material ui icon
-import SearchIcon from "@material-ui/icons/Search";
+// import SearchIcon from "@material-ui/icons/Search";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -41,7 +40,6 @@ import {
   Divider,
   Fab,
   TextField,
-  Grid,
   TableContainer,
   IconButton,
   TablePagination,
@@ -68,8 +66,8 @@ export default function NewHome() {
   const [serResult, setserResult] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [order, setOrder] = useState("desc");
-  const [orderBy, setOrderBy] = useState("date_added");
+  const [order, setOrder] = useState("asc");
+  const [orderBy, setOrderBy] = useState("title");
   const dense = false;
 
   const customModify = store.set.modifyEffectCall
@@ -246,16 +244,11 @@ export default function NewHome() {
 
       <Paper elevation={5} className={classes.paper}>
         <div className={classes.box}>
-          <TextField
-            // classes={{root:classes.textField}}
-            InputProps={{
-              className: classes.input,
+          <CssTextField
+             InputLabelProps={{
+              className: classes.multilineColor,
             }}
-            InputLabelProps={{
-              classes : {
-                root: classes.hover,
-              }
-            }}
+            label = "Search"
             id="search"
             placeholder="Search Books...."
             variant="outlined"
@@ -341,7 +334,7 @@ export default function NewHome() {
           </Table>
         </TableContainer>
         <TablePagination
-          classes={{ menuItem: classes.menuItem ,root:classes.pagination}}
+          classes={{ menuItem: classes.menuItem , root:classes.pagination}}
           rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
           colSpan={3}
           component="div"
@@ -418,6 +411,7 @@ export default function NewHome() {
                   token: localStorage.getItem("jwtToken"),
                 })
               );
+              toasting("success", "Book Modified")
               setmodifyBookcall(false);
               resetForm(true);
             }}

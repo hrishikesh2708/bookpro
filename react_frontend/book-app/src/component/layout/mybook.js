@@ -2,14 +2,11 @@ import {
   Paper,
   Table,
   TableBody,
-  TableCell,
   TableContainer,
   TableHead,
-  TableRow,
   Typography,
   Divider,
 } from "@material-ui/core";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
 import React from "react";
 import { useSelector } from "react-redux";
 import * as moment from "moment";

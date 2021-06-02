@@ -148,7 +148,20 @@ export const set_reducer = (state = initialState, action) => {
       } else {
         return {
           ...state,
+          bookAdded: action.payload,
           set: [...state.set, action.payload],
+          add:true,
+          modify:false,
+          delete:false,
+          addEffectCall: false,
+          addCommitCall: true,
+          addRollBackCall: false,
+          deleteCommitCall: false,
+          deleteEffectCall: false,
+          deleteRollBackCall: false,
+          modifyEffectCall: false,
+          modifyCommitCall: false,
+          modifyRollBackCall: false,
         };
       }
 
@@ -265,7 +278,20 @@ export const set_reducer = (state = initialState, action) => {
         modsse[modloc].author = action.payload.author;
         return {
           ...state,
+          add:false,
+          delete:false,
           set: modsse,
+          bookModified: modsse[modloc],
+          modify:true,
+          modifyEffectCall: false,
+          modifyCommitCall: true,
+          modifyRollBackCall: false,
+          deleteCommitCall: false,
+          deleteEffectCall: false,
+          deleteRollBackCall: false,
+          addEffectCall: false,
+          addCommitCall: false,
+          addRollBackCall: false,
         };
       } else {
         return {
@@ -319,8 +345,6 @@ export const set_reducer = (state = initialState, action) => {
           ...state,
         }
       }
-
-
     case "DELETE_BOOK_ROLLBACK":
       console.log(
         "DELETEBOOK rollback",

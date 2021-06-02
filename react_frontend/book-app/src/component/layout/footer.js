@@ -2,7 +2,6 @@ import React from "react";
 import {
   Typography,
   Paper,
-  CssBaseline,
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { foot } from "../componentCSS";
@@ -14,7 +13,7 @@ function Footer() {
       <Paper elevation={6} className={classes.root}>
         <Typography variant="body2" align="center">
           {"Copyright © "}
-          <Link color="inherit" to="/">
+          <Link color="primary" to="/">
             Bookpro
           </Link>{" "}
           {new Date().getFullYear()}

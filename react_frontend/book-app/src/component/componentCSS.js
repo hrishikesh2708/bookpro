@@ -1,20 +1,17 @@
 import { makeStyles, withStyles } from "@material-ui/core/styles";
-import { TableRow, TableCell } from "@material-ui/core";
+import { TableRow, TableCell, TextField} from "@material-ui/core";
 const drawerWidth = 240;
 export const StyledTableCell = withStyles((theme) => ({
   head: {
     backgroundColor: theme.palette.primary.light,
-    color: theme.palette.secondary.contrastText,
-    // "&:active": {
-    //   color: theme.palette.common.white,
-    // },
+    color: theme.palette.secondary.light,
   },
   body: {
     fontSize: 14,
     color: theme.palette.text.primary,
   },
   root: {
-    borderColor: theme.palette.divider,
+    borderColor: theme.palette.secondary.light,
   },
 }))(TableCell);
 
@@ -24,9 +21,34 @@ export const StyledTableRow = withStyles((theme) => ({
     //   backgroundColor: theme.palette.action.disabledBackground,
     // },
     color: theme.palette.text.primary,
+    border : `1px solid ${theme.palette.text.primary}`
   },
 }))(TableRow);
 
+export const CssTextField = withStyles((theme) => ({
+  root: {
+    '& .MuiInputBase-root': {
+      color: theme.palette.secondary.main,
+    },
+    '& label.Mui-focused': {
+      color: theme.palette.secondary.main,
+    },
+    '& .MuiInput-underline:after': {
+      borderBottomColor: theme.palette.secondary.main,
+    },
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: theme.palette.secondary.main,
+      },
+      '&:hover fieldset': {
+        borderColor: theme.palette.secondary.main,
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: theme.palette.secondary.main,
+      },
+    },
+  },
+}))(TextField);
 export const main = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -166,7 +188,6 @@ export const home = makeStyles((theme) => ({
   },
   input: {
     color: theme.palette.text.primary,
-    multilineColor: theme.palette.text.primary,
   },
   head: {
     display: "flex",
@@ -180,12 +201,12 @@ export const home = makeStyles((theme) => ({
       marginTop: theme.spacing(2),
     },
   },
-  pagination: {
-    color: theme.palette.text.primary,
-  },
   selectDropdown: {
     color: theme.palette.text.primary,
     backgroundColor: theme.palette.background.paper,
+  },
+  multilineColor :{
+    color : theme.palette.secondary.main,
   },
   menuItem: {
     background: theme.palette.background.paper,
@@ -201,11 +222,10 @@ export const home = makeStyles((theme) => ({
   },
   container: {
     maxHeight: "70vh",
+    border : `1px solid ${theme.palette.secondary.light}`
   },
   box: {
     margin: theme.spacing(2, 0, 2),
-    width: "100%",
-    // backgroundColor: "#f5f5f5",
     borderRadius: "16px",
     padding: theme.spacing(1),
   },
@@ -234,7 +254,7 @@ export const home = makeStyles((theme) => ({
     width: 1,
   },
   delete: {
-    color: theme.palette.error.main,
+    color: theme.palette.error.dark,
   },
   edit: {
     color: theme.palette.primary.main,
@@ -296,6 +316,7 @@ export const mybooks = makeStyles((theme) => ({
   },
   container: {
     maxHeight: "75vh",
+    border : `1px solid ${theme.palette.secondary.light}`
   },
   paper: {
     margin: theme.spacing(2, 2, 2, 4),
@@ -438,12 +459,12 @@ export const auth_css = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
     borderRadius: "20px",
-    backgroundColor : theme.palette.background.paper,
-    color: theme.palette.text.primary,
+    // backgroundColor : theme.palette.background.paper,
+    // color: theme.palette.text.primary,
     
   },
   title:{
-    color: theme.palette.text.primary,
+    // color: theme.palette.text.primary,
   },
   content: {
     display: "flex",

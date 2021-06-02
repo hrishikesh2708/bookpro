@@ -5,7 +5,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
 import { user_details } from "../../../action/user_details";
-import { withRouter, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import toasting from "../../../toast/toast";
 import { googleLogin, login } from "../../../api routes/api";
 import { login_css } from "../../componentCSS";
@@ -36,7 +36,7 @@ function Copyright() {
     </Typography>
   );
 }
-function Login() {
+export default function Login() {
   const history = useHistory();
   const classes = login_css();
   const dispatch = useDispatch()
@@ -49,7 +49,7 @@ function Login() {
           localStorage.clear();
           localStorage.setItem("jwtToken", token);
           dispatch(user_details())
-          history.push("/home");
+          history.push("/");
         })
         .catch((err) => {
           if (typeof err.response === "undefined") {
@@ -73,7 +73,7 @@ function Login() {
         localStorage.setItem("jwtToken", token);
         props.resetForm(true)
         dispatch(user_details())
-        history.push("/home");
+        history.push("/");
       })
       .catch((err) => {
         if (typeof err.response === "undefined") {
@@ -169,7 +169,7 @@ function Login() {
                     </Liink>
                   </Grid>
                   <Grid item>
-                    <Liink component={Link} to="/auth" variant="body2">
+                    <Liink component={Link} to="/signup" variant="body2">
                       {"Don't have an account? Sign Up"}
                     </Liink>
                   </Grid>
@@ -187,4 +187,4 @@ function Login() {
     </Container>
   );
 }
-export default withRouter(Login);
+// export default withRouter(Login);

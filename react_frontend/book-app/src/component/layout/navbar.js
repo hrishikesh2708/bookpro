@@ -13,7 +13,6 @@ import {
   Toolbar,
   AppBar,
   Drawer,
-  CssBaseline,
   List,
   Divider,
   ListItem,
@@ -45,7 +44,7 @@ function Navbar( props ) {
     };
     localStorage.clear();
     dispatch(user_logout());
-    history.push("/home");
+    history.push("/");
   };
   function deleteData(db) {
     var transaction = db.transaction(["keyvaluepairs"], "readwrite");
@@ -65,7 +64,6 @@ function Navbar( props ) {
   };
   return (
     <div className={classes.root}>
-      <CssBaseline />
       <AppBar
         position="fixed"
         className={clsx(classes.appBar, {
@@ -163,7 +161,7 @@ function Navbar( props ) {
             </ListItem>
           </Tooltip>
           <Tooltip title="All Books" placement="right">
-            <ListItem button to="/home" component={Link}>
+            <ListItem button to="/" component={Link}>
               <ListItemIcon>
                 <LibraryBooksIcon classes={{root:classes.icon}} />
               </ListItemIcon>
@@ -214,7 +212,7 @@ function Navbar( props ) {
             placement="right"
             className={clsx({ [classes.hide]: state.user.USER_CURRENT_STATUS })}
           >
-            <ListItem button to="/auth" component={Link}>
+            <ListItem button to="/login" component={Link}>
               <ListItemIcon>
                 <PersonAddIcon classes={{root:classes.icon}}/>
               </ListItemIcon>

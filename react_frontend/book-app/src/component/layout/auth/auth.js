@@ -1,4 +1,4 @@
-import { withRouter, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import React from "react";
 import { Link } from "react-router-dom";
 import toasting from "../../../toast/toast";
@@ -23,7 +23,6 @@ import {
   Avatar,
   Grid,
   Paper,
-  CssBaseline,
 } from "@material-ui/core";
 
 function Copyright() {
@@ -39,7 +38,7 @@ function Copyright() {
   );
 }
 
-function Auth() {
+export default function Auth() {
   const history = useHistory();
   const classes = auth_css();
   const dispatch = useDispatch();
@@ -53,7 +52,7 @@ function Auth() {
           localStorage.clear();
           localStorage.setItem("jwtToken", token);
           dispatch(user_details())
-          history.push("/home");
+          history.push("/");
         })
         .catch((err) => {
           if (typeof err.response === "undefined") {
@@ -81,7 +80,7 @@ function Auth() {
           console.log("user logged in");
           dispatch(user_details())
           props.resetForm(true)
-          history.push("/home");
+          history.push("/");
         });
       })
       .catch((err) => {
@@ -116,7 +115,6 @@ function Auth() {
       <Paper className={classes.paper}>
       
         <Container className={classes.content}>
-        {/* <CssBaseline/> */}
           <Avatar className={classes.avatar}>
             <LockOutlinedIcon />
           </Avatar>
@@ -228,4 +226,4 @@ function Auth() {
     </Container>
   );
 }
-export default withRouter(Auth);
+// export default withRouter(Auth);
