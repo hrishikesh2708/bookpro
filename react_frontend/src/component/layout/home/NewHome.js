@@ -17,9 +17,8 @@ import * as moment from "moment";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import { TablePaginationActions } from "./pagination";
 import { EnhancedTableHead, stableSort, getComparator } from "./sorting";
-import { StyledTableRow, StyledTableCell, home, CssTextField} from "../../componentCSS";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 // material ui icon
-// import SearchIcon from "@material-ui/icons/Search";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -42,14 +41,188 @@ import {
   TextField,
   TableContainer,
   IconButton,
+  TableCell,
+  TableRow,
   TablePagination,
 } from "@material-ui/core";
+
 
 //-----------------Main Component-------------------------//
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
+
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    backgroundColor: theme.palette.primary.light,
+    color: theme.palette.secondary.light,
+  },
+  body: {
+    fontSize: 14,
+    color: theme.palette.text.primary,
+  },
+  root: {
+    borderColor: theme.palette.secondary.light,
+  },
+}))(TableCell);
+
+const StyledTableRow = withStyles((theme) => ({
+  root: {
+    color: theme.palette.text.primary,
+    border : `1px solid ${theme.palette.text.primary}`
+  },
+}))(TableRow);
+
+const CssTextField = withStyles((theme) => ({
+  root: {
+    '& .MuiInputBase-root': {
+      color: theme.palette.secondary.main,
+    },
+    '& label.Mui-focused': {
+      color: theme.palette.secondary.main,
+    },
+    '& .MuiInput-underline:after': {
+      borderBottomColor: theme.palette.secondary.main,
+    },
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: theme.palette.secondary.main,
+      },
+      '&:hover fieldset': {
+        borderColor: theme.palette.secondary.main,
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: theme.palette.secondary.main,
+      },
+    },
+  },
+}))(TextField);
+
+const home = makeStyles((theme) => ({
+  root: {
+    width: "100%",
+    padding: theme.spacing(0, 0, 0, 2),
+  },
+  divider: {
+    background: theme.palette.divider,
+  },
+  icon: {
+    color: theme.palette.text.secondary,
+  },
+  input: {
+    color: theme.palette.text.primary,
+  },
+  head: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    height: 60,
+  },
+  load: {
+    width: "100%",
+    "& > * + *": {
+      marginTop: theme.spacing(2),
+    },
+  },
+  selectDropdown: {
+    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.background.paper,
+  },
+  multilineColor :{
+    color : theme.palette.secondary.main,
+  },
+  menuItem: {
+    background: theme.palette.background.paper,
+    "&:hover": {
+      backgroundColor: "#3b3f58",
+    },
+  },
+  table: {
+    minWidth: 750,
+  },
+  csshover: {
+    color: "green"
+  },
+  container: {
+    maxHeight: "70vh",
+    border : `1px solid ${theme.palette.secondary.light}`
+  },
+  box: {
+    margin: theme.spacing(2, 0, 2),
+    borderRadius: "16px",
+    padding: theme.spacing(1),
+  },
+  paper: {
+    marginTop: theme.spacing(5),
+    backgroundColor: theme.palette.background.paper,
+    marginBottom: theme.spacing(2),
+    borderRadius: "16px",
+    padding: theme.spacing(1),
+  },
+  title: {
+    color: theme.palette.text.primary,
+    margin: theme.spacing(2, 0, 2),
+    padding: theme.spacing(1),
+  },
+  visuallyHidden: {
+    border: 0,
+    clip: "rect(0 0 0 0)",
+    height: 1,
+    margin: -1,
+    overflow: "hidden",
+    padding: 0,
+    position: "absolute",
+    top: 20,
+    width: 1,
+  },
+  delete: {
+    color: theme.palette.error.dark,
+  },
+  edit: {
+    color: theme.palette.primary.main,
+  },
+  pagination: {
+    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.background.paper,
+  },
+  tablepage: {
+    align: "right",
+    flexShrink: 0,
+    marginLeft: theme.spacing(2.5),
+  },
+  button: {
+    color: theme.palette.secondary.contrastText,
+    background: theme.palette.secondary.main,
+  },
+  hover: {
+    "&:hover": {
+      backgroundColor: theme.palette.secondary.main,
+    }
+  },
+  addEffect: {
+    backgroundColor: theme.palette.success.light,
+  },
+  addCommit: {
+    backgroundColor: theme.palette.success.main,
+  },
+  modifyEffect: {
+    backgroundColor: theme.palette.warning.light,
+  },
+  modifyCommit: {
+    backgroundColor: theme.palette.warning.main,
+  },
+  modifyRollback: {
+    backgroundColor: theme.palette.warning.dark,
+  },
+  deleteEffect: {
+    backgroundColor: theme.palette.error.light,
+  },
+  deleteRollback: {
+    backgroundColor: theme.palette.error.main,
+  },
+}));
+
 
 export default function NewHome() {
   const classes = home();
@@ -171,11 +344,11 @@ export default function NewHome() {
       }
     );
     eventSource.onopen = (e) => {
-      console.log("client name ", e);
+      // console.log("client name ", e);
     };
     eventSource.onmessage = (e) => {
       let res = JSON.parse(e.data);
-      console.log("data sent by server  ", Object.keys(res)[0]);
+      // console.log("data sent by server  ", Object.keys(res)[0]);
       switch (Object.keys(res)[0]) {
         case "book_added":
           console.log(res.book_added, "book_added");
@@ -207,11 +380,11 @@ export default function NewHome() {
     }
   }, []);
   useEffect(() => {
-    console.log("useeffect is called");
+    // console.log("useeffect is called");
     setData(state);
     if (bookStatus) {
       setData(serResult);
-      console.log(serResult, "search result");
+      // console.log(serResult, "search result");
     }
   }, [store, serResult]);
 
@@ -272,7 +445,7 @@ export default function NewHome() {
                 .map(({ _id, title, author, date_added, user_id }) => (
                   <StyledTableRow
                     hover
-                    key={title}
+                    key={_id}
                     className={title === customId ? customColor : null}
                   >
                     {/* <StyledTableCell>{_id}</StyledTableCell> */}

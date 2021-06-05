@@ -17,7 +17,7 @@ function Search() {
     var errormessage = "";
     const name = e.target.value.replace(/\s+/g, " ").trim();
     const regex = new RegExp(name, "i");
-    console.log("handle change called", name);
+    // console.log("handle change called", name);
     if (name.length > 1) {
       const b = JSON.parse(localStorage.getItem("books"));
       // console.log(b);

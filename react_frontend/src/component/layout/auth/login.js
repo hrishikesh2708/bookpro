@@ -8,10 +8,10 @@ import { user_details } from "../../../action/user_details";
 import { useHistory } from "react-router-dom";
 import toasting from "../../../toast/toast";
 import { googleLogin, login } from "../../../api routes/api";
-import { login_css } from "../../componentCSS";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { makeStyles } from "@material-ui/core/styles";
 import {
   Typography,
   Link as Liink,
@@ -23,6 +23,39 @@ import {
   Grid,
   Paper,
 } from "@material-ui/core";
+
+const login_css = makeStyles((theme) => ({
+  paper: {
+    marginTop: theme.spacing(2),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    borderRadius: "6%",
+  },
+  content: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    borderRadius: "10%",
+  },
+  avatar: {
+    margin: theme.spacing(4, 0, 1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: "100%",
+    marginTop: theme.spacing(2),
+  },
+  typo: {
+    margin: theme.spacing(1.5, 0, 0),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+  googlejsx: {
+    margin: theme.spacing(0, 0, 2),
+  },
+}));
 
 function Copyright() {
   return (
@@ -41,7 +74,9 @@ export default function Login() {
   const classes = login_css();
   const dispatch = useDispatch()
   const google = (e) => {
+    console.log("g login called!!")
     if (typeof e.tokenId !== "undefined") {
+      console.log("g login called!!")
       const token = e.tokenId;
       googleLogin({ id: token })
         .then((res) => {
@@ -64,8 +99,8 @@ export default function Login() {
   };
 
   const onSubmit = (values, props) => {
-    console.log(values);
-    console.log(props);
+    // console.log(values);
+    // console.log(props);
     login(values)
       .then((res) => {
         const { token } = res.data;
@@ -158,8 +193,8 @@ export default function Login() {
                       Sign in with Google
                     </Button>
                   )}
-                  onSuccess={google}
-                  onFailure={google}
+                  onSuccess={(e) => {google(e)}}
+                  onFailure={(e) => {google(e)}}
                   cookiePolicy={"single_host_origin"}
                 />
                 <Grid container>
@@ -187,4 +222,3 @@ export default function Login() {
     </Container>
   );
 }
-// export default withRouter(Login);

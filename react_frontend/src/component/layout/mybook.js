@@ -6,12 +6,60 @@ import {
   TableHead,
   Typography,
   Divider,
+  TableRow,
+  TableCell, 
 } from "@material-ui/core";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import React from "react";
 import { useSelector } from "react-redux";
 import * as moment from "moment";
-import { mybooks, StyledTableCell, StyledTableRow} from "../componentCSS";
 
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    backgroundColor: theme.palette.primary.light,
+    color: theme.palette.secondary.light,
+  },
+  body: {
+    fontSize: 14,
+    color: theme.palette.text.primary,
+  },
+  root: {
+    borderColor: theme.palette.secondary.light,
+  },
+}))(TableCell);
+
+const StyledTableRow = withStyles((theme) => ({
+  root: {
+    color: theme.palette.text.primary,
+    border : `1px solid ${theme.palette.text.primary}`
+  },
+}))(TableRow);
+const mybooks = makeStyles((theme) => ({
+  root: {
+    width: "100%",
+    padding: theme.spacing(0, 0, 0, 2),
+  },
+  table: {
+    minWidth: 750,
+  },
+  container: {
+    maxHeight: "75vh",
+    border : `1px solid ${theme.palette.secondary.light}`
+  },
+  paper: {
+    margin: theme.spacing(2, 2, 2, 4),
+    padding: theme.spacing(0.5),
+    backgroundColor: theme.palette.background.paper,
+  },
+  title: {
+    margin: theme.spacing(2, 0, 0, 2),
+    padding: theme.spacing(1),
+    color: theme.palette.text.primary,
+  },
+  divider: {
+    background: theme.palette.divider,
+  },
+}));
 export default function Mybook() {
   const classes = mybooks()
   const state = useSelector((state) => state.set.privateBooks);

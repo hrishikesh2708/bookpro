@@ -5,13 +5,13 @@ import toasting from "../../../toast/toast";
 import { signIn, login } from "../../../api routes/api";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { auth_css } from "../../componentCSS";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { googleLogin } from "../../../api routes/api";
 import GoogleLogin from "react-google-login";
 import { useDispatch } from "react-redux";
 import { user_details } from "../../../action/user_details";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import { makeStyles } from "@material-ui/core/styles";
 import * as Yup from "yup";
 import {
   Typography,
@@ -24,6 +24,48 @@ import {
   Grid,
   Paper,
 } from "@material-ui/core";
+
+const auth_css = makeStyles((theme) => ({
+  paper: {
+    marginTop: theme.spacing(1),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    borderRadius: "20px",
+    // backgroundColor : theme.palette.background.paper,
+    color: theme.palette.text.primary,
+    
+  },
+  title:{
+    // color: theme.palette.text.primary,
+  },
+  content: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    borderRadius: "10%",
+    color: theme.palette.text.primary,
+  },
+  avatar: {
+    margin: theme.spacing(4, 0, 1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: "100%",
+    marginTop: theme.spacing(2),
+    color: theme.palette.text.primary,
+  },
+  typo: {
+    color: theme.palette.text.primary,
+    margin: theme.spacing(1, 0, 0),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+  googlejsx: {
+    margin: theme.spacing(0, 0, 1),
+  },
+}));
 
 function Copyright() {
   return (
@@ -67,8 +109,8 @@ export default function Auth() {
   };
 
   const onsubmit = (values, props) => {
-    console.log(values);
-    console.log(props);
+    // console.log(values);
+    // console.log(props);
     signIn(values)
       .then((res) => {
         console.log("register", res.data);
@@ -198,8 +240,8 @@ export default function Auth() {
                       Sign Up with Google
                     </Button>
                   )}
-                  onSuccess={google}
-                  onFailure={google}
+                  onSuccess={(e) => {google(e)}}
+                  onFailure={(e) => {google(e)}}
                   cookiePolicy={"single_host_origin"}
                 />
                 <Grid container>
@@ -226,4 +268,3 @@ export default function Auth() {
     </Container>
   );
 }
-// export default withRouter(Auth);

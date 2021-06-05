@@ -2,11 +2,11 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const keys = require("../../config/default.json");
-const User = require("../../model/user");
-const validateRegisteration = require("../../validation/register");
-const validateLogin = require("../../validation/login");
-const passport = require("../../config/passport");
+const keys = require("../config/default.json");
+const User = require("../model/user");
+const validateRegisteration = require("../validation/register");
+const validateLogin = require("../validation/login");
+const passport = require("../config/passport");
 const { OAuth2Client } = require("google-auth-library");
 const { response } = require("express");
 
@@ -66,6 +66,7 @@ router.post("/login", (req, res) => {
           const payload = {
             id: user.id,
             name: user.name,
+            email: email,
           };
   
           jwt.sign(
@@ -95,6 +96,7 @@ router.post("/login", (req, res) => {
 
 router.post("/googleLogin", (req, res) => {
   const token = req.body.id;
+  console.log(req.body.id,"g login server")
   Client.verifyIdToken({
     idToken: token,
     audience: keys.googleClientid,

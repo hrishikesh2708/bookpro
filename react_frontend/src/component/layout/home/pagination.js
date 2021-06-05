@@ -2,10 +2,21 @@ import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
 import FirstPageIcon from "@material-ui/icons/FirstPage";
-import { useTheme } from "@material-ui/core/styles";
 import { IconButton } from "@material-ui/core";
 import PropTypes from "prop-types";
-import { home } from "../../componentCSS";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+
+const home = makeStyles((theme) => ({
+  root: {
+    width: "100%",
+    padding: theme.spacing(0, 0, 0, 2),
+  },
+  icon: {
+    color: theme.palette.text.secondary,
+  },
+}));
+
+
 export function TablePaginationActions(props) {
   const classes = home()
   const theme = useTheme();

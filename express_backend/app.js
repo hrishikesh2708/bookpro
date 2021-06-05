@@ -4,18 +4,12 @@ const mongoose = require("mongoose");
 const db = require("./config/default.json").mongoUri;
 const cors = require("cors");
 const passport = require("passport");
-const users = require("./routes/api/users");
-const newbook = require("./routes/api/newbooks");
+const users = require("./routes/users");
+const newbook = require("./routes/newbooks");
 const app = express();
+
 // socket setup
 const server = http.createServer(app);
-const { Server } = require("socket.io");
-const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:4200",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-  },
-});
 
 //logger set up
 var winston = require("winston"),
@@ -36,11 +30,16 @@ app.use(
     colorize: true,
   })
 );
-
+const path = require('path');
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    credentials: true,
+    origin: [process.env.REACT_APP_HOME]
+  })
+);
 mongoose.set("useFindAndModify", false);
 
 const port = process.env.PORT || 4201;
@@ -48,14 +47,7 @@ app.use(passport.initialize());
 require("./config/passport")(passport);
 app.use("/api/users", users);
 app.use("/api", newbook);
-
-// app.use((req, res, next) => {
-//   res.status(404).send('<h2 align=center>Page Not Found!</h2>');
-// });
-// io.on('connection', (socket) => {
-//   console.log('a user connected');
-// });
-// app.set("io",io)
+app.use(express.static(path.join(__dirname , "../react_frontend","/build")));
 mongoose
   .connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
@@ -63,12 +55,3 @@ mongoose
     console.log("MongoDB successfully connected");
   })
   .catch((err) => console.log(err));
-
-
-  // const client = mongoose.connection.client
-  // const database = client.db("myFirstDatabase")
-  // const collection = db.collection("books(2.0)")
-  // const changeStream = collection.watch()
-  // changeStream.on("change", (event) =>{ 
-  //   console.log("changeStream is called", event)
-  // })

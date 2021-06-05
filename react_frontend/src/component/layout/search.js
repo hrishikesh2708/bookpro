@@ -17,8 +17,38 @@ import {
 } from "@material-ui/core";
 import { useSelector } from "react-redux";
 import toasting from "../../toast/toast";
-import { searchjsx } from "../componentCSS";
 import SearchIcon from "@material-ui/icons/Search";
+
+const searchjsx = makeStyles((theme) => ({
+  margin: {
+    marginTop: theme.spacing(8),
+  },
+  box: {
+    margin: theme.spacing(2, 0, 2),
+    width: "99%",
+    backgroundColor: "#f5f5f5",
+    borderRadius: "16px",
+    padding: theme.spacing(1),
+  },
+  paper: {
+    marginTop: theme.spacing(2),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    borderRadius: "16px",
+    padding: theme.spacing(1),
+  },
+  sepration: {
+    marginTop: theme.spacing(1),
+    borderBottom: "Solid black 1px",
+  },
+  root: {
+    width: "100%",
+    mabackgroundColor: theme.palette.background.paper,
+    xWidth: 360,
+  },
+}));
+
 function Search() {
   const [bookStatus, setbookStatus] = useState();
   const [data, setdata] = useState([]);
@@ -39,7 +69,6 @@ function Search() {
         toasting("error", errormessage);
       } else {
         setbookStatus(true);
-        // console.log(postData._id)
         setdata(postData);
       }
     }

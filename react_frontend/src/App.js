@@ -10,10 +10,31 @@ import Footer from "./component/layout/footer";
 import { user_details } from "./action/user_details";
 import { book_details } from "./action/book_action";
 import { useDispatch } from "react-redux";
-import { main } from "./component/componentCSS";
 import NewHome from "./component/layout/home/NewHome";
 import MyBook from "./component/layout/mybook";
 import { withTheme } from "./component/Theme/theme";
+import { makeStyles } from "@material-ui/core/styles";
+const main = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+    minHeight: "100vh",
+    flexDirection: "column",
+    backgroundColor: theme.palette.background.default,
+  },
+  content: {
+    flexGrow: 1,
+    margin: theme.spacing(8, 0, 8, 8),
+    padding: theme.spacing(0, 1, 1, 1),
+    // marginLeft: -drawerWidth,
+  },
+  toolbar: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    // padding: theme.spacing(0, 0, 0, 6),
+    ...theme.mixins.toolbar,
+  },
+}));
 
 function App(props) {
   const { darkmode, setDarkmode } = props;

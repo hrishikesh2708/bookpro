@@ -1,12 +1,12 @@
 const jwt_decode = require("jwt-decode");
 const express = require("express");
-const validateBook = require("../../validation/book-add");
+const validateBook = require("../validation/book-add");
 const router = express.Router();
-const book = require("../../model/newbooks");
+const book = require("../model/newbooks");
 const { request, response } = require("express");
 const axios = require("axios");
-const { findOne } = require("../../model/newbooks");
-const user = require("../../model/user");
+const { findOne } = require("../model/newbooks");
+const user = require("../model/user");
 
 let authorizedClients = [];
 let clients = [];
@@ -44,7 +44,7 @@ function streamHandler(request, response) {
   }, 40000);
 
   request.on("close", (e) => {
-    if (request.headers.authorization) {
+    if (request.headers.authorization !== "null") {
       let decode = jwt_decode(request.headers.authorization);
       authorizedClients = authorizedClients.filter((client) => {
         clearInterval(timeHash);
@@ -209,6 +209,7 @@ router.get("/stream", streamHandler);
 router.get("/boook", async (req, res) => {
   try {
     const x = await book.find();
+    console.log(x.length,"length")
     if (x.length < 5000) {
       for (let i = 0; i < 5000 / 1000; i++) {
         // let limit = ( (5000-x.length) > 1000) ? 1000 : 5000-x.length
@@ -221,9 +222,9 @@ router.get("/boook", async (req, res) => {
               const new_book = new book({
                 title: response.data.data[i].title,
                 author: response.data.data[i].author,
-                genre: response.data.data[i].genre,
-                description: response.data.data[i].description,
-                image: response.data.data[i].image,
+                // genre: response.data.data[i].genre,
+                // description: response.data.data[i].description,
+                // image: response.data.data[i].image,
               });
               data.push(new_book);
             }
@@ -315,13 +316,13 @@ router.put("/book-modify", async (req, res) => {
 });
 router.delete("/book-delete/:id", async (req, res) => {
   if (req.header("token") !== "null") {
-    console.log(req.params);
+    // console.log(req.params);
     let decode = jwt_decode(req.header("token"));
     await book.deleteOne(
       { _id: req.params.id, user_id: decode.id },
       function (err) {
         if (!err) {
-          console.log("Deleted");
+          // console.log("Deleted");
           global.bookDeleted = req.params.id;
           res.status(200).json({ _id: req.params.id });
           return sendChangeStream({

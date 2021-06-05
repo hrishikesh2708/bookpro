@@ -3,7 +3,6 @@ import clsx from "clsx";
 import { Link } from "react-router-dom";
 import { withRouter, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { nav } from "../componentCSS";
 import { user_logout } from "../../action/user_details";
 import {
   Avatar,
@@ -19,7 +18,7 @@ import {
   ListItemText,
   ListItemIcon,
 } from "@material-ui/core";
-
+import { makeStyles } from "@material-ui/core/styles";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
@@ -27,6 +26,95 @@ import MenuIcon from "@material-ui/icons/Menu";
 import CloseIcon from "@material-ui/icons/Close";
 import Brightness6Icon from '@material-ui/icons/Brightness6';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
+const drawerWidth = 240;
+const nav = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+  },
+  title: {
+    color: theme.palette.primary.contrastText,
+    textDecoration: "none",
+  },
+  appBar: {
+    backgroundColor: theme.palette.primary.dark,
+    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(["width", "margin"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  appBarShift: {
+    marginLeft: drawerWidth,
+    backgroundColor: theme.palette.primary.dark,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(["width", "margin"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  menuButton: {
+    marginRight: 36,
+    color: theme.palette.primary.contrastText,
+  },
+  hide: {
+    display: "none",
+  },
+  drawer: {
+    width: drawerWidth,
+    flexShrink: 0,
+    whiteSpace: "nowrap",
+    borderColor: theme.palette.divider,
+    backgroundColor: theme.palette.background.paper,
+  },
+  drawerOpen: {
+    width: drawerWidth,
+    borderColor: theme.palette.divider,
+    backgroundColor: theme.palette.background.paper,
+    transition: theme.transitions.create("width", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  drawerClose: {
+    transition: theme.transitions.create("width", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    overflowX: "hidden",
+    borderColor: theme.palette.divider,
+    backgroundColor: theme.palette.background.paper,
+    width: theme.spacing(7) + 1,
+    [theme.breakpoints.up("sm")]: {
+      width: theme.spacing(9) + 1,
+    },
+  },
+  toolbar: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    padding: theme.spacing(0, 1),
+    ...theme.mixins.toolbar,
+  },
+  profile: {
+    justifyContent: "center",
+  },
+  profileAvatar: {
+    height: 100,
+    width: 100,
+  },
+  divider: {
+    background: theme.palette.divider,
+  },
+  icon: {
+    color: theme.palette.text.secondary,
+  },
+  listItemTextPrimary: {
+    color: theme.palette.text.primary,
+  },
+  listItemTextSecondary: {
+    color: theme.palette.text.secondary,
+  },
+}));
 
 function Navbar( props ) {
   const {darkmode,setDarkmode} = props
@@ -50,6 +138,7 @@ function Navbar( props ) {
     var transaction = db.transaction(["keyvaluepairs"], "readwrite");
     var objectStore = transaction.objectStore("keyvaluepairs");
     var objectStoreRequest = objectStore.delete("persist:user");
+    var objectStoreRequest = objectStore.delete("persist:root");
     objectStoreRequest.onsuccess = function (event) {
       console.log("logout from persist");
     };

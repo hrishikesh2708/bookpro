@@ -172,7 +172,7 @@ export const set_reducer = (state = initialState, action) => {
       );
       console.log("mod data", action.payload.newData, index);
       if (index > -1) {
-        data[index] = action.payload.newData;
+        data[index].author = action.payload.newData.author;
         return {
           ...state,
           set: data,

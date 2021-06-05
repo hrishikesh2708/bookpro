@@ -111,7 +111,7 @@ theme.overrides = {
 
 const Theme = (props) => {
   const { children, darkmode } = props;
-  console.log(darkmode, theme);
+  // console.log(darkmode, theme);
   const defaultTheme = darkmode ? themeDark : theme;
   return <ThemeProvider theme={defaultTheme}>{children}</ThemeProvider>;
 };

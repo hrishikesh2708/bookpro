@@ -1,6 +1,19 @@
 import PropTypes from "prop-types";
-import { TableHead, TableRow, TableSortLabel } from "@material-ui/core";
-import { StyledTableCell } from "../../componentCSS";
+import { TableHead, TableRow, TableSortLabel,TableCell } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    backgroundColor: theme.palette.primary.light,
+    color: theme.palette.secondary.light,
+  },
+  body: {
+    fontSize: 14,
+    color: theme.palette.text.primary,
+  },
+  root: {
+    borderColor: theme.palette.secondary.light,
+  },
+}))(TableCell);
 //-------------------Sorting------------------------------------//
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
