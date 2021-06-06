@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
-import { Switch, Route, BrowserRouter } from "react-router-dom";
+import { Switch, Route, BrowserRouter, HashRouter } from "react-router-dom";
 import Navbar from "./component/layout/navbar";
 import Auth from "./component/layout/auth/auth";
 // import Search from "./component/layout/search";
@@ -51,7 +51,7 @@ function App(props) {
   }, [dispatch]);
   return (
     <>
-      <BrowserRouter>
+      <HashRouter>
         <div className={classes.root}>
           <Navbar darkmode={darkmode} setDarkmode={setDarkmode} />
           <div className={classes.content}>
@@ -69,7 +69,7 @@ function App(props) {
         {/* 
        <Route excat path="/search" component={Search} />
       <Route excat path="/ser" component={Ser} /> */}
-      </BrowserRouter>
+      </HashRouter>
       <ToastContainer />
     </>
   );

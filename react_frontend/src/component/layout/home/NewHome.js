@@ -239,8 +239,8 @@ export default function NewHome() {
   const [serResult, setserResult] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("title");
+  const [order, setOrder] = useState("desc");
+  const [orderBy, setOrderBy] = useState("date_added");
   const dense = false;
 
   const customModify = store.set.modifyEffectCall
