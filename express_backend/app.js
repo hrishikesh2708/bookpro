@@ -47,7 +47,10 @@ app.use(passport.initialize());
 require("./config/passport")(passport);
 app.use("/api/users", users);
 app.use("/api", newbook);
-app.use(express.static(path.join(__dirname , "../react_frontend","/build")));
+app.use("/app", express.static(path.join(__dirname , "../react_frontend","/build")));
+app.get('/', function(req, res) {
+  res.redirect('/app');
+});
 mongoose
   .connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
