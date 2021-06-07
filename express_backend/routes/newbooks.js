@@ -6,7 +6,7 @@ const book = require("../model/newbooks");
 const { request, response } = require("express");
 const axios = require("axios");
 const { findOne } = require("../model/newbooks");
-const user = require("../model/user");
+const user = require("../model/User.js");
 
 let authorizedClients = [];
 let clients = [];
