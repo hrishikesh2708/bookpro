@@ -336,7 +336,7 @@ export default function NewHome() {
   useEffect(() => {
     // console.log("props" , props.event)
     let eventSource = new EventSourcePolyfill(
-      `${process.env.REACT_APP_LOCALHOST}/app/undefined/api/stream`,
+      `${process.env.REACT_APP_LOCALHOST}/app/#/api/stream`,
       {
         headers: {
           Authorization: localStorage.getItem("jwtToken"),
