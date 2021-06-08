@@ -392,7 +392,7 @@ export default function NewHome() {
     <div className={classes.root}>
       {store.set.loading_status ? (
         <div className={classes.load}>
-          <LinearProgress />
+          <LinearProgress color="secondary"/>
         </div>
       ) : (
         <></>

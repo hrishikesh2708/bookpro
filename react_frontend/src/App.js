@@ -6,6 +6,7 @@ import Auth from "./component/layout/auth/auth";
 // import Search from "./component/layout/search";
 import Login from "./component/layout/auth/login";
 // import Ser from "./component/layout/ser";
+import PrivateRoute from './PrivateRoute'
 import Footer from "./component/layout/footer";
 import { user_details } from "./action/user_details";
 import { book_details } from "./action/book_action";
@@ -18,13 +19,13 @@ const main = makeStyles((theme) => ({
   root: {
     display: "flex",
     minHeight: "100vh",
-    flexDirection: "column",
+    flexDirection: "row",
     backgroundColor: theme.palette.background.default,
   },
   content: {
     flexGrow: 1,
-    margin: theme.spacing(8, 0, 8, 8),
-    padding: theme.spacing(0, 1, 1, 1),
+    margin: theme.spacing(8, 0, 8, 0),
+    padding: theme.spacing(0, 1, 1, 0),
     // marginLeft: -drawerWidth,
   },
   toolbar: {
@@ -57,7 +58,7 @@ function App(props) {
           <div className={classes.content}>
             <div className={classes.toolbar}>
               <Switch>
-                <Route excat path="/mybooks" component={MyBook} />
+                <PrivateRoute excat path="/mybooks" component={MyBook} />
                 <Route excat path="/login" component={Login} />
                 <Route excat path="/signup" component={Auth} />
                 <Route excat path="/" component={NewHome} />
