@@ -15,7 +15,7 @@ let changeStream = [];
 function streamHandler(request, response) {
   response.setHeader("Content-Type", "text/event-stream");
   response.setHeader("Cache-Control", "no-cache");
-  response.setHeader("Access-Control-Allow-Origin", "*");
+  response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
   response.setHeader("Connection", "keep-alive");
   response.flushHeaders();
   console.log("client connection request:", request.headers["authorization"]);
@@ -54,7 +54,10 @@ function streamHandler(request, response) {
       console.log(`${decode.id} Connection closed [auth]`);
     } else {
       console.log(`${clientId} Connection closed`);
-      clients = clients.filter((client) => client.id !== clientId);
+      clients = clients.filter((client) => {
+        clearInterval(timeHash);
+        return client.id !== clientId
+      });
     }
   });
 }

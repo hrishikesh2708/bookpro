@@ -10,9 +10,10 @@ import {
   TableCell, 
 } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
-import React from "react";
+import React, {useEffect}from "react";
 import { useSelector } from "react-redux";
 import * as moment from "moment";
+import { useHistory } from "react-router-dom";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -63,6 +64,13 @@ const mybooks = makeStyles((theme) => ({
 export default function Mybook() {
   const classes = mybooks()
   const state = useSelector((state) => state.set.privateBooks);
+  const history = useHistory()
+  useEffect(() => {
+    let token = localStorage.getItem("jwtToken");
+    if (token !== null) {
+      history.push("/login")
+    }
+  }, [history]);
   return (
     <div className={classes.root}>
     <Typography variant="h4" noWrap className={classes.title}>
