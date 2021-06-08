@@ -46,7 +46,7 @@ const port = process.env.PORT || 4201;
 app.use(passport.initialize());
 require("./config/passport")(passport);
 app.use("/app/#/api/users", users);
-app.use("/app/#/api", newbook);
+app.use("/app/undefined/api", newbook);
 app.use("/app", express.static(path.join(__dirname , "../react_frontend","/build")));
 app.get('/', function(req, res) {
   res.redirect('/app');
