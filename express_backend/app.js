@@ -37,7 +37,7 @@ app.use(express.json());
 app.use(
   cors({
     credentials: true,
-    origin: [process.env.REACT_APP_HOME]
+    origin: "http://3.15.42.107"
   })
 );
 mongoose.set("useFindAndModify", false);
