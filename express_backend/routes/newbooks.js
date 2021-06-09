@@ -15,7 +15,7 @@ let changeStream = [];
 function streamHandler(request, response) {
   response.setHeader("Content-Type", "text/event-stream");
   response.setHeader("Cache-Control", "no-cache");
-  response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
+  response.setHeader("Access-Control-Allow-Origin", "http://3.15.42.107");
   response.setHeader("Connection", "keep-alive");
   response.flushHeaders();
   console.log("client connection request:", request.headers["authorization"]);
