@@ -6,7 +6,7 @@ import Auth from "./component/layout/auth/auth";
 // import Search from "./component/layout/search";
 import Login from "./component/layout/auth/login";
 // import Ser from "./component/layout/ser";
-import PrivateRoute from './PrivateRoute'
+// import PrivateRoute from './PrivateRoute'
 import Footer from "./component/layout/footer";
 import { user_details } from "./action/user_details";
 import { book_details } from "./action/book_action";
@@ -58,7 +58,7 @@ function App(props) {
           <div className={classes.content}>
             <div className={classes.toolbar}>
               <Switch>
-                <PrivateRoute excat path="/mybooks" component={MyBook} />
+                <Route excat path="/mybooks" component={MyBook} />
                 <Route excat path="/login" component={Login} />
                 <Route excat path="/signup" component={Auth} />
                 <Route excat path="/" component={NewHome} />

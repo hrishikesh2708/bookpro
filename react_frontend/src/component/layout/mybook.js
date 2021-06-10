@@ -7,13 +7,13 @@ import {
   Typography,
   Divider,
   TableRow,
-  TableCell, 
+  TableCell,
 } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
-import React, {useEffect}from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import * as moment from "moment";
-import { useHistory } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -32,7 +32,7 @@ const StyledTableCell = withStyles((theme) => ({
 const StyledTableRow = withStyles((theme) => ({
   root: {
     color: theme.palette.text.primary,
-    border : `1px solid ${theme.palette.text.primary}`
+    border: `1px solid ${theme.palette.text.primary}`,
   },
 }))(TableRow);
 const mybooks = makeStyles((theme) => ({
@@ -45,7 +45,7 @@ const mybooks = makeStyles((theme) => ({
   },
   container: {
     maxHeight: "75vh",
-    border : `1px solid ${theme.palette.secondary.light}`
+    border: `1px solid ${theme.palette.secondary.light}`,
   },
   paper: {
     margin: theme.spacing(2, 2, 2, 4),
@@ -62,24 +62,19 @@ const mybooks = makeStyles((theme) => ({
   },
 }));
 export default function Mybook() {
-  const classes = mybooks()
+  const classes = mybooks();
   const state = useSelector((state) => state.set.privateBooks);
-  const history = useHistory()
-  useEffect(() => {
-    let token = localStorage.getItem("jwtToken");
-    if (token !== null) {
-      history.push("/login")
-    }
-  }, [history]);
-  return (
-    <div className={classes.root}>
-    <Typography variant="h4" noWrap className={classes.title}>
-    My Books
-    <Divider classes={{root:classes.divider}}/>
-    </Typography>
-   
-    <Paper elevation={8} className={classes.paper}>
-    <TableContainer className={classes.container}>
+  const store = useSelector((state) => state);
+  if (store.user.USER_CURRENT_STATUS) {
+    return (
+      <div className={classes.root}>
+        <Typography variant="h4" noWrap className={classes.title}>
+          My Books
+          <Divider classes={{ root: classes.divider }} />
+        </Typography>
+
+        <Paper elevation={8} className={classes.paper}>
+          <TableContainer className={classes.container}>
             <Table stickyHeader={true}>
               <TableHead>
                 <StyledTableRow>
@@ -101,7 +96,10 @@ export default function Mybook() {
               </TableBody>
             </Table>
           </TableContainer>
-          </Paper>
-    </div>
-  );
+        </Paper>
+      </div>
+    );
+  } else {
+    return <Redirect to="/login" />;
+  }
 }
