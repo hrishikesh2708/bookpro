@@ -45,7 +45,7 @@ mongoose.set("useFindAndModify", false);
 const port = process.env.PORT || 4201;
 app.use(passport.initialize());
 require("./config/passport")(passport);
-app.use("/app/undefined/api/users", users);
+app.use("/api/users", users);
 app.use("/api", newbook);
 app.use("/app", express.static(path.join(__dirname , "../react_frontend","/build")));
 app.get('/', function(req, res) {
