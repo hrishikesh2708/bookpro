@@ -1,4 +1,5 @@
 import React from "react";
+import "../../App.css"
 import clsx from "clsx";
 import { Link } from "react-router-dom";
 import { withRouter, useHistory } from "react-router-dom";
@@ -107,6 +108,10 @@ const nav = makeStyles((theme) => ({
   },
   icon: {
     color: theme.palette.text.secondary,
+    justifyContent: "center",
+  },
+  item: {
+    padding: 0,
   },
   listItemTextPrimary: {
     color: theme.palette.text.primary,
@@ -240,7 +245,7 @@ function Navbar(props) {
         </Tooltip>
 
         <Divider classes={{ root: classes.divider }} />
-        <List>
+        <List className="list__2">
           <Tooltip
             title="My Books"
             placement="right"
@@ -248,8 +253,8 @@ function Navbar(props) {
               [classes.hide]: !state.user.USER_CURRENT_STATUS,
             })}
           >
-            <ListItem button to="/myBooks" component={Link}>
-              <ListItemIcon>
+            <ListItem button to="/myBooks" component={Link} >
+              <ListItemIcon >
                 <MenuBookIcon classes={{ root: classes.icon }} />
               </ListItemIcon>
 

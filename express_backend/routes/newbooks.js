@@ -247,7 +247,7 @@ router.get("/boook", async (req, res) => {
 router.get("/getbook", async (req, res, next) => {
   // console.log("get book :" ,req.rawHeaders)
   try {
-    const x = await book.find();
+    const x = await book.find().lean();
     res.json(x);
   } catch (err) {
     res.status(500).json({ message: err.message });
