@@ -16,8 +16,9 @@ Bookpro is a single page REAL Time MERN stack application host on amazon ec2 ins
 - User can search books (extremely fast search)
 - If user performs any CRUD operation, all online user will receive notification about the particular CRUD operation and REAL TIME changes will be visible on the table 
 - User data is stored in securely 
+- User can login to bookpro either using google account or by creating a new account.
 - User can view all books  added by them in a personalised table (Mybooks)
-- User can switch to light mode and dark mode according to their preference. ​
+- User can switch to light mode and dark mode according to their preference. 
 
 ## Important Technology and Packages
 - [Redux](https://www.npmjs.com/package/redux) for state management on client side. 
@@ -27,7 +28,7 @@ Bookpro is a single page REAL Time MERN stack application host on amazon ec2 ins
 - [Redux Persist](https://www.npmjs.com/package/redux-persist) for storing the logged in session of client and rehydrating redux store.
 
 - [Redux offline](https://www.npmjs.com/package/@redux-offline/redux-offline) for handling the API call while Client is facing network issues.
-​
+
 - [PM2](https://www.npmjs.com/package/pm2) for running server forever without any interruption
 
 - [Nginx](https://www.nginx.com/) for carrying out reverse proxy.
