@@ -17,7 +17,7 @@ Bookpro is a single page REAL Time MERN stack application host on amazon ec2 ins
 - If user performs any CRUD operation, all online user will receive notification about the particular CRUD operation and REAL TIME changes will be visible on the table 
 - User data is stored in securely 
 - User can view all books  added by them in a personalised table (Mybooks)
-- User can switch to light mode and dark mode according to their preference. 
+- User can switch to light mode and dark mode according to their preference. ​
 
 ## Important Technology and Packages
 - [Redux](https://www.npmjs.com/package/redux) for state management on client side. 
@@ -27,7 +27,7 @@ Bookpro is a single page REAL Time MERN stack application host on amazon ec2 ins
 - [Redux Persist](https://www.npmjs.com/package/redux-persist) for storing the logged in session of client and rehydrating redux store.
 
 - [Redux offline](https://www.npmjs.com/package/@redux-offline/redux-offline) for handling the API call while Client is facing network issues.
-
+​
 - [PM2](https://www.npmjs.com/package/pm2) for running server forever without any interruption
 
 - [Nginx](https://www.nginx.com/) for carrying out reverse proxy.
@@ -55,21 +55,21 @@ npm install
 ## Usage
 for using this repo. you need to create two files 
 *   .env file inside react_frontend/ and add following key pair value:
-   ​```bash
-   ​PORT="**** {any port number}"
-   ​REACT_APP_GOOGLE_CLIENT_ID=" Get it from google API console "
-   ​REACT_APP_GOOGLE_PASSWORD=" Get it from google API console "
-   ​REACT_APP_LOCALHOST=" http://localhost:**** "
-   ​REACT_APP_HOME=" http://localhost:**** "
-   ​```
+    ```bash
+     PORT="**** {any port number}"
+     REACT_APP_GOOGLE_CLIENT_ID=" Get it from google API console "
+     REACT_APP_GOOGLE_PASSWORD=" Get it from google API console "
+     REACT_APP_LOCALHOST=" http://localhost:**** "
+     REACT_APP_HOME=" http://localhost:**** "
+    ```
 *   default.json file inside express_backend/config/ and add fo;llowing key pair value:
-   ​```bash
-   ​{
-     ​"mongoUri": "mongodb://localhost:27017/bookpro",
-     ​"secretOrKey": "secret",
-     ​"googleClientid": " Get this from google API console ",     
-     ​"googlepassword": " Get this from google API console ",
-   ​}
+    ```bash
+    {
+      "mongoUri": "mongodb://localhost:27017/bookpro",
+      "secretOrKey": "secret",
+      "googleClientid": " Get this from google API console ",     
+      "googlepassword": " Get this from google API console ",
+    }
 Now you are ready to launch it on loacal Host.
 
 ## Contributing
