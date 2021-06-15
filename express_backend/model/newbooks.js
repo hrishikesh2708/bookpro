@@ -34,7 +34,7 @@ const Books = new Schema({
 //     }
 // })
 
-module.exports = book = mongoose.model("Books(2.0)",Books)
+module.exports = book = mongoose.model("Books",Books)
 // module.exports = Customer = mongoose.model("Customer" , customer)
 
 // run().catch(error => console.error(error.stack))

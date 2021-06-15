@@ -10,7 +10,7 @@ import {
   MODIFY_BOOK_SSE_COMMIT,
   DELETE_BOOK_SSE_COMMIT,
 } from "./type";
-import { get_books, get_my_books } from "../api routes/api";
+import { get_books, get_my_books, dbupdate} from "../api routes/api";
 
 export const get_book = (contents) => ({
   type: GET_BOOK,
@@ -19,6 +19,7 @@ export const get_book = (contents) => ({
 export const book_details = () => {
   return async (dispatch) => {
     try {
+      let x = await dbupdate();
       let post = await get_books();
       // console.log("post",post)
       dispatch(set_store(post.data));
